@@ -4,6 +4,16 @@ services:
 
   app:
     image: sihiy1/sasimga-jember:latest
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "true"
+
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: db_samsimga
+      DB_USERNAME: root
+      DB_PASSWORD: root
 
     networks:
       - laravel
