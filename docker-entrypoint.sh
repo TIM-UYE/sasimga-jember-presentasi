@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-Check if .env file exists, if not, copy from env.contoh
+# Check if .env file exists, if not, copy from env.contoh
 if [ ! -f .env ]; then
     echo ".env file not found. Copying from env.contoh..."
     cp env.contoh .env
