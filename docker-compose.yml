@@ -1,0 +1,50 @@
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: dockerfile
+
+    container_name: laravel_app
+
+    volumes:
+      - ./:/var/www:cached
+
+    networks:
+      - laravel
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+
+    container_name: laravel_nginx
+
+    ports:
+      - "8001:80"
+
+    depends_on:
+      - app
+
+    networks:
+      - laravel
+
+  mysql:
+    image: mysql:8
+
+    container_name: laravel_mysql
+
+    restart: always
+
+    environment:
+      MYSQL_DATABASE: db_samsimga
+      MYSQL_ROOT_PASSWORD: root
+
+    ports:
+      - "3306:3306"
+
+    networks:
+      - laravel
+
+networks:
+  laravel:

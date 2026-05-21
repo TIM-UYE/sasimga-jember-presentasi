@@ -1,0 +1,36 @@
+#loader {
+    transition:
+        opacity 0.8s ease,
+        visibility 0.8s ease;
+}
+
+.loader-image {
+    animation:
+        loaderFloat 2.5s ease-in-out infinite,
+        loaderGlow 3s ease-in-out infinite;
+
+    filter:
+        drop-shadow(0 0 25px rgba(251,146,60,0.35));
+}
+
+@keyframes loaderFloat {
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-12px);
+    }
+}
+
+@keyframes loaderGlow {
+    0%,
+    100% {
+        opacity: 0.8;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}

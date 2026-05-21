@@ -1,0 +1,84 @@
+@layer components {
+
+    .container-main {
+        @apply max-w-7xl mx-auto px-6;
+    }
+
+/* ========================= */
+/* 🎨 CUSTOM SCROLLBAR */
+/* ========================= */
+
+/* For Webkit browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #f97316, #ea580c);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #ea580c, #c2410c);
+}
+
+/* For Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #f97316 #f1f5f9;
+}
+
+/* For dark mode areas */
+.dark ::-webkit-scrollbar-track {
+    background: #1e293b;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #f97316, #ea580c);
+}
+
+.dark * {
+    scrollbar-color: #f97316 #1e293b;
+}
+
+    .btn-primary {
+        @apply bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold transition hover:bg-orange-600;
+    }
+
+    .btn-outline {
+        @apply border border-orange-500 text-orange-500 px-6 py-3 rounded-lg transition hover:bg-orange-500 hover:text-white;
+    }
+
+    .title-main {
+        font-family: var(--font-title);
+        @apply text-4xl md:text-6xl leading-tight;
+    }
+
+    .subtitle {
+        @apply text-gray-400 text-sm;
+    }
+
+    .card {
+        @apply bg-white text-black rounded-2xl shadow-md p-4 hover:shadow-lg transition;
+    }
+
+    .nav-link {
+        @apply hover:text-orange-400 transition;
+    }
+
+    .section {
+        @apply py-20;
+    }
+
+    .input-style {
+    @apply w-full mt-2 px-4 py-3 bg-transparent border border-white/30 rounded-lg text-white focus:outline-none focus:border-[var(--color-primary)];
+}
+
+}

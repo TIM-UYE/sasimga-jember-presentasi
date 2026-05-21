@@ -1,0 +1,25 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('stok', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama_bahan');
+            $table->string('satuan'); // gram, kg, pcs, liter, ml
+            $table->decimal('jumlah_stok', 12, 2)->default(0);
+            $table->decimal('stok_minimum', 12, 2)->default(0);
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('stok');
+    }
+};

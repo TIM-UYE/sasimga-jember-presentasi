@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+
+  app:
+    image: sihiy1/sasimga-jember:latest
+
+    networks:
+      - laravel
+
+  nginx:
+    image: sihiy1/sasimga-nginx:latest
+
+    ports:
+      - "80:80"
+
+    networks:
+      - laravel
+
+  mysql:
+    image: mysql:8
+
+    restart: always
+
+    environment:
+      MYSQL_DATABASE: db_samsimga
+      MYSQL_ROOT_PASSWORD: root
+
+    ports:
+      - "3306:3306"
+
+    networks:
+      - laravel
+
+networks:
+  laravel:
+    driver: overlay

@@ -1,0 +1,60 @@
+/* ========================= */
+/* SCROLL REVEAL */
+/* ========================= */
+
+.reveal,
+.reveal-left,
+.reveal-right,
+.reveal-scale {
+    opacity: 0;
+    transition: all 0.8s ease;
+    will-change: transform, opacity;
+}
+
+.reveal {
+    transform: translateY(40px);
+}
+
+.reveal-left {
+    transform: translateX(-60px);
+}
+
+.reveal-right {
+    transform: translateX(60px);
+}
+
+.reveal-scale {
+    transform: scale(0.9);
+}
+
+.reveal-left.active,
+.reveal-right.active,
+.reveal-scale.active,
+.reveal.active {
+    opacity: 1;
+    transform: translate(0) scale(1);
+}
+
+.reveal[style*="--delay"] {
+    transition-delay: var(--delay);
+}
+
+/* ========================= */
+/* KEYFRAMES */
+/* ========================= */
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up 0.4s ease-out forwards;
+}

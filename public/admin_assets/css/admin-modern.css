@@ -1,0 +1,168 @@
+:root {
+    --adm-primary: #ff7e5f;
+    --adm-primary-strong: #f97316;
+    --adm-secondary: #ea580c;
+    --adm-danger: #dc2626;
+    --adm-surface: #ffffff;
+    --adm-border: #e2e8f0;
+    --adm-text: #1e293b;
+    --adm-text-muted: #64748b;
+    --adm-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+}
+
+body {
+    background:
+        radial-gradient(circle at top right, rgba(255, 126, 95, 0.14), transparent 38%),
+        radial-gradient(circle at top left, rgba(254, 180, 123, 0.12), transparent 34%),
+        #f8fafc;
+    color: var(--adm-text);
+}
+
+/* Reusable button styles for admin actions */
+.btn-admin,
+.btn-admin-secondary,
+.btn-admin-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    border-radius: 0.75rem;
+    padding: 0.58rem 0.95rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    line-height: 1.2;
+}
+
+.btn-admin {
+    background: linear-gradient(135deg, var(--adm-primary), var(--adm-primary-strong));
+    color: #fff;
+    box-shadow: 0 10px 20px rgba(249, 115, 22, 0.25);
+}
+
+.btn-admin:hover,
+.btn-admin:focus {
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 14px 24px rgba(249, 115, 22, 0.3);
+}
+
+.btn-admin-secondary {
+    background: #fff;
+    color: #334155;
+    border-color: #cbd5e1;
+}
+
+.btn-admin-secondary:hover,
+.btn-admin-secondary:focus {
+    background: #fff7ed;
+    color: #9a3412;
+    border-color: #fdba74;
+}
+
+.btn-admin-danger {
+    background: linear-gradient(135deg, #ef4444, var(--adm-danger));
+    color: #fff;
+    box-shadow: 0 10px 20px rgba(220, 38, 38, 0.2);
+}
+
+.btn-admin-danger:hover,
+.btn-admin-danger:focus {
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 14px 24px rgba(220, 38, 38, 0.28);
+}
+
+button.btn-admin,
+button.btn-admin-secondary,
+button.btn-admin-danger {
+    cursor: pointer;
+}
+
+/* Improve card feel */
+.shadow-soft-xl {
+    box-shadow: var(--adm-shadow) !important;
+}
+
+.rounded-2xl {
+    border-radius: 1rem !important;
+}
+
+/* Better looking table surfaces in admin pages */
+table thead th {
+    color: #475569;
+}
+
+table tbody tr td {
+    vertical-align: middle;
+}
+
+/* Friendlier form controls */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="url"],
+input[type="date"],
+input[type="password"],
+select,
+textarea {
+    color: #0f172a;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #94a3b8;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+}
+
+/* Harmonize existing purple utility classes with sidebar orange theme */
+.bg-purple-100 {
+    background-color: #ffedd5 !important;
+}
+
+.text-purple-700,
+.text-purple-800 {
+    color: #c2410c !important;
+}
+
+.text-purple-600 {
+    color: #ea580c !important;
+}
+
+.border-purple-500 {
+    border-color: #fb923c !important;
+}
+
+.focus\:ring-purple-100:focus {
+    --tw-ring-color: rgba(251, 146, 60, 0.22) !important;
+}
+
+.focus\:ring-purple-500:focus {
+    --tw-ring-color: rgba(249, 115, 22, 0.35) !important;
+}
+
+.focus\:border-purple-500:focus {
+    border-color: #f97316 !important;
+}
+
+/* Pagination tune-up for testimonial page and others */
+.pagination,
+nav[role="navigation"] > div {
+    font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+    .btn-admin,
+    .btn-admin-secondary,
+    .btn-admin-danger {
+        width: 100%;
+    }
+}

@@ -1,0 +1,828 @@
+@import 'tailwindcss';
+
+@import './components.css';
+@import './reveal.css';
+@import './lenis.css';
+@import './video.css';
+@import './loader.css';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --color-primary: #eb8132;
+    --color-dark: #000000;
+    --color-light: #ffffff;
+    --color-muted: #9ca3af;
+
+    --font-body: 'Poppins', sans-serif;
+    --font-title: 'DM Serif Text', serif;
+
+    --font-sans: 'Poppins', sans-serif;
+
+    --radius-main: 16px;
+    --shadow-main: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+@layer base {
+    body {
+        @apply bg-black text-white font-sans;
+    }
+
+    h1,
+    h2,
+    h3 {
+        font-family: var(--font-title);
+    }
+
+    p {
+        @apply text-gray-400;
+    }
+}
+
+/* ========================= */
+/* MENU CARD ANIMATIONS */
+/* ========================= */
+
+/* Staggered card entrance */
+.menu-card-enter {
+    opacity: 0;
+    transform: translateY(60px) scale(0.92);
+    filter: blur(4px);
+    transition:
+        opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.menu-card-enter.menu-card-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+}
+
+/* Floating animation on hover */
+@keyframes menu-card-float {
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+.menu-card-float {
+    animation: menu-card-float 3s ease-in-out infinite;
+}
+
+.menu-card-float:nth-child(2n) {
+    animation-delay: 0.15s;
+}
+
+.menu-card-float:nth-child(3n) {
+    animation-delay: 0.3s;
+}
+
+.menu-card-float:nth-child(4n) {
+    animation-delay: 0.45s;
+}
+
+/* 3D Tilt effect container */
+.menu-card-tilt {
+    perspective: 1000px;
+}
+
+.menu-card-tilt-inner {
+    transition:
+        transform 0.15s cubic-bezier(0.22, 1, 0.36, 1);
+
+    transform-style: preserve-3d;
+
+    will-change: transform;
+}
+
+/* Card shine overlay */
+.menu-card-shine {
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-card-shine::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            105deg,
+            transparent 40%,
+            rgba(255, 255, 255, 0.06) 45%,
+            rgba(255, 255, 255, 0.1) 50%,
+            rgba(255, 255, 255, 0.06) 55%,
+            transparent 60%
+        );
+
+    background-size: 300% 100%;
+    background-position: 100% 0;
+
+    transition:
+        background-position 0.6s ease;
+
+    z-index: 2;
+
+    pointer-events: none;
+}
+
+.menu-card-shine:hover::before {
+    background-position: 0% 0;
+}
+
+/* Shimmer border effect */
+@keyframes shimmer-border {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.shimmer-border {
+    position: relative;
+}
+
+.shimmer-border::after {
+    content: "";
+
+    position: absolute;
+    inset: -1px;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(251, 146, 60, 0.3),
+            rgba(251, 146, 60, 0.5),
+            rgba(251, 146, 60, 0.3),
+            transparent
+        );
+
+    background-size: 200% 100%;
+
+    animation:
+        shimmer-border 3s ease-in-out infinite;
+
+    z-index: -1;
+
+    mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+
+    mask-composite: exclude;
+
+    padding: 1px;
+}
+
+/* ========================= */
+/* FILTER ANIMATIONS */
+/* ========================= */
+
+/* Filter card leaving animation */
+@keyframes filter-card-leave {
+    0% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(0.8) translateY(-30px);
+        filter: blur(8px);
+    }
+}
+
+.filter-card-leaving {
+    animation:
+        filter-card-leave 0.4s cubic-bezier(0.55, 0, 0.1, 1) forwards;
+
+    pointer-events: none;
+}
+
+/* Filter card entering animation */
+@keyframes filter-card-enter {
+    0% {
+        opacity: 0;
+        transform: scale(0.85) translateY(40px) rotateX(10deg);
+        filter: blur(6px);
+    }
+
+    60% {
+        opacity: 1;
+        transform: scale(1.02) translateY(-3px) rotateX(-1deg);
+        filter: blur(0);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0) rotateX(0);
+        filter: blur(0);
+    }
+}
+
+.filter-card-entering {
+    animation:
+        filter-card-enter 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Staggered delay helper for filter cards */
+.filter-card-entering:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.filter-card-entering:nth-child(2) {
+    animation-delay: 0.05s;
+}
+
+.filter-card-entering:nth-child(3) {
+    animation-delay: 0.1s;
+}
+
+.filter-card-entering:nth-child(4) {
+    animation-delay: 0.15s;
+}
+
+.filter-card-entering:nth-child(5) {
+    animation-delay: 0.2s;
+}
+
+.filter-card-entering:nth-child(6) {
+    animation-delay: 0.25s;
+}
+
+.filter-card-entering:nth-child(7) {
+    animation-delay: 0.3s;
+}
+
+.filter-card-entering:nth-child(8) {
+    animation-delay: 0.35s;
+}
+
+.filter-card-entering:nth-child(9) {
+    animation-delay: 0.4s;
+}
+
+.filter-card-entering:nth-child(10) {
+    animation-delay: 0.45s;
+}
+
+.filter-card-entering:nth-child(11) {
+    animation-delay: 0.5s;
+}
+
+.filter-card-entering:nth-child(12) {
+    animation-delay: 0.55s;
+}
+
+/* Button morph animation */
+@keyframes btn-morph {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(0.92);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.filter-btn-pulse {
+    animation:
+        btn-morph 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Floating particles container for filter */
+@keyframes float-particle {
+    0% {
+        opacity: 0;
+        transform: translateY(0) scale(0) rotate(0deg);
+    }
+
+    50% {
+        opacity: 0.6;
+        transform: translateY(-60px) scale(1) rotate(180deg);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-120px) scale(0) rotate(360deg);
+    }
+}
+
+.filter-particle {
+    position: fixed;
+
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #f97316;
+
+    pointer-events: none;
+
+    z-index: 9999;
+
+    filter: blur(2px);
+
+    animation:
+        float-particle 0.8s ease-out forwards;
+}
+
+/* Ripple effect on category buttons */
+@keyframes btn-ripple {
+    0% {
+        box-shadow:
+            0 0 0 0 rgba(251, 146, 60, 0.5),
+            0 0 0 0 rgba(251, 146, 60, 0.3);
+    }
+
+    100% {
+        box-shadow:
+            0 0 0 20px rgba(251, 146, 60, 0),
+            0 0 0 40px rgba(251, 146, 60, 0);
+    }
+}
+
+.btn-ripple {
+    animation:
+        btn-ripple 0.6s ease-out;
+}
+
+/* Grid layout shift */
+.menu-grid-shifting {
+    transition:
+        gap 0.3s ease;
+}
+
+/* Category button active glow */
+@keyframes cat-btn-glow {
+    0%,
+    100% {
+        box-shadow:
+            0 0 20px rgba(251, 146, 60, 0.2);
+    }
+
+    50% {
+        box-shadow:
+            0 0 40px rgba(251, 146, 60, 0.4);
+    }
+}
+
+.cat-btn-active {
+    animation:
+        cat-btn-glow 2s ease-in-out infinite !important;
+}
+
+/* ========================= */
+/* SPECIAL MENU ANIMATIONS */
+/* ========================= */
+
+/* Special menu card premium hover */
+@keyframes special-card-border {
+    0% {
+        border-color: rgba(251, 146, 60, 0.2);
+    }
+
+    50% {
+        border-color: rgba(251, 146, 60, 0.6);
+    }
+
+    100% {
+        border-color: rgba(251, 146, 60, 0.2);
+    }
+}
+
+.special-card-premium {
+    animation:
+        special-card-border 3s ease-in-out infinite;
+}
+
+/* Price counter reveal */
+@keyframes price-reveal {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+        filter: blur(2px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+        filter: blur(0);
+    }
+}
+
+.price-reveal {
+    animation:
+        price-reveal 0.5s ease-out forwards;
+}
+
+/* Sparkle particles on special menu */
+@keyframes sparkle {
+    0% {
+        opacity: 0;
+        transform: scale(0) rotate(0deg);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1) rotate(180deg);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(0) rotate(360deg);
+    }
+}
+
+.sparkle-particle {
+    position: absolute;
+
+    width: 6px;
+    height: 6px;
+
+    background: #fbbf24;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    filter: blur(1px);
+
+    animation:
+        sparkle 1.5s ease-in-out infinite;
+}
+
+/* Pulse ring on hover for special menu */
+@keyframes pulse-ring {
+    0% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(1.3);
+        opacity: 0;
+    }
+}
+
+.special-pulse-ring {
+    position: absolute;
+    inset: 0;
+
+    border-radius: inherit;
+
+    border:
+        2px solid rgba(251, 146, 60, 0.4);
+
+    pointer-events: none;
+}
+
+.group:hover .special-pulse-ring {
+    animation:
+        pulse-ring 1s ease-out infinite;
+}
+
+/* Reveal badge animation */
+@keyframes badge-pop {
+    0% {
+        transform: scale(0) rotate(-10deg);
+        opacity: 0;
+    }
+
+    60% {
+        transform: scale(1.15) rotate(2deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+.badge-pop {
+    animation:
+        badge-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Slide-up with blur entrance */
+@keyframes slide-up-blur {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+        filter: blur(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+.animate-slide-up-blur {
+    animation:
+        slide-up-blur 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Glow text effect for headings */
+@keyframes text-glow {
+    0%,
+    100% {
+        text-shadow:
+            0 0 20px rgba(251, 146, 60, 0.1),
+            0 0 40px rgba(251, 146, 60, 0.05);
+    }
+
+    50% {
+        text-shadow:
+            0 0 30px rgba(251, 146, 60, 0.3),
+            0 0 60px rgba(251, 146, 60, 0.1);
+    }
+}
+
+.text-glow-pulse {
+    animation:
+        text-glow 3s ease-in-out infinite;
+}
+
+/* Gradient border for premium menu cards */
+@keyframes gradient-border {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.gradient-border-card {
+    position: relative;
+
+    background:
+        linear-gradient(135deg, #111827, #030712) padding-box,
+        linear-gradient(
+            135deg,
+            transparent,
+            rgba(251, 146, 60, 0.3),
+            transparent
+        ) border-box;
+
+    border:
+        2px solid transparent;
+
+    border-radius: inherit;
+
+    animation:
+        gradient-border 4s ease infinite;
+
+    background-size: 200% 200%;
+}
+
+.gradient-border-card::before {
+    content: "";
+
+    position: absolute;
+    inset: -2px;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            135deg,
+            transparent,
+            rgba(251, 146, 60, 0.3),
+            transparent
+        );
+
+    background-size: 200% 200%;
+
+    animation:
+        gradient-border 4s ease infinite;
+
+    z-index: -1;
+
+    mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+
+    mask-composite: exclude;
+
+    padding: 2px;
+}
+
+/* ========================= */
+/* 🌟 DECORATIVE BORDER FRAMES 🌟 */
+/* ========================= */
+
+/* --- REGULAR MENU FRAME --- */
+.menu-frame {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    aspect-ratio: 23.66 / 35.72;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    background: #030712; /* dark fallback */
+}
+
+/* Border image ON TOP of content — like a real picture frame */
+.menu-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    border-radius: inherit;
+    background: url('../../public/images/border/menu.png') no-repeat center / cover;
+    transition: filter 0.5s ease, box-shadow 0.5s ease;
+}
+
+/* Safe area — content is constrained here */
+.menu-frame-inner {
+    position: absolute;
+    inset: 12%;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+}
+
+/* Frame entrance animation — sync with menu card */
+.menu-frame-enter {
+    opacity: 0;
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.menu-frame-visible {
+    opacity: 1;
+}
+
+/* Special frame entrance animation */
+.special-frame-enter {
+    opacity: 0;
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.special-frame-visible {
+    opacity: 1;
+}
+
+/* Glow on hover for the frame */
+.menu-frame:hover::before {
+    filter: drop-shadow(0 0 24px rgba(251, 146, 60, 0.3));
+}
+
+/* --- SPECIAL MENU FRAME --- */
+.special-frame {
+    position: relative;
+    width: 100%;
+    max-width: 460px;
+    margin: 0 auto;
+    aspect-ratio: 23.66 / 35.72;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    background: #030712;
+}
+
+/* Border image ON TOP of content */
+.special-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    border-radius: inherit;
+    background: url('../../public/images/border/menu-specials.png') no-repeat center / cover;
+    transition: filter 0.5s ease, box-shadow 0.5s ease;
+}
+
+/* Inner safe area for specials */
+.special-frame-inner {
+    position: absolute;
+    inset: 12%;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+}
+
+/* Glow on hover for the special frame */
+.special-frame:hover::before {
+    filter: drop-shadow(0 0 28px rgba(251, 146, 60, 0.35));
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .menu-frame-inner {
+        inset: 10%;
+        border-radius: 0.5rem;
+    }
+    .special-frame-inner {
+        inset: 10%;
+        border-radius: 0.5rem;
+    }
+    .menu-frame {
+        max-width: 320px;
+    }
+    .special-frame {
+        max-width: 360px;
+    }
+}
+
+html.lenis,
+html.lenis body {
+    height: auto;
+}
+
+.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+    overflow: hidden;
+}
+
+/* PERFORMANCE */
+
+.motion-video {
+    will-change: transform;
+    transition: transform 0.1s linear;
+}
+
+/* LOADER */
+
+#loader {
+
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+
+}
+
+/* FLOATING */
+
+.loader-image {
+
+    animation: loaderFloat 2.5s ease-in-out infinite, loaderGlow 3s ease-in-out infinite;
+
+    filter: drop-shadow(0 0 25px rgba(251,146,60,0.35));
+
+}
+
+/* FLOAT */
+
+@keyframes loaderFloat {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-12px);
+    }
+
+}
+
+/* GLOW */
+
+@keyframes loaderGlow {
+
+    0%,
+    100% {
+        opacity: 0.8;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+}
