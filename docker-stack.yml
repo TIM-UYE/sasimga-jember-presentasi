@@ -15,15 +15,15 @@ services:
       DB_USERNAME: root
       DB_PASSWORD: root
 
+    depends_on:
+      - mysql
     networks:
       - laravel
 
   nginx:
     image: sihiy1/sasimga-nginx:latest
-
     ports:
       - "80:80"
-
     networks:
       - laravel
 

@@ -2,10 +2,10 @@
 set -e
 
 # Check if .env file exists, if not, copy from env.contoh
-if [ ! -f .env ]; then
-    echo ".env file not found. Copying from env.contoh..."
-    cp env.contoh .env
-fi
+# if [ ! -f .env ]; then
+#     echo ".env file not found. Copying from env.contoh..."
+#     cp env.contoh .env
+# fi
 
 # Generate APP_KEY if not set
 if [ -z "$APP_KEY" ] && ! grep -q "^APP_KEY=" .env; then
