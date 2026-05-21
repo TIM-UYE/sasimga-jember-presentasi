@@ -24,33 +24,33 @@
             {{-- DESKTOP MENU --}}
             <div class="items-center gap-1 hidden md:flex">
 
-                <x-frontend::navbar.link href="{{ route('frontend.home') }}">
+                <x-frontend.navbar.link href="{{ route('frontend.home') }}">
                     {{ __('frontend.nav.home') }}
-                </x-frontend::navbar.link>
+                </x-frontend.navbar.link>
 
-                <x-frontend::navbar.link href="{{ route('frontend.about') }}">
+                <x-frontend.navbar.link href="{{ route('frontend.about') }}">
                     {{ __('frontend.nav.about') }}
-                </x-frontend::navbar.link>
+                </x-frontend.navbar.link>
 
-                <x-frontend::navbar.link href="{{ route('frontend.menu') }}">
+                <x-frontend.navbar.link href="{{ route('frontend.menu') }}">
                     {{ __('frontend.nav.menu') }}
-                </x-frontend::navbar.link>
+                </x-frontend.navbar.link>
 
-                <x-frontend::navbar.link href="{{ route('frontend.reservasi') }}">
+                <x-frontend.navbar.link href="{{ route('frontend.reservasi') }}">
                     {{ __('frontend.nav.reservation') }}
-                </x-frontend::navbar.link>
+                </x-frontend.navbar.link>
 
                 @auth
 
                     @if (in_array(auth()->user()->role, ['admin', 'manager']))
-                        <x-frontend::navbar.link href="{{ route('admin.dashboard') }}" variant="orange" :active="request()->routeIs('admin.dashboard')">
+                        <x-frontend.navbar.link href="{{ route('admin.dashboard') }}" variant="orange" :active="request()->routeIs('admin.dashboard')">
                             Dashboard
-                        </x-frontend::navbar.link>
+                        </x-frontend.navbar.link>
                     @endif
                 @else
-                    <x-frontend::navbar.link href="{{ route('login') }}" :active="request()->routeIs('login')">
+                    <x-frontend.navbar.link href="{{ route('login') }}" :active="request()->routeIs('login')">
                         Login
-                    </x-frontend::navbar.link>
+                    </x-frontend.navbar.link>
 
                 @endauth
 

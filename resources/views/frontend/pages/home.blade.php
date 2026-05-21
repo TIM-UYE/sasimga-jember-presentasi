@@ -13,6 +13,6 @@
     @include('frontend.sections.gallery')
     @include('frontend.sections.testimoni')
 
-    <x-frontend::scroll-to-top />
+    <x-frontend.scroll-to-top />
 
 @endsection
