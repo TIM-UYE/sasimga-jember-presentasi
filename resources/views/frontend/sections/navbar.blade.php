@@ -1,6 +1,10 @@
-<nav id="siteNavbar"
-    class="fixed bg-black/90 backdrop-blur-md top-0 left-0 w-full z-50 transition-transform duration-500 ease-out
-    will-change-transform border-b border-white/5">
+@php
+    $isMenuPage = request()->routeIs('frontend.menu') || request()->is('menu*');
+@endphp
+
+<nav id="siteNavbar" data-static-navbar="{{ $isMenuPage ? 'true' : 'false' }}"
+    class="fixed top-0 left-0 bg-black/90 backdrop-blur-md w-full z-50 border-b border-white/5
+    {{ $isMenuPage ? 'translate-y-0' : 'transition-transform duration-500 ease-out will-change-transform translate-y-0' }}">
 
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
