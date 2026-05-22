@@ -1,5 +1,9 @@
 @extends('frontend.layout.app')
 
+@section('body-attributes', 'data-page="menu"')
+
+@section('title', 'Menu - Sate Simpang Tiga')
+
 @section('content')
 
     @include('frontend.menu.section.hero')

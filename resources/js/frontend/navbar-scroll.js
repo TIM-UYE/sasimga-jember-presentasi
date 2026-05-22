@@ -2,7 +2,25 @@
     function initNavbarScroll() {
         const navbar = document.getElementById('siteNavbar');
 
-        if (!navbar) return;
+        if (!navbar) 
+            return;
+        
+        // ========================================================= MENU PAGE: NAVBAR
+        // FIXED, ALWAYS VISIBLE, NO AUTO HIDE
+        // =========================================================
+        const isStaticNavbar = navbar.dataset.staticNavbar === 'true' || document.body.dataset.page === 'menu';
+
+        if (isStaticNavbar) {
+            navbar
+                .classList
+                .remove('-translate-y-full');
+            navbar
+                .classList
+                .add('translate-y-0');
+
+            navbar.style.transform = 'translateY(0)';
+            return;
+        }
 
         let lastScrollY = window.scrollY;
         let scrollTimer = null;
@@ -12,13 +30,21 @@
         const scrollStopDelay = 350;
 
         function showNavbar() {
-            navbar.classList.remove('-translate-y-full');
-            navbar.classList.add('translate-y-0');
+            navbar
+                .classList
+                .remove('-translate-y-full');
+            navbar
+                .classList
+                .add('translate-y-0');
         }
 
         function hideNavbar() {
-            navbar.classList.remove('translate-y-0');
-            navbar.classList.add('-translate-y-full');
+            navbar
+                .classList
+                .remove('translate-y-0');
+            navbar
+                .classList
+                .add('-translate-y-full');
         }
 
         function handleNavbarScroll() {
@@ -52,9 +78,7 @@
             scrollTimer = setTimeout(() => {
                 showNavbar();
             }, scrollStopDelay);
-        }, {
-            passive: true,
-        });
+        }, {passive: true});
 
         showNavbar();
     }

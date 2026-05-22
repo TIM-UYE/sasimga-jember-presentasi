@@ -826,3 +826,11 @@ html.lenis body {
     }
 
 }
+
+/* =========================================================
+   MENU PAGE - FIXED NAVBAR SPACE
+========================================================= */
+
+body[data-page="menu"] .menu-page {
+    padding-top: 78px;
+}
