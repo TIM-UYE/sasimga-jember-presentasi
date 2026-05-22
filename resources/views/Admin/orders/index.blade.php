@@ -34,158 +34,245 @@
 </div>
 </div>
 
-    <div class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200/80">
-        <form method="GET" action="{{ route('admin.orders.index') }}" class="grid grid-cols-1 gap-4 md:grid-cols-4">
+    {{-- FILTER SECTION --}}
+    <div class="rounded-3xl bg-white/90 backdrop-blur-sm p-6 shadow-lg ring-1 ring-slate-200/70">
+
+        <form method="GET"
+            action="{{ route('admin.orders.index') }}"
+            id="order-filter-form"
+            class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-5">
+
+            <!-- STATUS -->
             <div>
-                <label class="mb-2 block text-sm font-semibold text-slate-600">Cari</label>
-                <input type="text" name="search" value="{{ $search }}" placeholder="Order ID / Nama / No HP" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200">
+                <label class="mb-2 block text-sm font-semibold text-slate-700">
+                    Status Pesanan
+                </label>
+
+                <div class="relative">
+                    <select name="status" id="filter-status"
+                        class="w-full appearance-none rounded-2xl border border-slate-200 bg-white px-4 py-3 pr-11 text-sm font-medium text-slate-700 shadow-sm transition focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100">
+                        <option value="all" {{ request('status') == 'all' || !request('status') ? 'selected' : '' }}>Semua Status</option>
+                        @foreach($statusLabels as $value => $label)
+                            <option value="{{ $value }}"
+                                {{ request('status') == $value ? 'selected' : '' }}>
+                                {{ $label }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <div class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-400">
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </div>
+                </div>
             </div>
+
+            <!-- PAYMENT STATUS -->
             <div>
-                <label class="mb-2 block text-sm font-semibold text-slate-600">Status</label>
-                <select name="status" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200">
-                    <option value="all">Semua Status</option>
-                    @foreach($statusLabels as $value => $label)
-                        <option value="{{ $value }}" {{ $status == $value ? 'selected' : '' }}>{{ $label }}</option>
-                    @endforeach
-                </select>
+                <label class="mb-2 block text-sm font-semibold text-slate-700">
+                    Status Pembayaran
+                </label>
+
+                <div class="relative">
+                    <select name="payment_status" id="filter-payment-status"
+                        class="w-full appearance-none rounded-2xl border border-slate-200 bg-white px-4 py-3 pr-11 text-sm font-medium text-slate-700 shadow-sm transition focus:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-100">
+                        <option value="all" {{ request('payment_status') == 'all' || !request('payment_status') ? 'selected' : '' }}>Semua Pembayaran</option>
+                        @foreach($paymentStatusLabels as $value => $label)
+                            <option value="{{ $value }}"
+                                {{ request('payment_status') == $value ? 'selected' : '' }}>
+                                {{ $label }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <div class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-400">
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </div>
+                </div>
             </div>
-            <div>
-                <label class="mb-2 block text-sm font-semibold text-slate-600">Status Pembayaran</label>
-                <select name="payment_status" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200">
-                    <option value="all">Semua Pembayaran</option>
-                    @foreach($paymentStatusLabels as $value => $label)
-                        <option value="{{ $value }}" {{ $paymentStatus == $value ? 'selected' : '' }}>{{ $label }}</option>
-                    @endforeach
-                </select>
+
+            <!-- LOADING INDICATOR (akan muncul saat AJAX) -->
+            <div class="flex items-end">
+                <div id="filter-loading" class="hidden items-center gap-2 text-sm text-slate-500">
+                    <i class="fas fa-spinner fa-spin text-orange-500"></i>
+                    <span>Memuat data...</span>
+                </div>
             </div>
-            <div class="flex items-end gap-2">
-                <button type="submit" class="btn-admin w-full"><i class="fas fa-search mr-1"></i>Filter</button>
+
+            <!-- BUTTON FILTER (manual submit, fallback jika JS mati / ingin reload penuh) -->
+            <div class="flex items-end md:col-span-2 xl:col-span-1">
+                <button type="submit"
+                    class="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:-translate-y-0.5 hover:from-orange-600 hover:to-orange-700 hover:shadow-lg">
+                    <i class="fas fa-search mr-2"></i>
+                    Filter Data
+                </button>
             </div>
+
+            <!-- RESET -->
+            <div class="flex items-end">
+                <a href="{{ route('admin.orders.index') }}"
+                    class="inline-flex w-full items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:shadow-md">
+                    <i class="fas fa-rotate-left mr-2"></i>
+                    Reset Filter
+                </a>
+            </div>
+
         </form>
     </div>
 
-    <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+    {{-- STATS CARDS --}}
+    <div class="grid grid-cols-2 gap-4 md:grid-cols-4" id="stats-cards">
         <div class="group rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200/80 transition-all hover:shadow-lg hover:shadow-amber-500/10 hover:ring-amber-200">
             <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Pending</p>
-            <p class="mt-1 text-3xl font-bold text-slate-800">{{ $orders->where('status', 'pending')->count() }}</p>
+            <p class="mt-1 text-3xl font-bold text-slate-800" id="stat-pending">{{ \App\Models\Order::where('status', 'pending')->count() }}</p>
         </div>
         <div class="group rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200/80 transition-all hover:shadow-lg hover:shadow-blue-500/10 hover:ring-blue-200">
             <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Diproses</p>
-            <p class="mt-1 text-3xl font-bold text-slate-800">{{ $orders->where('status', 'diproses')->count() }}</p>
+            <p class="mt-1 text-3xl font-bold text-slate-800" id="stat-diproses">{{ \App\Models\Order::where('status', 'diproses')->count() }}</p>
         </div>
         <div class="group rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200/80 transition-all hover:shadow-lg hover:shadow-emerald-500/10 hover:ring-emerald-200">
             <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Siap Diambil</p>
-            <p class="mt-1 text-3xl font-bold text-slate-800">{{ $orders->where('status', 'siap_diambil')->count() }}</p>
+            <p class="mt-1 text-3xl font-bold text-slate-800" id="stat-siap_diambil">{{ \App\Models\Order::where('status', 'siap_diambil')->count() }}</p>
         </div>
         <div class="group rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200/80 transition-all hover:shadow-lg hover:shadow-purple-500/10 hover:ring-purple-200">
             <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Selesai</p>
-            <p class="mt-1 text-3xl font-bold text-slate-800">{{ $orders->where('status', 'selesai')->count() }}</p>
+            <p class="mt-1 text-3xl font-bold text-slate-800" id="stat-selesai">{{ \App\Models\Order::where('status', 'selesai')->count() }}</p>
         </div>
     </div>
 
-    <div class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/80">
-        <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-2">
-                <i class="fas fa-list text-slate-400"></i>
-                <span class="text-sm font-semibold text-slate-700">Daftar Pesanan</span>
-                <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-500"><i class="fas fa-database"></i>{{ $orders->count() }} Data</span>
-            </div>
-        </div>
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-                <thead>
-                    <tr class="bg-slate-50/80">
-                        <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Order ID</th>
-                        <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Pelanggan</th>
-                        <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Pengiriman</th>
-                        <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Pembayaran</th>
-                        <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Total</th>
-                        <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Status</th>
-                        <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Progress Pesanan</th>
-                        <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Tanggal</th>
-                        <th class="px-6 py-4 text-right text-[11px] font-semibold uppercase tracking-wider text-slate-500">Detail</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                    @forelse($orders as $order)
-                        <tr class="group transition-all duration-200 hover:bg-slate-50/60" data-order-id="{{ $order->id }}">
-                            <td class="px-6 py-4 font-semibold text-slate-800">{{ $order->kode_order }}</td>
-                            <td class="px-6 py-4">
-                                <p class="font-semibold text-slate-800">{{ $order->nama_pelanggan }}</p>
-                                <p class="text-xs text-slate-500">{{ $order->nomor_hp }}</p>
-                            </td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium ring-1 {{ $order->metode_pengiriman === 'delivery' ? 'bg-blue-50 text-blue-700 ring-blue-200/50' : 'bg-slate-100 text-slate-700 ring-slate-200/70' }}">
-                                    <i class="fas {{ $order->metode_pengiriman === 'delivery' ? 'fa-motorcycle' : 'fa-store' }}"></i>
-                                    {{ $order->metode_pengiriman === 'delivery' ? 'Delivery' : 'Pickup' }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium ring-1 {{ $order->metode_pembayaran === 'cash' ? 'bg-emerald-50 text-emerald-700 ring-emerald-200/50' : 'bg-purple-50 text-purple-700 ring-purple-200/50' }}">
-                                    <i class="fas {{ $order->metode_pembayaran === 'cash' ? 'fa-money-bill' : 'fa-qrcode' }}"></i>
-                                    {{ strtoupper($order->metode_pembayaran) }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 font-semibold text-slate-800">Rp {{ number_format($order->total_bayar, 0, ',', '.') }}</td>
-                            <td class="px-6 py-4">
-                                <div class="flex flex-col gap-1">
-                                    <span class="inline-flex items-center rounded-lg px-3 py-1.5 text-xs font-medium ring-1
-                                        @if($order->status === 'pending') bg-amber-50 text-amber-700 ring-amber-200/50
-                                        @elseif($order->status === 'diproses') bg-blue-50 text-blue-700 ring-blue-200/50
-                                        @elseif($order->status === 'siap_diambil') bg-green-50 text-green-700 ring-green-200/50
-                                        @elseif($order->status === 'diantar') bg-indigo-50 text-indigo-700 ring-indigo-200/50
-                                        @elseif($order->status === 'selesai') bg-emerald-50 text-emerald-700 ring-emerald-200/50
-                                        @else bg-red-50 text-red-700 ring-red-200/50
-                                        @endif">
-                                        {{ $statusLabels[$order->status] ?? $order->status }}
-                                    </span>
-                                    <span class="inline-flex items-center rounded-lg px-3 py-1.5 text-xs font-medium ring-1 {{ $order->payment_status === 'paid' ? 'bg-emerald-50 text-emerald-700 ring-emerald-200/50' : 'bg-red-50 text-red-700 ring-red-200/50' }}">
-                                        {{ $paymentStatusLabels[$order->payment_status] ?? $order->payment_status }}
-                                    </span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex flex-col gap-2">
-                                    @include('admin.orders.partials.progress-column', ['order' => $order])
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-xs text-slate-500">{{ $order->created_at->format('d M Y, H:i') }}</td>
-                            <td class="px-6 py-4 text-right">
-                                <a href="{{ route('admin.orders.show', $order) }}" class="btn-admin"><i class="fas fa-eye mr-1"></i>Detail</a>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="px-6 py-16">
-                                <div class="flex flex-col items-center justify-center">
-                                    <div class="mb-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-slate-100">
-                                        <i class="fas fa-inbox text-3xl text-slate-300"></i>
-                                    </div>
-                                    <p class="mb-1 text-lg font-semibold text-slate-700">Belum ada pesanan</p>
-                                    <p class="text-sm text-slate-400">Tidak ada data pesanan untuk filter saat ini.</p>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        <div class="px-6 py-4">
-            {{ $orders->links() }}
-        </div>
+    {{-- TABLE CONTAINER (di-refresh via AJAX) --}}
+    <div id="orders-table-container" class="transition-opacity duration-300">
+        @include('admin.orders.partials.table', compact('orders', 'statusLabels', 'paymentStatusLabels'))
     </div>
+
 </div>
 
 {{-- SweetAlert2 --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-{{-- Order Status Management & Auto Refresh Script --}}
+{{-- ORDER FILTER & STATUS SCRIPT --}}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    // ========== MANUAL STATUS UPDATE (via button click) ==========
-    // Debounce tracker: prevent multiple rapid clicks on the same button
+    // ==================== FILTER AUTO-SUBMIT AJAX ====================
+
+    const filterForm = document.getElementById('order-filter-form');
+    const statusSelect = document.getElementById('filter-status');
+    const paymentSelect = document.getElementById('filter-payment-status');
+    const tableContainer = document.getElementById('orders-table-container');
+    const filterLoading = document.getElementById('filter-loading');
+
+    let filterTimeout = null;
+    let isFiltering = false;
+
+    // Fungsi untuk fetch data via AJAX
+    async function fetchFilteredOrders() {
+        if (isFiltering) return;
+        isFiltering = true;
+
+        // Tampilkan loading state
+        if (filterLoading) filterLoading.classList.remove('hidden');
+        tableContainer.classList.add('opacity-50');
+        tableContainer.style.pointerEvents = 'none';
+
+        try {
+            const params = new URLSearchParams();
+            const statusVal = statusSelect ? statusSelect.value : 'all';
+            const paymentVal = paymentSelect ? paymentSelect.value : 'all';
+
+            if (statusVal !== 'all') params.set('status', statusVal);
+            if (paymentVal !== 'all') params.set('payment_status', paymentVal);
+
+            const url = `{{ route('admin.orders.index') }}?${params.toString()}`;
+
+            const response = await fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Update table dengan HTML baru
+                if (data.html) {
+                    // Buat elemen sementara, extract hanya table content
+                    tableContainer.innerHTML = data.html;
+                }
+
+                // Update stats
+                if (data.stats) {
+                    updateStats(data.stats);
+                }
+            }
+        } catch (error) {
+            console.error('Filter error:', error);
+        } finally {
+            // Sembunyikan loading state
+            if (filterLoading) filterLoading.classList.add('hidden');
+            tableContainer.classList.remove('opacity-50');
+            tableContainer.style.pointerEvents = '';
+
+            // Re-attach event listeners untuk pagination links
+            attachPaginationListeners();
+
+            isFiltering = false;
+        }
+    }
+
+    // Fungsi update stats
+    function updateStats(stats) {
+        const statIds = ['stat-pending', 'stat-diproses', 'stat-siap_diambil', 'stat-selesai'];
+        const statKeys = ['pending', 'diproses', 'siap_diambil', 'selesai'];
+
+        statKeys.forEach((key, index) => {
+            if (stats[key] !== undefined) {
+                const el = document.getElementById(statIds[index]);
+                if (el) el.textContent = stats[key];
+            }
+        });
+    }
+
+    // Fungsi attach pagination listeners (setelah AJAX update table)
+    function attachPaginationListeners() {
+        document.querySelectorAll('#orders-table-container .pagination a, #orders-table-container .pagination button').forEach(el => {
+            el.addEventListener('click', function(e) {
+                // Cegah navigasi default
+                // Biarkan pagination bekerja normal dengan full page load
+                // karena pagination perlu query parameter page
+            });
+        });
+    }
+
+    // Event: change pada dropdown status
+    if (statusSelect) {
+        statusSelect.addEventListener('change', function() {
+            clearTimeout(filterTimeout);
+            filterTimeout = setTimeout(fetchFilteredOrders, 300); // debounce 300ms
+        });
+    }
+
+    // Event: change pada dropdown payment status
+    if (paymentSelect) {
+        paymentSelect.addEventListener('change', function() {
+            clearTimeout(filterTimeout);
+            filterTimeout = setTimeout(fetchFilteredOrders, 300);
+        });
+    }
+
+    // Mencegah form submit default (kita pakai AJAX)
+    if (filterForm) {
+        filterForm.addEventListener('submit', function(e) {
+            // Biarkan submit normal sebagai fallback
+            // Tapi jika JS aktif, kita override dengan AJAX
+            e.preventDefault();
+            fetchFilteredOrders();
+        });
+    }
+
+    // ==================== ORDER STATUS UPDATE (sama seperti sebelumnya) ====================
+
     const pendingRequests = new Map();
 
     // Handle order status button clicks
@@ -199,7 +286,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const nextStatus = button.dataset.nextStatus;
             const nextLabel = button.dataset.nextLabel;
 
-            // CEK DOUBLE CLICK: jika request untuk order ini masih pending, tolak
             if (pendingRequests.has(orderId)) {
                 Swal.fire({
                     title: 'Mohon Tunggu',
@@ -211,7 +297,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // Show confirmation dialog
             Swal.fire({
                 title: 'Konfirmasi Perubahan Status',
                 text: `Yakin ubah status pesanan menjadi "${nextLabel}"?`,
@@ -229,9 +314,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Update order status via AJAX
     function updateOrderStatus(orderId, newStatus, button) {
-        // Tandai request sebagai pending (cegah double click)
         pendingRequests.set(orderId, true);
 
         button.disabled = true;
@@ -241,7 +324,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (spinner) spinner.classList.remove('hidden');
         if (textSpan) textSpan.textContent = 'Memproses...';
 
-        // Tambahkan timeout safety — jika response tidak kunjung datang, unlock button setelah 30 detik
         const safetyTimer = setTimeout(() => {
             pendingRequests.delete(orderId);
             button.disabled = false;
@@ -259,17 +341,12 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify({ status: newStatus })
         })
-        .then(response => {
-            // Coba parse JSON, jika gagal jangan throw error mentah
-            return response.json().catch(() => {
-                throw new Error('Gagal membaca response server.');
-            });
-        })
+        .then(response => response.json().catch(() => { throw new Error('Gagal membaca response server.'); }))
         .then(data => {
             clearTimeout(safetyTimer);
             if (data.success) {
                 if (data.order) updateOrderRow(orderId, data.order);
-                if (data.stats) updateDashboardStats(data.stats);
+                if (data.stats) updateStats(data.stats);
 
                 Swal.fire({
                     title: 'Berhasil!',
@@ -291,9 +368,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         })
         .finally(() => {
-            // Hapus pending request
             pendingRequests.delete(orderId);
-
             button.disabled = false;
             button.classList.remove('opacity-50', 'cursor-not-allowed');
             if (spinner) spinner.classList.add('hidden');
@@ -301,11 +376,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ========== BUILD STATUS/PROGRESS HTML (Client-side) ==========
+    // ========== BUILD STATUS/PROGRESS HTML ==========
 
-    // Build the status badge HTML for an order
     function buildStatusBadge(status, statusLabel, paymentStatus, paymentStatusLabel, statusColor, statusIcon) {
-        // Status colors mapping
         const colorMap = {
             'amber': { bg: 'bg-amber-50', text: 'text-amber-700', ring: 'ring-amber-200/50' },
             'blue': { bg: 'bg-blue-50', text: 'text-blue-700', ring: 'ring-blue-200/50' },
@@ -331,24 +404,16 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
-    // Build the progress column HTML (status flow dots + action button)
     function buildProgressColumn(order) {
         const flowKeys = order.flow_keys;
         const currentIndex = order.current_index;
-        const flowSteps = order.status_flow;
-        let flowHtml = '';
-
-        // Build progress dots
-        flowHtml += '<div class="flex items-center gap-2">';
+        let flowHtml = '<div class="flex items-center gap-2">';
         flowKeys.forEach(function(key, index) {
             const isCompleted = index < currentIndex;
             const isCurrent = index === currentIndex;
-            const isPending = index > currentIndex;
-
             let dotColor = 'bg-slate-300';
             if (isCompleted) dotColor = 'bg-green-500';
             else if (isCurrent) dotColor = 'bg-blue-500 animate-pulse';
-
             flowHtml += '<div class="flex items-center gap-1">';
             flowHtml += `<div class="flex h-2 w-2 items-center justify-center rounded-full ${dotColor}"></div>`;
             if (index < flowKeys.length - 1) {
@@ -359,7 +424,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         flowHtml += '</div>';
 
-        // Build action button
         flowHtml += '<div class="mt-2">';
         if (order.status !== 'selesai' && order.status !== 'dibatalkan' && order.next_status) {
             flowHtml += `
@@ -379,221 +443,173 @@ document.addEventListener('DOMContentLoaded', function() {
                 </button>
             `;
         } else if (order.status === 'selesai') {
-            flowHtml += `
-                <span class="inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-700">
-                    <i class="fas fa-check-circle"></i> Selesai
-                </span>
-            `;
+            flowHtml += `<span class="inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-700"><i class="fas fa-check-circle"></i> Selesai</span>`;
         } else if (order.status === 'dibatalkan') {
-            flowHtml += `
-                <span class="inline-flex items-center gap-1 rounded-lg bg-red-50 px-3 py-2 text-xs font-medium text-red-700">
-                    <i class="fas fa-times-circle"></i> Dibatalkan
-                </span>
-            `;
+            flowHtml += `<span class="inline-flex items-center gap-1 rounded-lg bg-red-50 px-3 py-2 text-xs font-medium text-red-700"><i class="fas fa-times-circle"></i> Dibatalkan</span>`;
         } else {
-            flowHtml += `
-                <span class="inline-flex items-center gap-1 rounded-lg bg-slate-50 px-3 py-2 text-xs font-medium text-slate-500">
-                    <i class="fas fa-clock"></i> Menunggu
-                </span>
-            `;
+            flowHtml += `<span class="inline-flex items-center gap-1 rounded-lg bg-slate-50 px-3 py-2 text-xs font-medium text-slate-500"><i class="fas fa-clock"></i> Menunggu</span>`;
         }
         flowHtml += '</div>';
-
         return `<div class="flex flex-col gap-2">${flowHtml}</div>`;
     }
 
-    // ========== UPDATE ORDER ROW FUNCTION ==========
-
-    // Update a single order row with fresh data from the server
+    // Update a single order row (dari response updateStatus)
     function updateOrderRow(orderId, orderData) {
         const row = document.querySelector(`tr[data-order-id="${orderId}"]`);
         if (!row) return;
 
-        // Update Status badge (column 6)
         const statusCell = row.querySelector('td:nth-child(6)');
         if (statusCell) {
             statusCell.innerHTML = buildStatusBadge(
-                orderData.status,
-                orderData.status_label,
-                orderData.payment_status,
-                orderData.payment_status_label,
-                orderData.status_color,
-                orderData.status_icon
+                orderData.status, orderData.status_label,
+                orderData.payment_status, orderData.payment_status_label,
+                orderData.status_color, orderData.status_icon
             );
         }
 
-        // Update Progress column (column 7)
         const progressCell = row.querySelector('td:nth-child(7)');
         if (progressCell) {
             progressCell.innerHTML = buildProgressColumn(orderData);
         }
     }
 
-    // ========== UPDATE DASHBOARD STATS ==========
-
-    function updateDashboardStats(stats) {
-        // Map stat keys to their DOM elements
-        const statElements = document.querySelectorAll('.grid.grid-cols-2.gap-4.md\\:grid-cols-4 .group');
-        if (statElements.length >= 4) {
-            const pendingEl = statElements[0].querySelector('p:last-child');
-            const diprosesEl = statElements[1].querySelector('p:last-child');
-            const siapEl = statElements[2].querySelector('p:last-child');
-            const selesaiEl = statElements[3].querySelector('p:last-child');
-
-            if (pendingEl && stats.pending !== undefined) pendingEl.textContent = stats.pending;
-            if (diprosesEl && stats.diproses !== undefined) diprosesEl.textContent = stats.diproses;
-            if (siapEl && stats.siap_diambil !== undefined) siapEl.textContent = stats.siap_diambil;
-            if (selesaiEl && stats.selesai !== undefined) selesaiEl.textContent = stats.selesai;
-        }
-    }
-
-    // ========== AUTO POLLING ENGINE ==========
+    // ========== AUTO POLLING (dengan filter awareness) ==========
 
     let isPollingActive = true;
-    let pollInterval = 5000; // 5 seconds
+    let pollInterval = 10000; // 10 seconds (lebih jarang, karena filter sudah realtime)
     let pollTimer = null;
 
-    // Get current filter parameters from the form
-    function getFilterParams() {
+    function getCurrentFilterParams() {
         const params = new URLSearchParams();
-        const searchInput = document.querySelector('input[name="search"]');
-        const statusSelect = document.querySelector('select[name="status"]');
-        const paymentSelect = document.querySelector('select[name="payment_status"]');
-
-        if (searchInput && searchInput.value) params.set('search', searchInput.value);
-        if (statusSelect && statusSelect.value !== 'all') params.set('status', statusSelect.value);
-        if (paymentSelect && paymentSelect.value !== 'all') params.set('payment_status', paymentSelect.value);
-
+        const statusVal = statusSelect ? statusSelect.value : 'all';
+        const paymentVal = paymentSelect ? paymentSelect.value : 'all';
+        if (statusVal !== 'all') params.set('status', statusVal);
+        if (paymentVal !== 'all') params.set('payment_status', paymentVal);
         return params.toString();
     }
 
-    // Poll the server for updated order data
     function pollOrders() {
-        if (!isPollingActive) return;
+        if (!isPollingActive || isFiltering) return;
 
-        const params = getFilterParams();
+        const params = getCurrentFilterParams();
         const url = params ? `/admin/orders/poll/data?${params}` : '/admin/orders/poll/data';
 
         fetch(url, {
-            headers: {
-                'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            }
+            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
         })
         .then(response => response.json())
         .then(data => {
             if (!isPollingActive) return;
-
-            if (data.success) {
-                // Update dashboard stats
-                if (data.stats) {
-                    updateDashboardStats(data.stats);
-                }
-
-                // Update each order row
-                if (data.orders && Array.isArray(data.orders)) {
-                    // Track which order IDs are present in the response
-                    const updatedIds = new Set();
-
-                    data.orders.forEach(orderData => {
-                        updatedIds.add(orderData.id);
-                        updateOrderRow(orderData.id, orderData);
-                    });
-
-                    // Optional: remove rows that no longer exist in current filter
-                    // (disabled by default since pagination handles this)
-                }
-
-                // Update the data count badge
-                const countBadge = document.querySelector('.inline-flex.items-center.gap-1.rounded-full.bg-slate-100 span:last-child');
-                if (countBadge && data.orders) {
-                    // Only update if count badge is visible (not paginated pages)
-                    // We'll update it silently
-                }
+            if (data.success && data.stats) {
+                updateStats(data.stats);
             }
         })
-        .catch(error => {
-            // Silent fail for polling - don't spam console
-            if (console && console.debug) {
-                console.debug('Polling error (silent):', error);
-            }
-        });
+        .catch(() => {}); // silent fail
     }
 
-    // Start the polling interval
     function startPolling() {
         if (pollTimer) clearInterval(pollTimer);
         isPollingActive = true;
-        // Initial poll right away
-        pollOrders();
-        // Then poll every 5 seconds
         pollTimer = setInterval(pollOrders, pollInterval);
     }
 
-    // Stop polling
     function stopPolling() {
         isPollingActive = false;
-        if (pollTimer) {
-            clearInterval(pollTimer);
-            pollTimer = null;
-        }
+        if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
     }
 
-    // Pause polling while user is interacting (e.g. in a modal)
-    function pausePollingTemporarily(durationMs) {
-        if (durationMs === undefined) durationMs = 3000;
-        const wasActive = isPollingActive;
-        stopPolling();
-        setTimeout(() => {
-            if (wasActive) startPolling();
-        }, durationMs);
-    }
-
-    // ========== START AUTO POLLING ==========
-
-    // Start automatic polling when page loads
+    // Mulai polling
     startPolling();
 
-    // Pause polling when SweetAlert is open (to avoid conflicts)
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.order-status-btn')) {
-            pausePollingTemporarily(5000);
-        }
-    });
+    // Hentikan polling saat filter berubah (biar AJAX dulu yang jalan)
+    if (statusSelect) {
+        statusSelect.addEventListener('change', function() { stopPolling(); });
+    }
+    if (paymentSelect) {
+        paymentSelect.addEventListener('change', function() { stopPolling(); });
+    }
 
-    // Resume polling when SweetAlert closes
-    const originalSwalFire = Swal.fire;
-    Swal.fire = function(options) {
-        pausePollingTemporarily(8000);
-        return originalSwalFire.call(this, options);
+    // Resume polling setelah AJAX selesai (dengan delay)
+    const originalFetch = window.fetch;
+    window.fetch = function() {
+        // Override untuk detect kapan fetch selesai
+        return originalFetch.apply(this, arguments).then(response => {
+            // Clone response agar bisa dibaca dua kali
+            const clonedResponse = response.clone();
+            clonedResponse.json().then(data => {
+                if (data && data.success && data.html) {
+                    // Filter AJAX selesai, resume polling setelah 2 detik
+                    setTimeout(startPolling, 2000);
+                }
+            }).catch(() => {});
+            return response;
+        });
     };
 
-    // Clean up polling when navigating away
+    // Cleanup visibility
     document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-            stopPolling();
-        } else {
-            startPolling();
-        }
+        if (document.hidden) stopPolling();
+        else startPolling();
     });
 
-    // Add indicator that shows polling is active (small dot in header)
-    const header = document.querySelector('.flex.flex-col.gap-4.md\\:flex-row');
-    if (header) {
-        const indicator = document.createElement('div');
-        indicator.className = 'flex items-center gap-2 ml-auto';
-        indicator.innerHTML = `
-            <span class="relative flex h-2 w-2">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-            </span>
-            <span class="text-xs text-slate-400">Live</span>
-        `;
-        const refreshLink = header.querySelector('.btn-admin');
-        if (refreshLink) {
-            refreshLink.parentNode.insertBefore(indicator, refreshLink.nextSibling);
-        }
-    }
+    // ========== PAGINATION dengan AJAX ==========
+
+    // Intercept clicks on pagination links untuk AJAX
+    document.addEventListener('click', function(e) {
+        const paginationLink = e.target.closest('#orders-table-container .pagination a');
+        if (!paginationLink) return;
+
+        const href = paginationLink.getAttribute('href');
+        if (!href || href === '#') return;
+
+        e.preventDefault();
+
+        // Ambil parameter page dari href
+        const url = new URL(href, window.location.origin);
+
+        // Fetch AJAX
+        stopPolling();
+        isFiltering = true;
+
+        if (filterLoading) filterLoading.classList.remove('hidden');
+        tableContainer.classList.add('opacity-50');
+        tableContainer.style.pointerEvents = 'none';
+
+        // Tambahkan filter params yang aktif
+        const statusVal = statusSelect ? statusSelect.value : 'all';
+        const paymentVal = paymentSelect ? paymentSelect.value : 'all';
+        if (statusVal !== 'all') url.searchParams.set('status', statusVal);
+        if (paymentVal !== 'all') url.searchParams.set('payment_status', paymentVal);
+
+        fetch(url.toString(), {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.html) {
+                tableContainer.innerHTML = data.html;
+                if (data.stats) updateStats(data.stats);
+                // Update URL browser tanpa reload
+                window.history.replaceState({}, '', url.toString());
+            }
+        })
+        .catch(error => {
+            console.error('Pagination AJAX error:', error);
+            // Fallback: redirect ke URL
+            window.location.href = href;
+        })
+        .finally(() => {
+            if (filterLoading) filterLoading.classList.add('hidden');
+            tableContainer.classList.remove('opacity-50');
+            tableContainer.style.pointerEvents = '';
+            isFiltering = false;
+            setTimeout(startPolling, 2000);
+        });
+    });
+
 });
 </script>
 @endsection

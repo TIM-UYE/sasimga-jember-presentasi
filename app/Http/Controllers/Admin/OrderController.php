@@ -49,6 +49,30 @@ class OrderController extends Controller
         $deliveryMethodLabels = Order::getDeliveryMethodLabels();
         $paymentMethodLabels = Order::getPaymentMethodLabels();
 
+        // Jika request AJAX, return partial table + stats
+        if ($request->ajax() || $request->wantsJson()) {
+            $stats = [
+                'pending' => Order::where('status', Order::STATUS_PENDING)->count(),
+                'diproses' => Order::where('status', Order::STATUS_DIPROSES)->count(),
+                'dimasak' => Order::where('status', Order::STATUS_DIMASAK)->count(),
+                'siap_diambil' => Order::where('status', Order::STATUS_SIAP_DIAMBIL)->count(),
+                'selesai' => Order::where('status', Order::STATUS_SELESAI)->count(),
+                'dibatalkan' => Order::where('status', Order::STATUS_DIBATALKAN)->count(),
+            ];
+
+            $tableHtml = view('admin.orders.partials.table', compact(
+                'orders',
+                'statusLabels',
+                'paymentStatusLabels'
+            ))->render();
+
+            return response()->json([
+                'success' => true,
+                'html' => $tableHtml,
+                'stats' => $stats,
+            ]);
+        }
+
         return view('admin.orders.index', compact(
             'orders',
             'status',

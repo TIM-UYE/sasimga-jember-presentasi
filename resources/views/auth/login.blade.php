@@ -119,11 +119,11 @@
                         <div>
 
                             <label for="email" class="block text-sm font-medium text-slate-700">
-                                Nama
+                                masukkan email
                             </label>
 
                             <input id="email" name="email" type="email" value="{{ old('email') }}"
-                                placeholder="Nama" required
+                                placeholder="Email" required
                                 class="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-200 @error('email') border-red-400 ring-red-200 @enderror" />
 
                         </div>

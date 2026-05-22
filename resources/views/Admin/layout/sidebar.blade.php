@@ -74,7 +74,7 @@
                     <i class="fas fa-chevron-down text-xs transition-transform duration-300 mr-1"></i>
 
                 </button>
-                <div class="ml-4 mt-1 space-y-1 hidden">
+                <div class="ml-4 mt-1 space-y-1 overflow-hidden transition-all duration-300 hidden">
                     <a href="{{ route('admin.kategori.index') }}"
                         class="flex items-center pl-12 pr-4 py-2.5 rounded-lg text-white font-semibold hover:bg-white/10 transition {{ request()->routeIs('admin.kategori.*') ? 'bg-white/20' : '' }}">
                         <i class="fas fa-tags mr-3 text-sm"></i> Kategori Menu
@@ -94,7 +94,7 @@
         <!-- INVENTORI -->
         @if (Auth::user()->role === 'manager')
             <li>
-                <button onclick="toggleSection(this)"
+                <button type="button" onclick="toggleSection(this)"
                     class="w-full group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
                     <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
                         <i class="fas fa-boxes text-sm"></i>
@@ -102,7 +102,7 @@
                     <span class="flex-1 text-left">Inventori</span>
                     <i class="fas fa-chevron-down text-xs transition-transform duration-300 mr-1"></i>
                 </button>
-                <div class="ml-4 mt-1 space-y-1 hidden">
+                <div class="ml-4 mt-1 space-y-1 overflow-hidden transition-all duration-300 hidden">
                     <a href="{{ route('admin.stok.index') }}"
                         class="flex items-center pl-12 pr-4 py-2.5 rounded-lg text-white font-semibold hover:bg-white/10 transition {{ request()->routeIs('admin.stok.index') ? 'bg-white/20' : '' }}">
                         <i class="fas fa-boxes-stacked mr-3 text-sm"></i> Stok Bahan
@@ -117,7 +117,7 @@
 
         <!-- TRANSAKSI -->
         <li>
-            <button onclick="toggleSection(this)"
+            <button type="button" onclick="toggleSection(this)"
                 class="w-full group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
                 <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
                     <i class="fas fa-shopping-cart text-sm"></i>
@@ -125,7 +125,7 @@
                 <span class="flex-1 text-left">Transaksi</span>
                 <i class="fas fa-chevron-down text-xs transition-transform duration-300 mr-1"></i>
             </button>
-            <div class="ml-4 mt-1 space-y-1 hidden">
+            <div class="ml-4 mt-1 space-y-1 overflow-hidden transition-all duration-300 hidden">
                 <a href="{{ route('admin.orders.index') }}"
                     class="flex items-center pl-12 pr-4 py-2.5 rounded-lg text-white font-semibold hover:bg-white/10 transition {{ request()->routeIs('admin.orders.*') ? 'bg-white/20' : '' }}">
                     <i class="fas fa-shopping-bag mr-3 text-sm"></i> Pesanan
@@ -144,7 +144,7 @@
         @if (Auth::user()->role === 'manager')
             <!-- KONTEN WEBSITE -->
             <li>
-                <button onclick="toggleSection(this)"
+                <button type="button" onclick="toggleSection(this)"
                     class="w-full group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
                     <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
                         <i class="fas fa-palette text-sm"></i>
@@ -152,7 +152,7 @@
                     <span class="flex-1 text-left">Konten Website</span>
                     <i class="fas fa-chevron-down text-xs transition-transform duration-300 mr-1"></i>
                 </button>
-                <div class="ml-4 mt-1 space-y-1 hidden">
+                <div class="ml-4 mt-1 space-y-1 overflow-hidden transition-all duration-300 hidden">
                     <a href="{{ route('admin.galeri.index') }}"
                         class="flex items-center pl-12 pr-4 py-2.5 rounded-lg text-white font-semibold hover:bg-white/10 transition {{ request()->routeIs('admin.galeri.*') ? 'bg-white/20' : '' }}">
                         <i class="fas fa-images mr-3 text-sm"></i> Galeri
@@ -212,5 +212,42 @@
         </li>
 
     </ul>
+
+    <!-- SIDEBAR SCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // Toggle dropdown sidebar
+            window.toggleSection = function(button) {
+                const dropdown = button.nextElementSibling;
+                const icon = button.querySelector('.fa-chevron-down');
+
+                // toggle current dropdown
+                dropdown.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+            };
+
+            // Auto open active dropdown
+            document.querySelectorAll('#sidebar li').forEach((li) => {
+
+                const activeChild = li.querySelector('a.bg-white\\/20');
+
+                if (activeChild) {
+                    const dropdown = li.querySelector('div.hidden, div:not(.hidden)');
+                    const button = li.querySelector('button');
+                    const icon = li.querySelector('.fa-chevron-down');
+
+                    if (dropdown && button) {
+                        dropdown.classList.remove('hidden');
+
+                        if (icon) {
+                            icon.classList.add('rotate-180');
+                        }
+                    }
+                }
+            });
+
+        });
+    </script>
 
 </aside>

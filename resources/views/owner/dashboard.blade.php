@@ -91,18 +91,54 @@
         </div>
 
         <div class="group relative bg-white rounded-2xl p-5 shadow-sm ring-1 ring-slate-200/80 hover:shadow-lg hover:shadow-cyan-500/10 hover:ring-cyan-200 transition-all duration-300 stat-card">
-            <div class="flex items-center justify-between mb-4">
-                <div class="h-11 w-11 rounded-2xl bg-linear-to-br from-cyan-400 to-cyan-600 flex items-center justify-center shadow-lg shadow-cyan-200/50 group-hover:scale-110 transition-transform duration-300">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-                </div>
-                <span class="text-[10px] font-medium text-cyan-500 bg-cyan-50 px-2 py-1 rounded-lg">Menu</span>
+
+        <div class="flex items-center justify-between mb-4">
+
+            <!-- ICON -->
+            <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center shadow-lg shadow-cyan-200/50 group-hover:scale-110 transition-transform duration-300">
+
+                <!-- FORK & SPOON ICON -->
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    class="w-5 h-5 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2">
+
+                    <!-- Fork -->
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M6 3v6M8 3v6M10 3v6M8 9v12" />
+
+                    <!-- Spoon -->
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M16 3a3 3 0 013 3c0 1.657-1.343 3-3 3s-3-1.343-3-3a3 3 0 013-3zm0 6v12" />
+                </svg>
+
             </div>
-            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-0.5">Total Menu</p>
-            <p class="text-2xl font-bold text-slate-800">{{ $totalMenus }}</p>
-            <div class="mt-3 h-1 w-full rounded-full bg-cyan-100 overflow-hidden">
-                <div class="h-full w-4/5 rounded-full bg-linear-to-r from-cyan-400 to-cyan-600"></div>
-            </div>
+
+            <!-- BADGE -->
+            <span class="text-[10px] font-medium text-cyan-500 bg-cyan-50 px-2 py-1 rounded-lg">
+                Menu
+            </span>
+
         </div>
+
+        <!-- TITLE -->
+        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-0.5">
+            Total Menu
+        </p>
+
+        <!-- VALUE -->
+        <p class="text-2xl font-bold text-slate-800">
+            {{ $totalMenus }}
+        </p>
+
+        <!-- PROGRESS -->
+        <div class="mt-3 h-1 w-full rounded-full bg-cyan-100 overflow-hidden">
+            <div class="h-full w-4/5 rounded-full bg-gradient-to-r from-cyan-400 to-cyan-600"></div>
+        </div>
+
+    </div>
     </div>
 
     {{-- REVENUE SUMMARY STRIP --}}

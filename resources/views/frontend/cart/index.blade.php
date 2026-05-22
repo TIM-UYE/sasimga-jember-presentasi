@@ -176,7 +176,7 @@
             const data = await response.json();
 
             if (data.success) {
-                // Update cart badge only, do not replace icon content
+                // Update cart badge
                 document.getElementById('cartBadge').textContent = data.cart.count;
                 document.querySelectorAll('.cart-count-badge').forEach(el => {
                     el.textContent = data.cart.count;
@@ -187,8 +187,37 @@
                     document.getElementById('floatingTotal').textContent = data.cart.total_formatted;
                 }
 
-                // Update total
+                // Update total keseluruhan
                 document.getElementById('cart-total').textContent = data.cart.total_formatted;
+
+                // Cari item yang diupdate dari response
+                const updatedItem = data.cart.items ? data.cart.items[key] : null;
+
+                if (updatedItem) {
+                    // Update qty display item
+                    const qtyDisplay = document.getElementById('qty-display-' + key);
+                    if (qtyDisplay) {
+                        qtyDisplay.textContent = updatedItem.qty;
+                    }
+
+                    // Update subtotal item
+                    const subtotalDisplay = document.getElementById('subtotal-' + key);
+                    if (subtotalDisplay) {
+                        const subtotal = updatedItem.harga * updatedItem.qty;
+                        subtotalDisplay.textContent = 'Rp ' + subtotal.toLocaleString('id-ID');
+                    }
+                } else {
+                    // Item dihapus (qty <= 0), remove element
+                    const cartItem = document.getElementById('cart-item-' + key);
+                    if (cartItem) {
+                        cartItem.remove();
+                    }
+
+                    // Jika cart kosong, reload
+                    if (data.cart.count === 0) {
+                        location.reload();
+                    }
+                }
             }
         } catch (error) {
             console.error('Cart update error:', error);
