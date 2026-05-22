@@ -119,7 +119,7 @@
                                 </svg>
                                 11:00 - 23:00
                             </span>
-                            
+
                             {{-- <span class="flex items-center gap-1.5">
                                 <svg class="w-3.5 h-3.5 text-orange-400" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
@@ -242,6 +242,7 @@
                                 </label>
                                 <input type="time" name="waktu_reservasi" id="waktu_reservasi"
                                     value="{{ old('waktu_reservasi') }}"
+                                    min="11:00" max="23:00"
                                     class="w-full px-4 py-3 bg-zinc-800/80 border border-zinc-700 rounded-xl text-white text-sm focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 transition-all duration-300 [color-scheme:dark] @error('waktu_reservasi') border-red-500 @enderror"
                                     required>
                                 <p id="waktuError" class="text-red-400 text-xs mt-1 hidden"></p>
@@ -387,11 +388,20 @@ document.addEventListener('DOMContentLoaded', function() {
         tablesGrid.classList.add('opacity-50');
 
         fetch(`{{ route('reservasi.tables') }}?tanggal=${tanggal}&waktu=${waktu}`)
-            .then(response => response.json())
-            .then(data => {
-                const allFull = data.all_full || (data.tables.length > 0 && data.tables.every(table => !table.is_available));
+            .then(response => response.json().then(data => ({ status: response.status, body: data })))
+            .then(({ status, body }) => {
+                if (status === 422 && body.error) {
+                    // Handle operating hours error from server
+                    displayFullMessage(false);
+                    renderTables([]);
+                    tablesGrid.innerHTML = `<p class="text-red-300 text-sm col-span-full text-center py-8">${body.error}</p>`;
+                    loadingTables.classList.add('hidden');
+                    tablesGrid.classList.remove('opacity-50');
+                    return;
+                }
+                const allFull = body.all_full || (body.tables.length > 0 && body.tables.every(table => !table.is_available));
                 displayFullMessage(allFull);
-                renderTables(data.tables);
+                renderTables(body.tables);
                 loadingTables.classList.add('hidden');
                 tablesGrid.classList.remove('opacity-50');
             })
@@ -630,11 +640,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function isTimeInOperatingHours(timeStr) {
+        const [hours, minutes] = timeStr.split(':').map(Number);
+        const totalMinutes = hours * 60 + minutes;
+        const openMinutes = 11 * 60;      // 11:00
+        const closeMinutes = 23 * 60;     // 23:00
+
+        return totalMinutes >= openMinutes && totalMinutes <= closeMinutes;
+    }
+
     function isLeadTimeValid() {
         if (!tanggalInput.value || !waktuInput.value) {
             waktuError.textContent = '';
             waktuError.classList.add('hidden');
             return true;
+        }
+
+        // Validasi jam operasional 11:00 - 23:00
+        if (!isTimeInOperatingHours(waktuInput.value)) {
+            waktuError.textContent = 'Reservasi hanya dapat dilakukan pada jam 11:00 - 23:00.';
+            waktuError.classList.remove('hidden');
+            submitBtn.disabled = true;
+            return false;
         }
 
         const selectedDateTime = new Date(`${tanggalInput.value}T${waktuInput.value}`);

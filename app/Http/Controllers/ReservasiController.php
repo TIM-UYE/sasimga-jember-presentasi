@@ -43,6 +43,20 @@ class ReservasiController extends Controller
             $waktu = $request->waktu;
         }
 
+        // Validasi jam operasional 11:00 - 23:00
+        $waktuCarbon = Carbon::createFromFormat('H:i', $waktu);
+        $buka = Carbon::createFromTime(11, 0);
+        $tutup = Carbon::createFromTime(23, 0);
+
+        if ($waktuCarbon->lt($buka) || $waktuCarbon->gt($tutup)) {
+            return response()->json([
+                'tables' => [],
+                'available_count' => 0,
+                'all_full' => true,
+                'error' => 'Reservasi hanya dapat dilakukan pada jam 11:00 - 23:00.'
+            ], 422);
+        }
+
         $tables = Reservasi::getAvailableTables($tanggal, $waktu);
         $availableCount = $tables->where('is_available', true)->count();
 
@@ -120,7 +134,7 @@ class ReservasiController extends Controller
                 ->withInput();
         }
 
-        // Normalize waktu_reservasi and validate lead time (12 hours)
+        // Normalize waktu_reservasi and validate operating hours (11:00 - 23:00)
         try {
             $reservationDateTime = Carbon::parse($request->tanggal_reservasi . ' ' . $request->waktu_reservasi);
             $normalizedWaktu = Carbon::parse($request->waktu_reservasi)->format('H:i');
@@ -129,6 +143,21 @@ class ReservasiController extends Controller
             $reservationDateTime = Carbon::createFromFormat('Y-m-d H:i', $request->tanggal_reservasi . ' ' . $request->waktu_reservasi);
             $normalizedWaktu = $request->waktu_reservasi;
         }
+
+        // Validasi jam operasional 11:00 - 23:00
+        $waktuCarbon = Carbon::createFromFormat('H:i', $normalizedWaktu);
+        $buka = Carbon::createFromTime(11, 0);
+        $tutup = Carbon::createFromTime(23, 0);
+
+        if ($waktuCarbon->lt($buka) || $waktuCarbon->gt($tutup)) {
+            return redirect()->back()
+                ->withErrors([
+                    'waktu_reservasi' => 'Reservasi hanya dapat dilakukan pada jam 11:00 - 23:00.',
+                ])
+                ->withInput();
+        }
+
+        // Validasi lead time (12 jam sebelumnya)
         $now = Carbon::now();
         $minReservationTime = $now->copy()->addHours(12);
 
