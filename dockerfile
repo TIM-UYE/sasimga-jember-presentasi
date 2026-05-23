@@ -36,20 +36,11 @@ RUN composer install --no-interaction --no-dev --optimize-autoloader
 # Copy the rest of the application
 COPY . .
 
-# Ensure .env exists and APP_KEY is generated
-RUN if [ ! -f .env ]; then cp env.contoh .env; fi \
-    && if ! grep -q '^APP_KEY=' .env || [ -z "$(grep '^APP_KEY=' .env | cut -d'=' -f2)" ]; then \
-        php artisan key:generate --force; \
-    fi
+# Ensure .env exists (CI copies env.contoh to .env before build)
+RUN if [ ! -f .env ]; then cp env.contoh .env; fi
 
 # Generate optimized autoload
 RUN composer dump-autoload --optimize
-
-# Cache configuration and routes for production
-RUN php artisan optimize:clear \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
 
 # Create storage directories
 RUN mkdir -p storage/framework/{cache,sessions,views} storage/logs bootstrap/cache \
