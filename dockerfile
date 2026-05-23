@@ -1,11 +1,32 @@
+FROM node:18 AS node_builder
+
+WORKDIR /app
+
+# Copy node files and frontend resources for building assets
+COPY package*.json ./
+COPY vite.config.js ./
+COPY resources/ ./resources/
+COPY public/ ./public/
+
+# Install node dependencies and build assets
+RUN if [ -f package-lock.json ]; then \
+            npm ci --prefer-offline --no-audit --progress=false; \
+        else \
+            npm install --no-audit --progress=false; \
+        fi
+
+RUN npm run build
+
 FROM php:8.3-fpm
 
 # Install dependencies
 # Install dependencies
 RUN apt-get update && apt-get install -y \
-    git curl zip unzip libpng-dev libjpeg62-turbo-dev libfreetype6-dev libonig-dev libxml2-dev libzip-dev \
+    git curl zip unzip build-essential autoconf pkg-config libssl-dev zlib1g-dev \
+    libpng-dev libjpeg62-turbo-dev libfreetype6-dev libonig-dev libxml2-dev libzip-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_mysql mbstring zip exif pcntl bcmath \
+    && pecl channel-update pecl.php.net || true \
     && pecl install redis \
     && docker-php-ext-enable redis \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -35,6 +56,9 @@ RUN composer install --no-interaction --no-dev --optimize-autoloader
 
 # Copy the rest of the application
 COPY . .
+
+# Copy built frontend assets from node builder
+COPY --from=node_builder /app/public /var/www/public
 
 # Ensure .env exists (CI copies env.contoh to .env before build)
 RUN if [ ! -f .env ]; then cp env.contoh .env; fi
