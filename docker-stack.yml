@@ -17,13 +17,26 @@ services:
 
     depends_on:
       - mysql
+
+
+    volumes:
+      - laravel_data:/var/www
+
     networks:
       - laravel
+
 
   nginx:
     image: sihiy1/sasimga-nginx:latest
     ports:
       - "80:80"
+
+    volumes:
+      - laravel_data:/var/www
+
+    depends_on:
+      - app
+
     networks:
       - laravel
 
@@ -41,6 +54,9 @@ services:
 
     networks:
       - laravel
+
+volumes:
+  laravel_data:
 
 networks:
   laravel:
