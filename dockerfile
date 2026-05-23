@@ -2,20 +2,20 @@ FROM node:20 AS node_builder
 
 WORKDIR /app
 
-# Copy node files and frontend resources for building assets
 COPY package*.json ./
 COPY vite.config.js ./
-COPY resources/ ./resources/
-COPY public/ ./public/
+COPY resources ./resources
+COPY public ./public
 
+RUN npm install
+
+RUN npm run build
 # Install node dependencies and build assets
 RUN if [ -f package-lock.json ]; then \
             npm ci --prefer-offline --no-audit --progress=false; \
         else \
             npm install --no-audit --progress=false; \
         fi
-
-RUN npm run build
 
 FROM php:8.3-fpm
 
@@ -58,7 +58,7 @@ RUN composer install --no-interaction --no-dev --optimize-autoloader
 COPY . .
 
 # Copy built frontend assets from node builder
-COPY --from=node_builder /app/public /var/www/public
+COPY --from=node_builder /app/public/build /var/www/public/build
 
 # Ensure .env exists (CI copies env.contoh to .env before build)
 RUN if [ ! -f .env ]; then cp env.contoh .env; fi
