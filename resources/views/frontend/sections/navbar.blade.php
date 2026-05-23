@@ -64,7 +64,7 @@
 
 
         {{-- RIGHT MENU --}}
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 sm:gap-4">
 
             {{-- LANGUAGE TOGGLE --}}
             <div class="language-dropdown notranslate" translate="no" data-language-dropdown>
@@ -174,6 +174,15 @@
                 @endauth
 
             </div>
+
+            {{-- MOBILE HAMBURGER --}}
+            <button id="frontendMobileMenuToggle" type="button"
+                class="md:hidden flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 border border-white/10 ring-1 ring-white/10 text-white hover:ring-orange-500/50 hover:border-orange-500/40 hover:bg-orange-500/10 transition-all duration-300 active:scale-95"
+                aria-label="Buka menu" aria-expanded="false">
+
+                <i class="fa-solid fa-bars text-[18px]"></i>
+
+            </button>
 
         </div>
 
@@ -306,3 +315,146 @@
     </div>
 
 </nav>
+
+{{-- MOBILE NAVBAR BACKDROP --}}
+<div id="frontendMobileMenuBackdrop"
+    class="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 md:hidden">
+</div>
+
+{{-- MOBILE NAVBAR SIDEBAR --}}
+<aside id="frontendMobileMenuPanel"
+    class="fixed top-0 right-0 z-[80] h-screen w-[84%] max-w-sm translate-x-full bg-zinc-950 border-l border-white/10 shadow-2xl shadow-black/60 transition-transform duration-300 ease-out md:hidden">
+
+    <div class="flex items-center justify-between px-6 py-5 border-b border-white/10">
+
+        <a href="{{ route('frontend.home') }}" class="flex items-center gap-3">
+            <img src="{{ asset('images/logo/logo.png') }}" alt="SaSimGa" class="h-10 w-auto object-contain">
+
+            <div>
+                <p class="text-sm font-semibold text-white leading-tight">SaSimGa</p>
+                <p class="text-xs text-white/50 leading-tight">Sate Simpang Tiga</p>
+            </div>
+        </a>
+
+        <button id="frontendMobileMenuClose" type="button"
+            class="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 border border-white/10 text-white hover:bg-red-500/20 hover:border-red-500/40 transition"
+            aria-label="Tutup menu">
+
+            <i class="fa-solid fa-xmark text-[18px]"></i>
+
+        </button>
+
+    </div>
+
+    <div class="px-6 py-6 space-y-3">
+
+        <a href="{{ route('frontend.home') }}"
+            class="flex items-center gap-3 rounded-2xl px-4 py-3 text-white bg-white/5 border border-white/10 hover:bg-orange-500/15 hover:border-orange-500/40 transition">
+            <i class="fa-solid fa-house text-orange-400 w-5"></i>
+            <span>{{ __('frontend.nav.home') }}</span>
+        </a>
+
+        <a href="{{ route('frontend.about') }}"
+            class="flex items-center gap-3 rounded-2xl px-4 py-3 text-white bg-white/5 border border-white/10 hover:bg-orange-500/15 hover:border-orange-500/40 transition">
+            <i class="fa-solid fa-circle-info text-orange-400 w-5"></i>
+            <span>{{ __('frontend.nav.about') }}</span>
+        </a>
+
+        <a href="{{ route('frontend.menu') }}"
+            class="flex items-center gap-3 rounded-2xl px-4 py-3 text-white bg-white/5 border border-white/10 hover:bg-orange-500/15 hover:border-orange-500/40 transition">
+            <i class="fa-solid fa-utensils text-orange-400 w-5"></i>
+            <span>{{ __('frontend.nav.menu') }}</span>
+        </a>
+
+        <a href="{{ route('frontend.reservasi') }}"
+            class="flex items-center gap-3 rounded-2xl px-4 py-3 text-white bg-white/5 border border-white/10 hover:bg-orange-500/15 hover:border-orange-500/40 transition">
+            <i class="fa-solid fa-calendar-check text-orange-400 w-5"></i>
+            <span>{{ __('frontend.nav.reservation') }}</span>
+        </a>
+
+        @auth
+            @if (in_array(auth()->user()->role, ['admin', 'manager']))
+                <a href="{{ route('admin.dashboard') }}"
+                    class="flex items-center gap-3 rounded-2xl px-4 py-3 text-white bg-orange-500/15 border border-orange-500/30 hover:bg-orange-500/25 transition">
+                    <i class="fa-solid fa-gauge-high text-orange-400 w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+            @else
+                <a href="{{ route('user.dashboard') }}"
+                    class="flex items-center gap-3 rounded-2xl px-4 py-3 text-white bg-orange-500/15 border border-orange-500/30 hover:bg-orange-500/25 transition">
+                    <i class="fa-solid fa-gauge-high text-orange-400 w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+            @endif
+        @else
+            <a href="{{ route('login') }}"
+                class="flex items-center gap-3 rounded-2xl px-4 py-3 text-white bg-orange-500/15 border border-orange-500/30 hover:bg-orange-500/25 transition">
+                <i class="fa-solid fa-right-to-bracket text-orange-400 w-5"></i>
+                <span>Login</span>
+            </a>
+        @endauth
+
+    </div>
+
+</aside>
+
+<script>
+    (function() {
+        function initFrontendMobileMenu() {
+            const toggle = document.getElementById('frontendMobileMenuToggle');
+            const close = document.getElementById('frontendMobileMenuClose');
+            const backdrop = document.getElementById('frontendMobileMenuBackdrop');
+            const panel = document.getElementById('frontendMobileMenuPanel');
+
+            if (!toggle || !close || !backdrop || !panel) return;
+
+            function openMenu() {
+                panel.classList.remove('translate-x-full');
+                panel.classList.add('translate-x-0');
+
+                backdrop.classList.remove('opacity-0', 'pointer-events-none');
+                backdrop.classList.add('opacity-100');
+
+                document.body.classList.add('overflow-hidden');
+                toggle.setAttribute('aria-expanded', 'true');
+            }
+
+            function closeMenu() {
+                panel.classList.remove('translate-x-0');
+                panel.classList.add('translate-x-full');
+
+                backdrop.classList.remove('opacity-100');
+                backdrop.classList.add('opacity-0', 'pointer-events-none');
+
+                document.body.classList.remove('overflow-hidden');
+                toggle.setAttribute('aria-expanded', 'false');
+            }
+
+            toggle.addEventListener('click', openMenu);
+            close.addEventListener('click', closeMenu);
+            backdrop.addEventListener('click', closeMenu);
+
+            panel.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', closeMenu);
+            });
+
+            window.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    closeMenu();
+                }
+            });
+
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 768) {
+                    closeMenu();
+                }
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initFrontendMobileMenu);
+        } else {
+            initFrontendMobileMenu();
+        }
+    })();
+</script>
