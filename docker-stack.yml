@@ -19,9 +19,6 @@ services:
       - mysql
 
 
-    volumes:
-      - laravel_data:/var/www
-
     networks:
       - laravel
 
@@ -31,8 +28,6 @@ services:
     ports:
       - "80:80"
 
-    volumes:
-      - laravel_data:/var/www
 
     depends_on:
       - app

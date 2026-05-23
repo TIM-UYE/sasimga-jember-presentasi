@@ -3,13 +3,18 @@ FROM node:20 AS node_builder
 WORKDIR /app
 
 COPY package*.json ./
-COPY vite.config.js ./
-COPY resources ./resources
-COPY public ./public
+
+COPY . .
 
 RUN npm install
-
 RUN npm run build
+
+FROM nginx:latest
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+COPY --from=builder /app/public /var/www/public
+
 # Install node dependencies and build assets
 RUN if [ -f package-lock.json ]; then \
             npm ci --prefer-offline --no-audit --progress=false; \
