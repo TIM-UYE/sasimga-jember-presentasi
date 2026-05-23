@@ -64,25 +64,6 @@
                 </span>
             </div>
 
-            <div class="flex items-center gap-2">
-
-                <a href="{{ route('admin.laporan.stok.csv') }}"
-                   class="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-600">
-
-                    <i class="fas fa-file-csv"></i>
-                    CSV
-                </a>
-
-                <a href="{{ route('admin.laporan.stok.xlsx') }}"
-                   class="inline-flex items-center gap-2 rounded-xl bg-sky-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-600">
-
-                    <i class="fas fa-file-excel"></i>
-                    Excel
-                </a>
-
-            </div>
-        </div>
-
         <div class="overflow-x-auto">
             <table class="w-full min-w-[1100px] text-left text-sm text-slate-600">
                 <thead>

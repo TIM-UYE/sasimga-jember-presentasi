@@ -10,20 +10,6 @@
 
     <div class="flex items-center gap-2">
 
-    {{-- Download Excel --}}
-    <a href="{{ route('admin.laporan.orders.xlsx') }}"
-    class="inline-flex items-center rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-600">
-        <i class="fas fa-file-excel mr-2"></i>
-        Excel
-    </a>
-
-    {{-- Download CSV --}}
-    <a href="{{ route('admin.laporan.orders.csv') }}"
-    class="inline-flex items-center rounded-xl bg-sky-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-sky-600">
-        <i class="fas fa-file-csv mr-2"></i>
-        CSV
-    </a>
-
     {{-- Refresh --}}
     <a href="{{ route('admin.orders.index') }}"
        class="btn-admin">

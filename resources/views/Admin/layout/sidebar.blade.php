@@ -10,7 +10,6 @@
     transition-all duration-500 ease-in-out
     transform opacity-100 scale-100 translate-x-0">
 
-    <!-- LOGO -->
     <div class="px-6 py-6">
         <a href="" class="flex items-center text-white">
             <img src="{{ asset('images/logo/logo.png') }}" class="h-10 w-10 rounded-full mr-3 shadow-md">
@@ -31,9 +30,7 @@
 
     <hr class="border-white/20 mx-4">
 
-    <!-- MENU -->
     <ul class="mt-4 space-y-1 px-3 pb-6">
-        <!-- DASHBOARD -->
         <li>
             <a href="{{ route('admin.dashboard') }}"
                 class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
@@ -44,7 +41,6 @@
             </a>
         </li>
 
-        <!-- AI PREDIKSI -->
         @if (Auth::user()->role === 'manager')
         <li>
             <a href="{{ route('admin.prediksi.index') }}"
@@ -56,9 +52,8 @@
             </a>
         </li>
         @endif
-{{--  --}}
+
         @if (Auth::user()->role === 'manager')
-            <!-- MANAJEMEN MENU -->
             <li>
                 <button type="button" onclick="toggleSection(this)"
                     class="w-full group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
@@ -91,7 +86,6 @@
             </li>
         @endif
 
-        <!-- INVENTORI -->
         @if (Auth::user()->role === 'manager')
             <li>
                 <button type="button" onclick="toggleSection(this)"
@@ -115,7 +109,6 @@
             </li>
         @endif
 
-        <!-- TRANSAKSI -->
         <li>
             <button type="button" onclick="toggleSection(this)"
                 class="w-full group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
@@ -136,13 +129,42 @@
                 </a>
                 <a href="{{ route('admin.meja.index') }}"
                     class="flex items-center pl-12 pr-4 py-2.5 rounded-lg text-white font-semibold hover:bg-white/10 transition {{ request()->routeIs('admin.meja.*') ? 'bg-white/20' : '' }}">
-            {{--  --}}        <i class="fas fa-chair mr-3 text-sm"></i> Meja
+                    <i class="fas fa-chair mr-3 text-sm"></i> Meja
                 </a>
             </div>
         </li>
 
         @if (Auth::user()->role === 'manager')
-            <!-- KONTEN WEBSITE -->
+    <li>
+        <button type="button" onclick="toggleSection(this)"
+            class="w-full group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
+            
+            <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
+                <i class="fas fa-chart-pie text-sm"></i>
+            </div>
+            
+            <span class="flex-1 text-left">Laporan</span>
+            <i class="fas fa-chevron-down text-xs transition-transform duration-300 mr-1"></i>
+        </button>
+        
+        <div class="ml-4 mt-1 space-y-1 overflow-hidden transition-all duration-300 hidden">
+            <a href="{{ route('admin.laporan.pesanan') }}"
+                class="flex items-center pl-12 pr-4 py-2.5 rounded-lg text-white font-semibold hover:bg-white/10 transition {{ request()->routeIs('admin.laporan.pesanan') ? 'bg-white/20' : '' }}">
+                <i class="fas fa-file-invoice-dollar mr-3 text-sm"></i> Laporan Pesanan
+            </a>
+            <a href="{{ route('admin.laporan.reservasi') }}"
+                class="flex items-center pl-12 pr-4 py-2.5 rounded-lg text-white font-semibold hover:bg-white/10 transition {{ request()->routeIs('admin.laporan.reservasi') ? 'bg-white/20' : '' }}">
+                <i class="fas fa-file-invoice mr-3 text-sm"></i> Laporan Reservasi
+            </a>
+            <a href="{{ route('admin.laporan.stok') }}"
+                class="flex items-center pl-12 pr-4 py-2.5 rounded-lg text-white font-semibold hover:bg-white/10 transition {{ request()->routeIs('admin.laporan.stok') ? 'bg-white/20' : '' }}">
+                <i class="fas fa-file-lines mr-3 text-sm"></i> Laporan Stok
+            </a>
+        </div>
+    </li>
+@endif
+
+        @if (Auth::user()->role === 'manager')
             <li>
                 <button type="button" onclick="toggleSection(this)"
                     class="w-full group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
@@ -173,7 +195,6 @@
             </li>
         @endif
 
-        <!-- PENGGUNA -->
         @if (Auth::user()->role === 'manager')
             <li>
                 <a href="{{ route('admin.user.index') }}"
@@ -186,7 +207,6 @@
             </li>
         @endif
 
-        <!-- KEMBALI KE WEBSITE -->
         <li class="pt-4">
             <a href="{{ url('/') }}"
                 class="flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-700 to-orange-900 hover:from-orange-800 hover:to-orange-950 transition">
@@ -197,7 +217,6 @@
             </a>
         </li>
 
-        <!-- LOGOUT -->
         <li>
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
@@ -213,7 +232,6 @@
 
     </ul>
 
-    <!-- SIDEBAR SCRIPT -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 

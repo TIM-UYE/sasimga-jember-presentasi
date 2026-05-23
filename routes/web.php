@@ -114,9 +114,7 @@ Route::get('/terms-conditions', function () {
 })->name('frontend.terms');
 
 Route::get('/support', function () {
-
     return view('frontend.information.support');
-
 })->name('frontend.support');
 
 
@@ -209,9 +207,7 @@ Route::get('/payment/success/{kodeOrder}', [\App\Http\Controllers\PaymentControl
 */
 
 Route::get('/login-redirect', function () {
-
     return redirect()->route('login');
-
 });
 
 Route::middleware('guest')->group(function () {
@@ -278,9 +274,7 @@ Route::middleware(['auth', 'role:admin,manager'])
     ->group(function () {
 
         Route::get('/dashboard', function () {
-
             return view('admin.dashboard');
-
         })->name('dashboard');
 
 
@@ -359,6 +353,12 @@ Route::middleware(['auth', 'role:admin,manager'])
             ->only(['index', 'store', 'destroy']);
 
 
+        /*
+        |--------------------------------------------------------------------------
+        | MANAGER ONLY
+        |--------------------------------------------------------------------------
+        */
+
         Route::middleware('role:manager')->group(function () {
 
             Route::resource('menu-specials', MenuSpecialController::class)
@@ -396,35 +396,26 @@ Route::middleware(['auth', 'role:admin,manager'])
 
             Route::get('stok-log', [StokLogController::class, 'index'])
                 ->name('stok-log.index');
+
             /*
-|--------------------------------------------------------------------------
-| LAPORAN EXPORT
-|--------------------------------------------------------------------------
-*/
+            |--------------------------------------------------------------------------
+            | LAPORAN — HALAMAN & EXPORT
+            |--------------------------------------------------------------------------
+            */
 
-Route::get('/laporan/stok/csv',
-    [LaporanController::class, 'exportStokCsv'])
-    ->name('laporan.stok.csv');
+            // Halaman laporan
+            Route::get('/laporan/stok',      [LaporanController::class, 'stok'])      ->name('laporan.stok');
+            Route::get('/laporan/pesanan',   [LaporanController::class, 'pesanan'])   ->name('laporan.pesanan');
+            Route::get('/laporan/reservasi', [LaporanController::class, 'reservasi']) ->name('laporan.reservasi');
 
-Route::get('/laporan/stok/xlsx',
-    [LaporanController::class, 'exportStokXlsx'])
-    ->name('laporan.stok.xlsx');
+            // Export
+            Route::get('/laporan/stok/csv',       [LaporanController::class, 'exportStokCsv'])       ->name('laporan.stok.csv');
+            Route::get('/laporan/stok/xlsx',      [LaporanController::class, 'exportStokXlsx'])      ->name('laporan.stok.xlsx');
+            Route::get('/laporan/reservasi/csv',  [LaporanController::class, 'exportReservasiCsv'])  ->name('laporan.reservasi.csv');
+            Route::get('/laporan/reservasi/xlsx', [LaporanController::class, 'exportReservasiXlsx']) ->name('laporan.reservasi.xlsx');
+            Route::get('/laporan/orders/xlsx',    [LaporanController::class, 'exportOrdersXlsx'])    ->name('laporan.orders.xlsx');
+            Route::get('/laporan/orders/csv',     [LaporanController::class, 'exportOrdersCsv'])     ->name('laporan.orders.csv');
 
-Route::get('/laporan/reservasi/csv',
-    [LaporanController::class, 'exportReservasiCsv'])
-    ->name('laporan.reservasi.csv');
-
-Route::get('/laporan/reservasi/xlsx',
-    [LaporanController::class, 'exportReservasiXlsx'])
-    ->name('laporan.reservasi.xlsx');
-
-Route::get('/laporan/orders/xlsx',
-    [LaporanController::class, 'exportOrdersXlsx'])
-    ->name('laporan.orders.xlsx');
-
-Route::get('/laporan/orders/csv',
-    [LaporanController::class, 'exportOrdersCsv'])
-    ->name('laporan.orders.csv');
             /*
             |--------------------------------------------------------------------------
             | KATEGORI CRUD
@@ -439,8 +430,7 @@ Route::get('/laporan/orders/csv',
             |--------------------------------------------------------------------------
             */
 
-            Route::post('/testimoni/sync',
-                [TestimoniController::class, 'syncGoogleMaps'])
+            Route::post('/testimoni/sync', [TestimoniController::class, 'syncGoogleMaps'])
                 ->name('testimoni.sync');
 
             Route::resource('testimoni', TestimoniController::class)
@@ -471,20 +461,6 @@ Route::get('/laporan/orders/csv',
         Route::get('/prediksi/ai-status', [\App\Http\Controllers\Admin\PredictionController::class, 'checkAiStatus'])
             ->name('prediksi.ai-status');
 
-        /*
-        |--------------------------------------------------------------------------
-        | AI PREDIKSI PENJUALAN
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get('/prediksi', [\App\Http\Controllers\Admin\PredictionController::class, 'index'])
-            ->name('prediksi.index');
-
-        Route::post('/prediksi/run', [\App\Http\Controllers\Admin\PredictionController::class, 'runPrediction'])
-            ->name('prediksi.run');
-
-        Route::get('/prediksi/ai-status', [\App\Http\Controllers\Admin\PredictionController::class, 'checkAiStatus'])
-            ->name('prediksi.ai-status');
 
         /*
         |--------------------------------------------------------------------------

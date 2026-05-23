@@ -16,19 +16,6 @@
 
         <div class="flex flex-wrap items-center gap-2">
 
-            {{-- Export Excel --}}
-            <a href="{{ route('admin.laporan.reservasi.xlsx') }}"
-               class="inline-flex items-center rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-600">
-                <i class="fas fa-file-excel mr-2"></i>
-                Excel
-            </a>
-
-            {{-- Export CSV --}}
-            <a href="{{ route('admin.laporan.reservasi.csv') }}"
-               class="inline-flex items-center rounded-xl bg-sky-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-sky-600">
-                <i class="fas fa-file-csv mr-2"></i>
-                CSV
-            </a>
 
             {{-- Refresh --}}
             <a href="{{ route('admin.reservasi.index') }}"
