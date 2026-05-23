@@ -5,7 +5,7 @@ pipeline {
         APP_IMAGE = 'sihiy1/sasimga-jember:latest'
         NGINX_IMAGE = 'sihiy1/sasimga-nginx:latest'
         STACK_NAME = 'sasimga'
-        GIT_REPO = 'https://github.com/TIM-UYE/SaSimGa-jember.git'
+        GIT_REPO = 'https://github.com/TIM-UYE/sasimga-jember-presentasi.git'
     }
 
     stages {
@@ -28,8 +28,14 @@ pipeline {
         stage('Build App Docker Image') {
             steps {
                 dir('sasimga-jember') {
-                    echo 'Building Laravel application image...'
-                    sh 'docker build -t ${APP_IMAGE} -f dockerfile .'
+                    echo 'Preparing environment and building Laravel application image...'
+                    sh '''
+                        if [ ! -f .env ]; then
+                            cp env.contoh .env
+                        fi
+
+                        docker build -t ${APP_IMAGE} -f dockerfile .
+                    '''
                 }
             }
         }
