@@ -46,5 +46,18 @@ services:
     networks:
       - laravel
 
+  ai_prediction:
+    image: sihiy1/ai-stock-prediction:latest
+
+    container_name: ai_prediction
+
+    restart: always
+
+    ports:
+      - "8001:8001"
+
+    networks:
+      - laravel
+
 networks:
   laravel:
