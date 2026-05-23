@@ -13,14 +13,7 @@ FROM nginx:latest
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-COPY --from=builder /app/public /var/www/public
-
-# Install node dependencies and build assets
-RUN if [ -f package-lock.json ]; then \
-            npm ci --prefer-offline --no-audit --progress=false; \
-        else \
-            npm install --no-audit --progress=false; \
-        fi
+COPY --from=node_builder /app/public/build /var/www/public/build
 
 FROM php:8.3-fpm
 
