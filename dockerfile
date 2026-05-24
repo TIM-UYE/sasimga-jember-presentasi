@@ -4,9 +4,10 @@ WORKDIR /app
 
 COPY package*.json ./
 
+RUN npm install
+
 COPY . .
 
-RUN npm install
 RUN npm run build
 
 FROM nginx:latest
@@ -56,7 +57,7 @@ RUN composer install --no-interaction --no-dev --optimize-autoloader
 COPY . .
 
 # Copy built frontend assets from node builder
-COPY --from=node_builder /app/public/build /var/www/public/build
+COPY --from=node_builder /app/public/build ./public/build
 
 # Ensure .env exists (CI copies env.contoh to .env before build)
 RUN if [ ! -f .env ]; then cp env.contoh .env; fi
