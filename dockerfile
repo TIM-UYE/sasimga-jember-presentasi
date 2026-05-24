@@ -1,21 +1,3 @@
-FROM node:20 AS node_builder
-
-WORKDIR /app
-
-COPY package*.json ./
-
-RUN npm install
-
-COPY . .
-
-RUN npm run build
-
-FROM nginx:latest
-
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-COPY --from=node_builder /app/public/build /var/www/public/build
-
 FROM php:8.3-fpm
 
 # Install dependencies
@@ -51,9 +33,6 @@ RUN composer install --no-interaction --no-dev --optimize-autoloader
 
 # Copy the rest of the application
 COPY . .
-
-# Copy built frontend assets from node builder
-COPY --from=node_builder /app/public/build ./public/build
 
 # Ensure .env exists (CI copies env.contoh to .env before build)
 RUN if [ ! -f .env ]; then cp env.contoh .env; fi

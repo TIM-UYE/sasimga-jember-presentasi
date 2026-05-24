@@ -5,57 +5,64 @@ pipeline {
         APP_IMAGE = 'sihiy1/sasimga-jember:latest'
         NGINX_IMAGE = 'sihiy1/sasimga-nginx:latest'
         STACK_NAME = 'sasimga-jember'
-        GIT_REPO = 'https://github.com/TIM-UYE/sasimga-jember-presentasi.git'
+        DOCKERHUB_CREDENTIALS = 'dockerhub-credentials'
     }
 
     stages {
-        stage('Checkout Code') {
-            steps {
-                echo 'Checking out source code...'
-                dir('sasimga-jember') {
-                    git branch: 'main', url: "${GIT_REPO}"
-                }
-            }
-        }
-
         stage('Validate Docker') {
             steps {
                 echo 'Validating Docker configuration...'
-                sh 'docker --version'
+                sh '''
+                    docker --version
+                    docker info
+                '''
             }
         }
 
-        stage('Build App Docker Image') {
+        stage('Prepare Disk') {
             steps {
-                dir('sasimga-jember') {
-                    echo 'Preparing environment and building Laravel application image...'
+                echo 'Cleaning unused Docker cache before build...'
+                sh '''
+                    docker builder prune -af || true
+                    docker image prune -af || true
+                    docker container prune -f || true
+                    df -h
+                    docker system df || true
+                '''
+            }
+        }
+
+        stage('Build Docker Images') {
+            steps {
+                echo 'Building application and nginx images...'
+                sh '''
+                    if [ ! -f public/build/manifest.json ]; then
+                        echo "public/build/manifest.json not found. Run npm run build locally and commit public/build."
+                        exit 1
+                    fi
+
+                    docker build -t ${APP_IMAGE} -f dockerfile .
+                    docker build -t ${NGINX_IMAGE} -f Dockerfile.nginx .
+                '''
+            }
+        }
+
+        stage('Test App Image') {
+            steps {
+                echo 'Checking application image can boot Laravel CLI...'
+                sh 'docker run --rm ${APP_IMAGE} php artisan --version'
+            }
+        }
+
+        stage('Push Docker Images') {
+            steps {
+                echo 'Pushing images to Docker Hub...'
+                withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDENTIALS}", usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
                     sh '''
-                        if [ ! -f .env ]; then
-                            cp env.contoh .env
-                        fi
-
-                        docker build -t ${APP_IMAGE} -f dockerfile .
-                    '''
-                }
-            }
-        }
-
-        stage('Build Nginx Docker Image') {
-            steps {
-                dir('sasimga-jember') {
-                    echo 'Building Nginx image...'
-                    sh 'docker build -t ${NGINX_IMAGE} -f Dockerfile.nginx .'
-                }
-            }
-        }
-
-
-        stage('Run Tests') {
-            steps {
-                dir('sasimga-jember') {
-                    echo 'Running application tests...'
-                    sh '''
-                        docker run --rm ${APP_IMAGE} php artisan test --compact || true
+                        echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
+                        docker push ${APP_IMAGE}
+                        docker push ${NGINX_IMAGE}
+                        docker logout
                     '''
                 }
             }
@@ -66,7 +73,7 @@ pipeline {
                 echo 'Deploying to Docker Swarm...'
 
                 sh '''
-                set +e
+                set -e
 
                 if docker stack ls | grep -q "${STACK_NAME}"; then
 
@@ -74,6 +81,7 @@ pipeline {
 
                     docker service update \
                     --force \
+                    --with-registry-auth \
                     --image ${APP_IMAGE} \
                     ${STACK_NAME}_app
 
@@ -90,6 +98,7 @@ pipeline {
 
                     docker service update \
                     --force \
+                    --with-registry-auth \
                     --image ${NGINX_IMAGE} \
                     ${STACK_NAME}_nginx
 
@@ -108,6 +117,7 @@ pipeline {
                     echo "Stack not found. Creating new stack..."
 
                     docker stack deploy \
+                    --with-registry-auth \
                     -c docker-stack.yml \
                     ${STACK_NAME}
 
@@ -141,7 +151,12 @@ pipeline {
         }
         always {
             echo 'Cleaning up...'
-            sh 'docker system prune -af || true'
+            sh '''
+                docker builder prune -af || true
+                docker image prune -af || true
+                docker container prune -f || true
+                docker system df || true
+            '''
             cleanWs()
         }
     }

@@ -1,0 +1,59 @@
+{
+  "public/images/border/menu-specials.png": {
+    "file": "assets/menu-specials-DT9H8POy.png",
+    "src": "public/images/border/menu-specials.png"
+  },
+  "public/images/border/menu.png": {
+    "file": "assets/menu-DWX_6xmN.png",
+    "src": "public/images/border/menu.png"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-CuuLOxnH.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/css/app.css",
+    "isEntry": true,
+    "assets": [
+      "assets/menu-DWX_6xmN.png",
+      "assets/menu-specials-DT9H8POy.png"
+    ]
+  },
+  "resources/css/gallery-orbit.css": {
+    "file": "assets/gallery-orbit-AaNrAct7.css",
+    "name": "gallery-orbit",
+    "names": [
+      "gallery-orbit.css"
+    ],
+    "src": "resources/css/gallery-orbit.css",
+    "isEntry": true
+  },
+  "resources/css/google-translate.css": {
+    "file": "assets/google-translate-Ce7lb6O8.css",
+    "name": "google-translate",
+    "names": [
+      "google-translate.css"
+    ],
+    "src": "resources/css/google-translate.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-Cvq5A64K.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  },
+  "resources/js/frontend/google-translate.js": {
+    "file": "assets/google-translate-DzwwIjns.js",
+    "name": "google-translate",
+    "src": "resources/js/frontend/google-translate.js",
+    "isEntry": true
+  },
+  "resources/js/frontend/orbit-gallery.js": {
+    "file": "assets/orbit-gallery-BD41J7gR.js",
+    "name": "orbit-gallery",
+    "src": "resources/js/frontend/orbit-gallery.js",
+    "isEntry": true
+  }
+}
