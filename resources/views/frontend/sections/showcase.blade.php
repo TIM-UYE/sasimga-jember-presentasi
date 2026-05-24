@@ -1,4 +1,4 @@
-<section class="relative h-[220vh]">
+<section class="relative h-[220vh] overflow-hidden">
 
     {{-- TOP FADE --}}
     <div
@@ -11,17 +11,18 @@
     </div>
 
     {{-- FIXED BACKGROUND --}}
-    <div class="fixed inset-0 -z-10">
+    <div class="fixed top-0 bottom-0 -left-[4px] -right-[4px] -z-10 overflow-hidden bg-black">
 
         <video autoplay muted loop playsinline preload="metadata" poster="{{ asset('images/hero/backgroundsate.png') }}"
-            class="motion-video w-full h-full object-cover">
+            class="motion-video absolute inset-0 h-full w-full max-w-none object-cover scale-[1.02] transform-gpu">
 
             <source src="{{ asset('videos/sate.mp4') }}" type="video/mp4">
 
         </video>
 
+        {{-- FALLBACK IMAGE --}}
         <img src="{{ asset('images/hero/backgroundsate.png') }}" alt="Sate Simpang Tiga"
-            class="block md:hidden w-full h-full object-cover">
+            class="absolute inset-0 h-full w-full object-cover opacity-0 pointer-events-none">
 
         {{-- DARK OVERLAY --}}
         <div class="absolute inset-0 bg-black/70"></div>
@@ -50,6 +51,7 @@
                 <span class="text-white">
                     {{ __('frontend.showcase.white') }}
                 </span>
+
                 <span
                     class="text-transparent bg-clip-text
                     bg-gradient-to-r
