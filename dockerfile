@@ -19,15 +19,11 @@ COPY --from=node_builder /app/public/build /var/www/public/build
 FROM php:8.3-fpm
 
 # Install dependencies
-# Install dependencies
 RUN apt-get update && apt-get install -y \
     git curl zip unzip build-essential autoconf pkg-config libssl-dev zlib1g-dev \
     libpng-dev libjpeg62-turbo-dev libfreetype6-dev libonig-dev libxml2-dev libzip-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_mysql mbstring zip exif pcntl bcmath \
-    && pecl channel-update pecl.php.net || true \
-    && pecl install redis \
-    && docker-php-ext-enable redis \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
