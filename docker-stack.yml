@@ -4,10 +4,10 @@ services:
 
     environment:
       APP_ENV: production
-      APP_DEBUG: "true"
+      APP_DEBUG: "false"
 
       DB_CONNECTION: mysql
-      DB_HOST: mysql
+      DB_HOST: sasimga-jember_mysql
       DB_PORT: 3306
       DB_DATABASE: db_samsimga
       DB_USERNAME: root
