@@ -41,8 +41,8 @@ pipeline {
                         exit 1
                     fi
 
-                    docker build -t ${APP_IMAGE} -f dockerfile .
-                    docker build -t ${NGINX_IMAGE} -f Dockerfile.nginx .
+                    docker build --no-cache -t ${APP_IMAGE} -f dockerfile .
+                    docker build --no-cache -t ${NGINX_IMAGE} -f Dockerfile.nginx .
                 '''
             }
         }
@@ -155,6 +155,10 @@ pipeline {
                 docker builder prune -af || true
                 docker image prune -af || true
                 docker container prune -f || true
+
+                rm -rf /var/jenkins_home/.npm || true
+                rm -rf /var/jenkins_home/.cache || true
+
                 docker system df || true
             '''
             cleanWs()
