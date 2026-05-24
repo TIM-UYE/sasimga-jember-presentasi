@@ -106,7 +106,7 @@
       },
       "targets": [
         {
-          "expr": "count(container_last_seen)",
+            "expr": "count(time() - container_last_seen{name=~\".*\"} < 60)",
           "refId": "A"
         }
       ]
