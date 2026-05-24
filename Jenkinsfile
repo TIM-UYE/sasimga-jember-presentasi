@@ -4,7 +4,7 @@ pipeline {
     environment {
         APP_IMAGE = 'sihiy1/sasimga-jember:latest'
         NGINX_IMAGE = 'sihiy1/sasimga-nginx:latest'
-        STACK_NAME = 'sasimga'
+        STACK_NAME = 'sasimga-jember'
         GIT_REPO = 'https://github.com/TIM-UYE/sasimga-jember-presentasi.git'
     }
 
