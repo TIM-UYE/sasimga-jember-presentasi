@@ -163,18 +163,6 @@
 
                     </form>
 
-
-                    {{-- REGISTER --}}
-                    <div class="mt-8 text-sm text-slate-500 text-center">
-
-                        Belum punya akun?
-
-                        <a href="{{ route('register') }}" class="font-semibold text-orange-600 hover:text-orange-700">
-                            Daftar sekarang
-                        </a>
-
-                    </div>
-
                 </div>
 
             </div>

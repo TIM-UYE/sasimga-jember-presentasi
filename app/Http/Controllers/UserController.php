@@ -25,7 +25,7 @@ class UserController extends Controller
             'nama' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|in:admin,kasir,manajer',
+            'role' => 'required|in:manager,admin,owner',
         ]);
 
         $data = $request->except('password_confirmation');
@@ -52,7 +52,7 @@ class UserController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->user_id . ',user_id',
-            'role' => 'required|in:admin,kasir,manajer',
+            'role' => 'required|in:manager,admin,owner',
         ]);
 
         $data = $request->except('password');

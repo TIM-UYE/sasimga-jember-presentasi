@@ -53,8 +53,6 @@ Route::get('/testimoni', [TestimoniController::class, 'frontendIndex'])
 Route::get('/about', function () {
     return redirect()->route('frontend.information.show', 'about');
 })->name('frontend.about');
-
-
 /*
 |--------------------------------------------------------------------------
 | MIDTRANS WEBHOOK ROUTES
@@ -217,10 +215,6 @@ Route::middleware('guest')->group(function () {
 
     Route::post('/login', [AuthController::class, 'login']);
 
-    Route::get('/register', [AuthController::class, 'showRegisterForm'])
-        ->name('register');
-
-    Route::post('/register', [AuthController::class, 'register']);
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])

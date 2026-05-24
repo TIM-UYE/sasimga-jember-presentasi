@@ -33,14 +33,6 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function showRegisterForm(Request $request)
-    {
-        if (Auth::check()) {
-            return $this->redirectToDashboard();
-        }
-        return view('auth.register');
-    }
-
     public function login(Request $request)
     {
         $request->validate([
@@ -61,26 +53,6 @@ class AuthController extends Controller
         $request->session()->regenerate();
 
         return $this->redirectToDashboard();
-    }
-
-    public function register(Request $request)
-    {
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|confirmed|min:8',
-        ]);
-
-        $user = User::create([
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'user',
-        ]);
-
-        Auth::login($user);
-
-        return redirect()->route('user.dashboard');
     }
 
     public function showProfile(Request $request)
