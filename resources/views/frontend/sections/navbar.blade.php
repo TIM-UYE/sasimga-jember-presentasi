@@ -154,11 +154,6 @@
                         </span>
 
                     </button>
-
-                    <span
-                        class="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-black bg-green-400"></span>
-
-                    </button>
                 @else
                     <a href="{{ route('login') }}"
                         class="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 border border-white/10 ring-1 ring-white/10 hover:ring-orange-500/50 hover:border-orange-500/40 text-white/70 hover:text-white transition-all duration-300 hover:scale-110 active:scale-95">
@@ -400,61 +395,53 @@
 
 <script>
     (function() {
-        function initFrontendMobileMenu() {
-            const toggle = document.getElementById('frontendMobileMenuToggle');
-            const close = document.getElementById('frontendMobileMenuClose');
-            const backdrop = document.getElementById('frontendMobileMenuBackdrop');
-            const panel = document.getElementById('frontendMobileMenuPanel');
+        var toggle = document.getElementById('frontendMobileMenuToggle');
+        var close = document.getElementById('frontendMobileMenuClose');
+        var backdrop = document.getElementById('frontendMobileMenuBackdrop');
+        var panel = document.getElementById('frontendMobileMenuPanel');
 
-            if (!toggle || !close || !backdrop || !panel) return;
-
-            function openMenu() {
-                panel.classList.remove('translate-x-full');
-                panel.classList.add('translate-x-0');
-
-                backdrop.classList.remove('opacity-0', 'pointer-events-none');
-                backdrop.classList.add('opacity-100');
-
-                document.body.classList.add('overflow-hidden');
-                toggle.setAttribute('aria-expanded', 'true');
-            }
-
-            function closeMenu() {
-                panel.classList.remove('translate-x-0');
-                panel.classList.add('translate-x-full');
-
-                backdrop.classList.remove('opacity-100');
-                backdrop.classList.add('opacity-0', 'pointer-events-none');
-
-                document.body.classList.remove('overflow-hidden');
-                toggle.setAttribute('aria-expanded', 'false');
-            }
-
-            toggle.addEventListener('click', openMenu);
-            close.addEventListener('click', closeMenu);
-            backdrop.addEventListener('click', closeMenu);
-
-            panel.querySelectorAll('a').forEach(function(link) {
-                link.addEventListener('click', closeMenu);
-            });
-
-            window.addEventListener('keydown', function(event) {
-                if (event.key === 'Escape') {
-                    closeMenu();
-                }
-            });
-
-            window.addEventListener('resize', function() {
-                if (window.innerWidth >= 768) {
-                    closeMenu();
-                }
-            });
+        if (!toggle || !close || !backdrop || !panel) {
+            console.warn('Mobile menu elements not found');
+            return;
         }
 
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initFrontendMobileMenu);
-        } else {
-            initFrontendMobileMenu();
+        function openMenu() {
+            panel.style.transform = 'translateX(0px)';
+            backdrop.style.opacity = '1';
+            backdrop.style.pointerEvents = 'auto';
+            document.body.style.overflow = 'hidden';
+            toggle.setAttribute('aria-expanded', 'true');
         }
+
+        function closeMenu() {
+            panel.style.transform = 'translateX(100%)';
+            backdrop.style.opacity = '0';
+            backdrop.style.pointerEvents = 'none';
+            document.body.style.overflow = '';
+            toggle.setAttribute('aria-expanded', 'false');
+        }
+
+        toggle.addEventListener('click', openMenu);
+        close.addEventListener('click', closeMenu);
+        backdrop.addEventListener('click', closeMenu);
+
+        // Click any link inside panel to close
+        panel.querySelectorAll('a').forEach(function(link) {
+            link.addEventListener('click', closeMenu);
+        });
+
+        // Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeMenu();
+            }
+        });
+
+        // Resize to desktop
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 768) {
+                closeMenu();
+            }
+        });
     })();
 </script>
