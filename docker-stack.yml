@@ -64,7 +64,7 @@ services:
       - laravel
 
   jenkins:
-    image: jenkins/jenkins:lts
+    image: sihiy1/jenkins-docker:latest
 
     user: root
 
