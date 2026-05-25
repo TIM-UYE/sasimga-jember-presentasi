@@ -63,7 +63,7 @@
         via-orange-500
         to-amber-500">
 
-                    SIMPANG TIGA
+                    SIMPANG LIMA
 
                 </span>
 
