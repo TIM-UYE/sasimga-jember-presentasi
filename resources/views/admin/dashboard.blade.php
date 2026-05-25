@@ -6,9 +6,7 @@
     {{-- HEADER --}}
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-            <h1 class="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight">Dashboard
-                
-            </h1>
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight">Dashboard</h1>
             <p class="text-slate-500 text-sm mt-1">Selamat datang kembali, <span class="font-semibold text-slate-700">{{ Auth::user()->nama }}</span>!</p>
         </div>
         <div class="flex items-center gap-2 text-xs text-slate-400">
