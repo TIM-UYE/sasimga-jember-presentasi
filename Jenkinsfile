@@ -1,165 +1,94 @@
 pipeline {
     agent any
 
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        disableConcurrentBuilds()
+        timestamps()
+    }
+
     environment {
-        APP_IMAGE = 'sihiy1/sasimga-jember:latest'
-        NGINX_IMAGE = 'sihiy1/sasimga-nginx:latest'
+        APP_REPOSITORY = 'sihiy1/sasimga-jember'
+        NGINX_REPOSITORY = 'sihiy1/sasimga-nginx'
         STACK_NAME = 'sasimga-jember'
         DOCKERHUB_CREDENTIALS = 'dockerhub-credentials'
+        DOCKER_BUILDKIT = '1'
     }
 
     stages {
-        stage('Validate Docker') {
+        stage('Validate') {
             steps {
-                echo 'Validating Docker configuration...'
                 sh '''
+                    set -e
                     docker --version
-                    docker info
+                    docker compose version
+                    docker compose config >/dev/null
                 '''
             }
         }
 
-        stage('Prepare Disk') {
+        stage('Build') {
             steps {
-                echo 'Cleaning unused Docker cache before build...'
                 sh '''
-                    docker builder prune -af || true
-                    docker image prune -af || true
-                    docker container prune -f || true
-                    df -h
-                    docker system df || true
+                    set -e
+                    docker build \
+                        --target app \
+                        --tag ${APP_REPOSITORY}:${BUILD_NUMBER} \
+                        --tag ${APP_REPOSITORY}:latest \
+                        -f dockerfile .
+
+                    docker build \
+                        --build-context sasimga-app-assets=docker-image://${APP_REPOSITORY}:${BUILD_NUMBER} \
+                        --tag ${NGINX_REPOSITORY}:${BUILD_NUMBER} \
+                        --tag ${NGINX_REPOSITORY}:latest \
+                        -f Dockerfile.nginx .
                 '''
             }
         }
 
-        stage('Build Docker Images') {
+        stage('Smoke Test') {
             steps {
-                echo 'Building application and nginx images...'
                 sh '''
-                    if [ ! -f public/build/manifest.json ]; then
-                        echo "public/build/manifest.json not found. Run npm run build locally and commit public/build."
-                        exit 1
-                    fi
-
-                    docker build --no-cache -t ${APP_IMAGE} -f dockerfile .
-                    docker build --no-cache -t ${NGINX_IMAGE} -f Dockerfile.nginx .
+                    set -e
+                    docker run --rm ${APP_REPOSITORY}:${BUILD_NUMBER} php artisan --version
                 '''
             }
         }
 
-        stage('Test App Image') {
+        stage('Push') {
             steps {
-                echo 'Checking application image can boot Laravel CLI...'
-                sh 'docker run --rm ${APP_IMAGE} php artisan --version'
-            }
-        }
-
-        stage('Push Docker Images') {
-            steps {
-                echo 'Pushing images to Docker Hub...'
                 withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDENTIALS}", usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
                     sh '''
+                        set -e
                         echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
-                        docker push ${APP_IMAGE}
-                        docker push ${NGINX_IMAGE}
+                        docker push ${APP_REPOSITORY}:${BUILD_NUMBER}
+                        docker push ${APP_REPOSITORY}:latest
+                        docker push ${NGINX_REPOSITORY}:${BUILD_NUMBER}
+                        docker push ${NGINX_REPOSITORY}:latest
                         docker logout
                     '''
                 }
             }
         }
 
-        stage('Deploy to Docker Swarm') {
+        stage('Deploy') {
             steps {
-                echo 'Deploying to Docker Swarm...'
-
                 sh '''
-                set -e
-
-                if docker stack ls | grep -q "${STACK_NAME}"; then
-
-                    echo "Stack exists. Updating services..."
-
-                    docker service update \
-                    --force \
-                    --with-registry-auth \
-                    --image ${APP_IMAGE} \
-                    ${STACK_NAME}_app
-
-                    APP_STATUS=$?
-
-                    echo "===== WAITING APP STARTUP ====="
-                    sleep 15
-
-                    echo "===== APP SERVICE LOGS ====="
-                    docker service logs ${STACK_NAME}_app --tail 100 || true
-
-                    echo "===== APP SERVICE TASKS ====="
-                    docker service ps ${STACK_NAME}_app || true
-
-                    docker service update \
-                    --force \
-                    --with-registry-auth \
-                    --image ${NGINX_IMAGE} \
-                    ${STACK_NAME}_nginx
-
-                    NGINX_STATUS=$?
-
-                    echo "===== NGINX SERVICE LOGS ====="
-                    docker service logs ${STACK_NAME}_nginx --tail 50 || true
-
-                    if [ $APP_STATUS -ne 0 ] || [ $NGINX_STATUS -ne 0 ]; then
-                        echo "Deployment failed"
-                        exit 1
-                    fi
-
-                else
-
-                    echo "Stack not found. Creating new stack..."
-
-                    docker stack deploy \
-                    --with-registry-auth \
-                    -c docker-stack.yml \
-                    ${STACK_NAME}
-
-                fi
-                '''
-            }
-        }
-
-        stage('Verify Deployment') {
-            steps {
-                echo 'Verifying deployment...'
-                sh '''
-                    echo 'Waiting for services to start...'
-                    sleep 10
-
-                    # Check if services are running
-                    docker service ls | grep ${STACK_NAME} || echo "Services not found"
-
-                    echo 'Checking application health...'
+                    set -e
+                    export APP_IMAGE_REF=${APP_REPOSITORY}:${BUILD_NUMBER}
+                    export NGINX_IMAGE_REF=${NGINX_REPOSITORY}:${BUILD_NUMBER}
+                    docker stack deploy --with-registry-auth -c docker-stack.yml ${STACK_NAME}
+                    docker stack services ${STACK_NAME}
                 '''
             }
         }
     }
 
     post {
-        success {
-            echo 'Deployment completed successfully!'
-        }
-        failure {
-            echo 'Deployment failed! Check logs for details.'
-        }
         always {
-            echo 'Cleaning up...'
             sh '''
-                docker builder prune -af || true
-                docker image prune -af || true
-                docker container prune -f || true
-
-                rm -rf /var/jenkins_home/.npm || true
-                rm -rf /var/jenkins_home/.cache || true
-
-                docker system df || true
+                docker image prune -f --filter "until=168h" || true
+                docker builder prune -f --filter "until=168h" || true
             '''
             cleanWs()
         }

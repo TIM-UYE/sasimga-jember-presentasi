@@ -1,51 +1,67 @@
-FROM php:8.3-fpm
-
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    git curl zip unzip build-essential autoconf pkg-config libssl-dev zlib1g-dev \
-    libpng-dev libjpeg62-turbo-dev libfreetype6-dev libonig-dev libxml2-dev libzip-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql mbstring zip exif pcntl bcmath \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+FROM php:8.3-fpm-alpine
 
 WORKDIR /var/www
 
-# Copy composer files AND artisan file first
-COPY composer.json composer.lock artisan ./
-
-# Copy essential Laravel directories needed for package:discover
-COPY bootstrap/ ./bootstrap/
-COPY app/ ./app/
-COPY config/ ./config/
-COPY routes/ ./routes/
-
-# Create Laravel storage folders first
-RUN mkdir -p storage/framework/cache \
-    storage/framework/sessions \
-    storage/framework/views \
-    storage/logs \
-    bootstrap/cache
-
 # Install dependencies
-RUN composer install --no-interaction --no-dev --optimize-autoloader
+RUN apk add --no-cache \
+    freetype \
+    libjpeg-turbo \
+    libpng \
+    libzip \
+    oniguruma \
+    icu-libs \
+    zip \
+    unzip \
+    git \
+    curl \
+    nodejs-current \
+    npm
 
-# Copy the rest of the application
+# Build deps
+RUN apk add --no-cache --virtual .build-deps \
+    freetype-dev \
+    libjpeg-turbo-dev \
+    libpng-dev \
+    libzip-dev \
+    oniguruma-dev \
+    icu-dev \
+    autoconf \
+    gcc \
+    g++ \
+    make
+
+# Install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install \
+    gd \
+    pdo_mysql \
+    mbstring \
+    zip \
+    exif \
+    pcntl \
+    bcmath \
+    intl
+
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Copy project
 COPY . .
 
-# Ensure .env exists (CI copies env.contoh to .env before build)
-RUN if [ ! -f .env ]; then cp env.contoh .env; fi
+# Composer install
+RUN composer install \
+    --no-dev \
+    --optimize-autoloader \
+    --no-interaction
 
-# Generate optimized autoload
-RUN composer dump-autoload --optimize
+# Install node modules
+RUN npm install
 
-# Create storage directories
-RUN mkdir -p storage/framework/{cache,sessions,views} storage/logs bootstrap/cache \
-    && chown -R www-data:www-data /var/www \
-    && chmod -R 775 storage bootstrap/cache
+# Build vite assets
+RUN npm run build
 
-USER www-data
+# Permissions
+RUN chmod -R 775 storage bootstrap/cache
 
 EXPOSE 9000
 

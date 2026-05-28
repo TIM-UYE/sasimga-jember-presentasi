@@ -1,161 +1,68 @@
 services:
   app:
-    image: sihiy1/sasimga-jember:latest
-
+    image: sasimga-app:local
     environment:
       APP_ENV: production
       APP_DEBUG: "false"
-
       DB_CONNECTION: mysql
       DB_HOST: mysql
       DB_PORT: 3306
-      DB_DATABASE: db_samsimga
-      DB_USERNAME: root
-      DB_PASSWORD: root
-
+      DB_DATABASE: ${DB_DATABASE:-db_samsimga}
+      DB_USERNAME: ${DB_USERNAME:-root}
+      DB_PASSWORD: ${DB_PASSWORD:-root}
       CACHE_STORE: file
       QUEUE_CONNECTION: sync
       SESSION_DRIVER: file
+      AI_PREDICTION_URL: ${AI_PREDICTION_URL:-}
+      AI_HEALTH_URL: ${AI_HEALTH_URL:-}
 
-      AI_PREDICTION_URL: http://ai_prediction:8001/predict
-      AI_HEALTH_URL: http://ai_prediction:8001/
+    volumes:
+      - app_storage:/var/www/storage
+      - app_cache:/var/www/bootstrap/cache
 
-    depends_on:
-      - mysql
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
 
     networks:
-      - laravel
+      - sasimga
 
   nginx:
-    image: sihiy1/sasimga-nginx:latest
+    image: sasimga-nginx:local
 
     ports:
       - "80:80"
 
-    depends_on:
-      - app
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
 
     networks:
-      - laravel
+      - sasimga
 
   mysql:
-    image: mysql:8
+    image: mysql:8.4
 
     environment:
-      MYSQL_DATABASE: db_samsimga
-      MYSQL_ROOT_PASSWORD: root
-
-    ports:
-      - "3306:3306"
+      MYSQL_DATABASE: ${DB_DATABASE:-db_samsimga}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
 
     volumes:
       - mysql_data:/var/lib/mysql
 
-    networks:
-      - laravel
-
-  ai_prediction:
-    image: sihiy1/ai-stock-prediction:latest
-
-    ports:
-      - "8002:8001"
-
-    networks:
-      - laravel
-
-  jenkins:
-    image: sihiy1/jenkins-docker:latest
-
-    user: root
-
-    ports:
-      - "8080:8080"
-      - "50000:50000"
-
-    volumes:
-      - jenkins_home:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
-
-    networks:
-      - laravel
-
-  prometheus:
-    image: prom/prometheus:latest
-
-    ports:
-      - "9090:9090"
-
-    volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - prometheus_data:/prometheus
-
-    networks:
-      - laravel
-
-  node-exporter:
-    image: prom/node-exporter:latest
-
-    command:
-      - --path.rootfs=/host
-
-    ports:
-      - "9100:9100"
-
-    deploy:
-      replicas: 1
-
-    volumes:
-      - /:/host:ro,rslave
-
-    networks:
-      - laravel
-
-  cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
-
-    ports:
-      - "8081:8080"
-
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-      - dev/disk/:/dev/disk:ro
-
-    privileged: true
-
     deploy:
       replicas: 1
 
     networks:
-      - laravel
-
-  grafana:
-    image: grafana/grafana:latest
-
-    environment:
-      GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: admin
-
-    ports:
-      - "3000:3000"
-
-    volumes:
-      - grafana_data:/var/lib/grafana
-
-    depends_on:
-      - prometheus
-
-    networks:
-      - laravel
+      - sasimga
 
 volumes:
+  app_cache:
+  app_storage:
   mysql_data:
-  jenkins_home:
-  prometheus_data:
-  grafana_data:
 
 networks:
-  laravel:
+  sasimga:
     driver: overlay

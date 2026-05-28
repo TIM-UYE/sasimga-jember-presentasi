@@ -1,187 +1,120 @@
 services:
-
   app:
     build:
       context: .
       dockerfile: dockerfile
-
-    container_name: laravel_app
-
+    image: sasimga-app:local
+    restart: unless-stopped
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: db_samsimga
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      CACHE_STORE: file
+      QUEUE_CONNECTION: sync
+      SESSION_DRIVER: file
+      AI_PREDICTION_URL: ""
+      AI_HEALTH_URL: ""
     volumes:
-      - ./:/var/www:cached
-
+      - app_storage:/var/www/storage
+      - app_cache:/var/www/bootstrap/cache
+    depends_on:
+      mysql:
+        condition: service_healthy
     networks:
-      - laravel
+      - sasimga
 
   nginx:
     build:
       context: .
       dockerfile: Dockerfile.nginx
-
-    container_name: laravel_nginx
-
+      additional_contexts:
+        sasimga-app-assets: service:app
+    image: sasimga-nginx:local
+    restart: unless-stopped
     ports:
       - "8001:80"
-
     depends_on:
       - app
-
     networks:
-      - laravel
+      - sasimga
 
   mysql:
-    image: mysql:8
-
-    container_name: laravel_mysql
-
-    restart: always
-
+    image: mysql:8.4
+    restart: unless-stopped
     environment:
       MYSQL_DATABASE: db_samsimga
       MYSQL_ROOT_PASSWORD: root
-
     ports:
       - "3306:3306"
-
-    networks:
-      - laravel
-
-  npm:
-    image: node:20
-
-    container_name: laravel_npm
-
-    working_dir: /var/www
-
     volumes:
-      - ./:/var/www:cached
-      - /var/www/node_modules
-
-    ports:
-      - "5173:5173"
-
-    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
-
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -uroot -proot --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
     networks:
-      - laravel
-
-  ai_prediction:
-    image: sihiy1/ai-stock-prediction:latest
-
-    container_name: ai_prediction
-
-    restart: always
-
-    ports:
-      - "8002:8001"
-
-    networks:
-      - laravel
+      - sasimga
 
   jenkins:
     build:
       context: .
       dockerfile: Dockerfile.jenkins
-
-    container_name: jenkins
-
-    restart: always
-
+    profiles:
+      - ci
+    restart: unless-stopped
     user: root
-
     ports:
       - "8080:8080"
       - "50000:50000"
-
     volumes:
       - jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
-
     networks:
-      - laravel
+      - sasimga
 
   prometheus:
-    image: prom/prometheus:latest
-
-    container_name: prometheus
-
-    restart: always
-
+    image: prom/prometheus:v2.55.1
+    profiles:
+      - monitoring
+    restart: unless-stopped
     ports:
       - "9090:9090"
-
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
-
     networks:
-      - laravel
-
-  node-exporter:
-    image: prom/node-exporter:latest
-
-    container_name: node_exporter
-
-    restart: always
-
-    command:
-      - --path.rootfs=/host
-
-    ports:
-      - "9100:9100"
-
-    volumes:
-      - /:/host:ro,rslave
-
-    networks:
-      - laravel
-
-  cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
-
-    container_name: cadvisor
-
-    restart: always
-
-    ports:
-      - "8081:8080"
-
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-
-    networks:
-      - laravel
+      - sasimga
 
   grafana:
-    image: grafana/grafana:latest
-
-    container_name: grafana
-
-    restart: always
-
+    image: grafana/grafana:11.4.0
+    profiles:
+      - monitoring
+    restart: unless-stopped
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin
-
     ports:
       - "3000:3000"
-
     volumes:
       - grafana_data:/var/lib/grafana
-
     depends_on:
       - prometheus
-
     networks:
-      - laravel
+      - sasimga
 
 volumes:
+  app_cache:
+  app_storage:
+  mysql_data:
   jenkins_home:
   prometheus_data:
   grafana_data:
 
 networks:
-  laravel:
+  sasimga:
