@@ -1,96 +1,56 @@
 pipeline {
     agent any
 
-    options {
-        buildDiscarder(logRotator(numToKeepStr: '10'))
-        disableConcurrentBuilds()
-        timestamps()
-    }
-
     environment {
-        APP_REPOSITORY = 'sihiy1/sasimga-jember'
-        NGINX_REPOSITORY = 'sihiy1/sasimga-nginx'
-        STACK_NAME = 'sasimga-jember'
-        DOCKERHUB_CREDENTIALS = 'dockerhub-credentials'
-        DOCKER_BUILDKIT = '1'
+        APP_IMAGE = "sihiy1/sasimga-app:latest"
+        NGINX_IMAGE = "sihiy1/sasimga-nginx:latest"
     }
 
     stages {
-        stage('Validate') {
+
+        stage('Clone') {
             steps {
-                sh '''
-                    set -e
-                    docker --version
-                    docker compose version
-                    docker compose config >/dev/null
-                '''
+                git branch: 'main',
+                url: 'https://github.com/TIM-UYE/sasimga-jember-presentasi.git'
             }
         }
 
-        stage('Build') {
+        stage('Build App Image') {
             steps {
-                sh '''
-                    set -e
-                    docker build \
-                        --target app \
-                        --tag ${APP_REPOSITORY}:${BUILD_NUMBER} \
-                        --tag ${APP_REPOSITORY}:latest \
-                        -f dockerfile .
-
-                    docker build \
-                        --build-context sasimga-app-assets=docker-image://${APP_REPOSITORY}:${BUILD_NUMBER} \
-                        --tag ${NGINX_REPOSITORY}:${BUILD_NUMBER} \
-                        --tag ${NGINX_REPOSITORY}:latest \
-                        -f Dockerfile.nginx .
-                '''
+                sh 'docker build -t $APP_IMAGE -f dockerfile .'
             }
         }
 
-        stage('Smoke Test') {
+        stage('Build Nginx Image') {
             steps {
-                sh '''
-                    set -e
-                    docker run --rm ${APP_REPOSITORY}:${BUILD_NUMBER} php artisan --version
-                '''
+                sh 'docker build -t $NGINX_IMAGE -f Dockerfile.nginx .'
             }
         }
 
-        stage('Push') {
+        stage('Docker Login') {
             steps {
-                withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDENTIALS}", usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
-                    sh '''
-                        set -e
-                        echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
-                        docker push ${APP_REPOSITORY}:${BUILD_NUMBER}
-                        docker push ${APP_REPOSITORY}:latest
-                        docker push ${NGINX_REPOSITORY}:${BUILD_NUMBER}
-                        docker push ${NGINX_REPOSITORY}:latest
-                        docker logout
-                    '''
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
                 }
             }
         }
 
-        stage('Deploy') {
+        stage('Push Images') {
             steps {
-                sh '''
-                    set -e
-                    export APP_IMAGE_REF=${APP_REPOSITORY}:${BUILD_NUMBER}
-                    export NGINX_IMAGE_REF=${NGINX_REPOSITORY}:${BUILD_NUMBER}
-                    docker stack deploy --with-registry-auth -c docker-stack.yml ${STACK_NAME}
-                    docker stack services ${STACK_NAME}
-                '''
+                sh 'docker push $APP_IMAGE'
+                sh 'docker push $NGINX_IMAGE'
             }
         }
-    }
 
-    post {
-        always {
-            sh '''
-                docker image prune -f --filter "until=168h" || true
-                docker builder prune -f --filter "until=168h" || true
-            '''
-            cleanWs()
+        stage('Deploy Swarm') {
+            steps {
+                sh 'docker stack deploy -c docker-stack.yml sasimga'
+            }
         }
     }
 }
