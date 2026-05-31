@@ -3,19 +3,19 @@
 @endphp
 
 <nav id="siteNavbar" data-static-navbar="{{ $isMenuPage ? 'true' : 'false' }}"
-    class="fixed top-0 left-0 bg-black/90 backdrop-blur-md w-full z-50 border-b border-white/5
+    class="fixed top-0 left-0 bg-black/90 backdrop-blur-md w-full z-[100] border-b border-white/5
     {{ $isMenuPage ? 'translate-y-0' : 'transition-transform duration-500 ease-out will-change-transform translate-y-0' }}">
 
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
 
         {{-- LEFT : LOGO & MENU --}}
-        <div class="flex items-center gap-12">
+        <div class="flex items-center gap-4 md:gap-12 min-w-0">
 
             {{-- LOGO --}}
-            <a href="{{ route('frontend.home') }}" class="flex items-center gap-3 group">
+            <a href="{{ route('frontend.home') }}" class="flex items-center gap-3 group shrink-0">
 
                 <div
-                    class="h-10 w-auto overflow-hidden transition-all duration-500 group-hover:ring-orange-500/50 group-hover:bg-white/10">
+                    class="h-9 sm:h-10 w-auto overflow-hidden transition-all duration-500 group-hover:ring-orange-500/50 group-hover:bg-white/10">
 
                     <img src="{{ asset('images/logo/logo.png') }}" alt="SaSimGa"
                         class="h-full w-auto object-contain brightness-110 transition-all duration-500 group-hover:brightness-125 group-hover:scale-105">
@@ -23,7 +23,6 @@
                 </div>
 
             </a>
-
 
             {{-- DESKTOP MENU --}}
             <div class="items-center gap-1 hidden md:flex">
@@ -45,7 +44,6 @@
                 </x-frontend.navbar.link>
 
                 @auth
-
                     @if (in_array(auth()->user()->role, ['admin', 'manager']))
                         <x-frontend.navbar.link href="{{ route('admin.dashboard') }}" variant="orange" :active="request()->routeIs('admin.dashboard')">
                             Dashboard
@@ -55,19 +53,17 @@
                     <x-frontend.navbar.link href="{{ route('login') }}" :active="request()->routeIs('login')">
                         Login
                     </x-frontend.navbar.link>
-
                 @endauth
 
             </div>
 
         </div>
 
-
         {{-- RIGHT MENU --}}
-        <div class="flex items-center gap-2 sm:gap-4">
+        <div class="flex items-center gap-2 sm:gap-4 shrink-0">
 
             {{-- LANGUAGE TOGGLE --}}
-            <div class="language-dropdown notranslate" translate="no" data-language-dropdown>
+            <div class="language-dropdown notranslate shrink-0" translate="no" data-language-dropdown>
                 <button type="button" class="language-dropdown__button" data-language-toggle>
                     <span class="language-dropdown__globe">
                         <i class="fa-solid fa-globe"></i>
@@ -111,12 +107,10 @@
             {{-- CART --}}
             <a href="{{ route('cart.index') }}" data-cart-icon
                 data-cart-count="{{ session('cart') ? count(session('cart')) : 0 }}"
-                class="relative flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 border border-white/10 ring-1 ring-white/10 hover:ring-orange-500/50 hover:border-orange-500/40 transition-all duration-300 hover:scale-110 active:scale-95">
+                class="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-zinc-900 border border-white/10 ring-1 ring-white/10 hover:ring-orange-500/50 hover:border-orange-500/40 transition-all duration-300 hover:scale-110 active:scale-95">
 
-                {{-- ICON --}}
                 <i class="fa-solid fa-cart-shopping text-white text-[18px]"></i>
 
-                {{-- BADGE --}}
                 <span id="cartBadge"
                     class="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center font-bold shadow-lg shadow-orange-500/40 {{ session('cart') && count(session('cart')) > 0 ? '' : 'hidden' }}">
                     {{ session('cart') ? count(session('cart')) : 0 }}
@@ -124,14 +118,13 @@
 
             </a>
 
-
             {{-- PROFILE --}}
-            <div class="relative">
+            <div class="relative hidden sm:block">
 
                 @auth
 
                     <button type="button" onclick="openProfileMenu()"
-                        class="relative flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 border border-white/10 ring-1 ring-white/10 hover:ring-orange-500/50 hover:border-orange-500/40 transition-all duration-300 hover:scale-110 active:scale-95 overflow-hidden">
+                        class="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-zinc-900 border border-white/10 ring-1 ring-white/10 hover:ring-orange-500/50 hover:border-orange-500/40 transition-all duration-300 hover:scale-110 active:scale-95 overflow-hidden">
 
                         <div class="h-full w-full rounded-full overflow-hidden bg-black">
 
@@ -156,7 +149,8 @@
                     </button>
                 @else
                     <a href="{{ route('login') }}"
-                        class="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 border border-white/10 ring-1 ring-white/10 hover:ring-orange-500/50 hover:border-orange-500/40 text-white/70 hover:text-white transition-all duration-300 hover:scale-110 active:scale-95">
+                        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-zinc-900 border border-white/10 ring-1 ring-white/10 hover:ring-orange-500/50 hover:border-orange-500/40 text-white/70 hover:text-white transition-all duration-300 hover:scale-110 active:scale-95">
+
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -172,24 +166,31 @@
 
             {{-- MOBILE HAMBURGER --}}
             <button id="frontendMobileMenuToggle" type="button"
-                class="md:hidden flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 border border-white/10 ring-1 ring-white/10 text-white hover:ring-orange-500/50 hover:border-orange-500/40 hover:bg-orange-500/10 transition-all duration-300 active:scale-95"
+                class="md:hidden relative z-[85] flex h-10 w-10 shrink-0 items-center justify-center rounded-full
+                bg-zinc-900 border border-white/10 ring-1 ring-white/10 text-white
+                hover:ring-orange-500/50 hover:border-orange-500/40 hover:bg-orange-500/10
+                transition-all duration-300 active:scale-95"
                 aria-label="Buka menu" aria-expanded="false">
 
-                <i class="fa-solid fa-bars text-[18px]"></i>
+                <span class="sr-only">Buka menu</span>
+
+                <span class="flex flex-col gap-1.5">
+                    <span class="block h-0.5 w-5 rounded-full bg-white"></span>
+                    <span class="block h-0.5 w-5 rounded-full bg-white"></span>
+                    <span class="block h-0.5 w-5 rounded-full bg-white"></span>
+                </span>
 
             </button>
 
         </div>
 
-
         {{-- PROFILE POPUP --}}
         @auth
 
-            <div id="profileMenuOverlay" class="fixed inset-0 bg-black/50 z-40 hidden" onclick="closeProfileMenu()"></div>
-
+            <div id="profileMenuOverlay" class="fixed inset-0 bg-black/50 z-[95] hidden" onclick="closeProfileMenu()"></div>
 
             <div id="profileMenuPopup"
-                class="fixed top-16 right-6 z-50 hidden w-64 rounded-2xl border border-white/10 bg-zinc-900/95 backdrop-blur-xl shadow-2xl shadow-black/50">
+                class="fixed top-16 right-6 z-[96] hidden w-64 rounded-2xl border border-white/10 bg-zinc-900/95 backdrop-blur-xl shadow-2xl shadow-black/50">
 
                 <div class="p-5">
 
@@ -225,7 +226,6 @@
 
                     </div>
 
-
                     {{-- PROFILE --}}
                     <a href="{{ route('profile') }}"
                         class="flex items-center gap-3 px-3 py-2.5 text-sm text-white/70 hover:text-white rounded-xl hover:bg-white/5 transition-all duration-200">
@@ -233,14 +233,13 @@
                         <svg class="h-4 w-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                d="M16 7a4 4 0 11-8 0 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
 
                         </svg>
 
                         Pengaturan Profil
 
                     </a>
-
 
                     {{-- DASHBOARD --}}
                     <a href="{{ in_array(auth()->user()->role, ['admin', 'manager']) ? route('admin.dashboard') : route('user.dashboard') }}"
@@ -257,7 +256,6 @@
 
                     </a>
 
-
                     {{-- LOGOUT --}}
                     <form action="{{ route('logout') }}" method="POST" class="mt-4 pt-4 border-t border-white/10">
 
@@ -269,7 +267,7 @@
                             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3-3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
 
                             </svg>
 
@@ -283,24 +281,17 @@
 
             </div>
 
-
-            {{-- SCRIPT --}}
+            {{-- SCRIPT PROFILE --}}
             <script>
                 function openProfileMenu() {
-
                     document.getElementById('profileMenuOverlay').classList.remove('hidden');
-
                     document.getElementById('profileMenuPopup').classList.remove('hidden');
-
                     document.getElementById('profileMenuPopup').classList.add('animate-in');
                 }
 
                 function closeProfileMenu() {
-
                     document.getElementById('profileMenuOverlay').classList.add('hidden');
-
                     document.getElementById('profileMenuPopup').classList.add('hidden');
-
                     document.getElementById('profileMenuPopup').classList.remove('animate-in');
                 }
             </script>
@@ -313,12 +304,13 @@
 
 {{-- MOBILE NAVBAR BACKDROP --}}
 <div id="frontendMobileMenuBackdrop"
-    class="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 md:hidden">
+    class="fixed inset-0 z-[9998] hidden bg-black/70 backdrop-blur-sm opacity-0 transition-opacity duration-300 md:hidden">
 </div>
 
 {{-- MOBILE NAVBAR SIDEBAR --}}
 <aside id="frontendMobileMenuPanel"
-    class="fixed top-0 right-0 z-[80] h-screen w-[84%] max-w-sm translate-x-full bg-zinc-950 border-l border-white/10 shadow-2xl shadow-black/60 transition-transform duration-300 ease-out md:hidden">
+    class="fixed inset-y-0 right-0 z-[9999] h-screen w-[84%] max-w-sm translate-x-full overflow-y-auto
+    bg-zinc-950 border-l border-white/10 shadow-2xl shadow-black/60 transition-transform duration-300 ease-out md:hidden">
 
     <div class="flex items-center justify-between px-6 py-5 border-b border-white/10">
 
@@ -335,7 +327,9 @@
             class="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 border border-white/10 text-white hover:bg-red-500/20 hover:border-red-500/40 transition"
             aria-label="Tutup menu">
 
-            <i class="fa-solid fa-xmark text-[18px]"></i>
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
 
         </button>
 
@@ -345,48 +339,72 @@
 
         <a href="{{ route('frontend.home') }}"
             class="flex items-center gap-3 rounded-2xl px-4 py-3 text-white bg-white/5 border border-white/10 hover:bg-orange-500/15 hover:border-orange-500/40 transition">
-            <i class="fa-solid fa-house text-orange-400 w-5"></i>
+            <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-orange-500/15 text-orange-400">
+                <i class="fa-solid fa-house"></i>
+            </span>
             <span>{{ __('frontend.nav.home') }}</span>
         </a>
 
         <a href="{{ route('frontend.about') }}"
             class="flex items-center gap-3 rounded-2xl px-4 py-3 text-white bg-white/5 border border-white/10 hover:bg-orange-500/15 hover:border-orange-500/40 transition">
-            <i class="fa-solid fa-circle-info text-orange-400 w-5"></i>
+            <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-orange-500/15 text-orange-400">
+                <i class="fa-solid fa-circle-info"></i>
+            </span>
             <span>{{ __('frontend.nav.about') }}</span>
         </a>
 
         <a href="{{ route('frontend.menu') }}"
             class="flex items-center gap-3 rounded-2xl px-4 py-3 text-white bg-white/5 border border-white/10 hover:bg-orange-500/15 hover:border-orange-500/40 transition">
-            <i class="fa-solid fa-utensils text-orange-400 w-5"></i>
+            <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-orange-500/15 text-orange-400">
+                <i class="fa-solid fa-utensils"></i>
+            </span>
             <span>{{ __('frontend.nav.menu') }}</span>
         </a>
 
         <a href="{{ route('frontend.reservasi') }}"
             class="flex items-center gap-3 rounded-2xl px-4 py-3 text-white bg-white/5 border border-white/10 hover:bg-orange-500/15 hover:border-orange-500/40 transition">
-            <i class="fa-solid fa-calendar-check text-orange-400 w-5"></i>
+            <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-orange-500/15 text-orange-400">
+                <i class="fa-solid fa-calendar-check"></i>
+            </span>
             <span>{{ __('frontend.nav.reservation') }}</span>
         </a>
 
         @auth
+
+            <a href="{{ route('profile') }}"
+                class="flex items-center gap-3 rounded-2xl px-4 py-3 text-white bg-white/5 border border-white/10 hover:bg-orange-500/15 hover:border-orange-500/40 transition">
+                <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-orange-500/15 text-orange-400">
+                    <i class="fa-solid fa-user"></i>
+                </span>
+                <span>Pengaturan Profil</span>
+            </a>
+
             @if (in_array(auth()->user()->role, ['admin', 'manager']))
                 <a href="{{ route('admin.dashboard') }}"
                     class="flex items-center gap-3 rounded-2xl px-4 py-3 text-white bg-orange-500/15 border border-orange-500/30 hover:bg-orange-500/25 transition">
-                    <i class="fa-solid fa-gauge-high text-orange-400 w-5"></i>
+                    <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-orange-500/15 text-orange-400">
+                        <i class="fa-solid fa-gauge-high"></i>
+                    </span>
                     <span>Dashboard</span>
                 </a>
             @else
                 <a href="{{ route('user.dashboard') }}"
                     class="flex items-center gap-3 rounded-2xl px-4 py-3 text-white bg-orange-500/15 border border-orange-500/30 hover:bg-orange-500/25 transition">
-                    <i class="fa-solid fa-gauge-high text-orange-400 w-5"></i>
+                    <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-orange-500/15 text-orange-400">
+                        <i class="fa-solid fa-gauge-high"></i>
+                    </span>
                     <span>Dashboard</span>
                 </a>
             @endif
         @else
             <a href="{{ route('login') }}"
                 class="flex items-center gap-3 rounded-2xl px-4 py-3 text-white bg-orange-500/15 border border-orange-500/30 hover:bg-orange-500/25 transition">
-                <i class="fa-solid fa-right-to-bracket text-orange-400 w-5"></i>
+                <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-orange-500/15 text-orange-400">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                </span>
                 <span>Login</span>
             </a>
+
         @endauth
 
     </div>
@@ -394,54 +412,70 @@
 </aside>
 
 <script>
-    (function() {
+    document.addEventListener('DOMContentLoaded', function() {
         var toggle = document.getElementById('frontendMobileMenuToggle');
         var close = document.getElementById('frontendMobileMenuClose');
         var backdrop = document.getElementById('frontendMobileMenuBackdrop');
         var panel = document.getElementById('frontendMobileMenuPanel');
 
         if (!toggle || !close || !backdrop || !panel) {
-            console.warn('Mobile menu elements not found');
+            console.warn('Mobile menu elements not found', {
+                toggle: toggle,
+                close: close,
+                backdrop: backdrop,
+                panel: panel
+            });
             return;
         }
 
         function openMenu() {
-            panel.style.transform = 'translateX(0px)';
-            backdrop.style.opacity = '1';
-            backdrop.style.pointerEvents = 'auto';
-            document.body.style.overflow = 'hidden';
+            backdrop.classList.remove('hidden');
+
+            requestAnimationFrame(function() {
+                panel.classList.remove('translate-x-full');
+                panel.classList.add('translate-x-0');
+
+                backdrop.classList.remove('opacity-0');
+                backdrop.classList.add('opacity-100');
+            });
+
+            document.body.classList.add('overflow-hidden');
             toggle.setAttribute('aria-expanded', 'true');
         }
 
         function closeMenu() {
-            panel.style.transform = 'translateX(100%)';
-            backdrop.style.opacity = '0';
-            backdrop.style.pointerEvents = 'none';
-            document.body.style.overflow = '';
+            panel.classList.remove('translate-x-0');
+            panel.classList.add('translate-x-full');
+
+            backdrop.classList.remove('opacity-100');
+            backdrop.classList.add('opacity-0');
+
+            document.body.classList.remove('overflow-hidden');
             toggle.setAttribute('aria-expanded', 'false');
+
+            setTimeout(function() {
+                backdrop.classList.add('hidden');
+            }, 300);
         }
 
         toggle.addEventListener('click', openMenu);
         close.addEventListener('click', closeMenu);
         backdrop.addEventListener('click', closeMenu);
 
-        // Click any link inside panel to close
         panel.querySelectorAll('a').forEach(function(link) {
             link.addEventListener('click', closeMenu);
         });
 
-        // Escape key
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closeMenu();
             }
         });
 
-        // Resize to desktop
         window.addEventListener('resize', function() {
             if (window.innerWidth >= 768) {
                 closeMenu();
             }
         });
-    })();
+    });
 </script>
