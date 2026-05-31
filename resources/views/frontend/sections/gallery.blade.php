@@ -1,11 +1,19 @@
-<section class="relative bg-black py-28 px-6 overflow-hidden">
+<section class="relative bg-black py-14 sm:py-20 lg:py-28 px-4 sm:px-6 overflow-hidden">
 
     {{-- BACKGROUND --}}
-    <div class="absolute inset-0">
+    <div class="absolute inset-0 pointer-events-none">
 
-        <div class="absolute top-0 left-0 w-96 h-96 bg-orange-500/10 blur-3xl rounded-full"></div>
+        <div
+            class="absolute top-0 left-[-15%] sm:left-0
+            w-56 h-56 sm:w-80 sm:h-80 lg:w-96 lg:h-96
+            bg-orange-500/10 blur-3xl rounded-full">
+        </div>
 
-        <div class="absolute bottom-0 right-0 w-[32rem] h-[32rem] bg-orange-600/10 blur-3xl rounded-full"></div>
+        <div
+            class="absolute bottom-0 right-[-20%] sm:right-0
+            w-64 h-64 sm:w-96 sm:h-96 lg:w-[32rem] lg:h-[32rem]
+            bg-orange-600/10 blur-3xl rounded-full">
+        </div>
 
     </div>
 
@@ -13,19 +21,19 @@
     <div class="relative max-w-7xl mx-auto">
 
         {{-- HEADER --}}
-        <div class="text-center mb-16 reveal">
+        <div class="text-center mb-10 sm:mb-12 lg:mb-16 reveal">
 
             <span
-                class="inline-flex items-center gap-2 bg-orange-500/10 text-orange-400 px-5 py-2 rounded-full text-sm font-semibold border border-orange-500/20">
+                class="inline-flex items-center gap-2 bg-orange-500/10 text-orange-400 px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold border border-orange-500/20">
 
-                <i class="fas fa-camera-retro"></i>
+                <i class="fas fa-camera-retro text-xs sm:text-sm"></i>
 
                 {{ __('frontend.gallery.pre-title') }}
 
             </span>
 
 
-            <h2 class="text-5xl md:text-6xl font-black text-white mt-6 leading-tight">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mt-4 sm:mt-6 leading-tight">
 
                 {{ __('frontend.gallery.white-title') }}
 
@@ -36,7 +44,7 @@
             </h2>
 
 
-            <p class="text-gray-400 mt-6 max-w-3xl mx-auto leading-relaxed text-lg">
+            <p class="text-gray-400 mt-4 sm:mt-6 max-w-3xl mx-auto leading-relaxed text-sm sm:text-base lg:text-lg">
 
                 {{ __('frontend.gallery.description') }}
 
@@ -47,14 +55,18 @@
 
 
         {{-- GALLERY --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5 lg:gap-6">
 
             @forelse($galeris as $gallery)
                 <div
-                    class="group relative overflow-hidden rounded-[2rem] h-80 border border-white/10 shadow-xl hover:shadow-orange-500/20 transition duration-500 reveal">
+                    class="group relative overflow-hidden rounded-2xl lg:rounded-[2rem]
+                    h-44 sm:h-64 lg:h-80
+                    border border-white/10 shadow-lg sm:shadow-xl
+                    hover:shadow-orange-500/20 transition duration-500 reveal">
 
                     {{-- IMAGE --}}
-                    <img src="{{ asset('storage/' . $gallery->image) }}" alt="{{ $gallery->title }}"
+                    <img src="{{ asset('storage/' . $gallery->image) }}" alt="{{ $gallery->title }}" loading="lazy"
+                        decoding="async"
                         class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
 
 
@@ -68,13 +80,13 @@
 
 
                     {{-- CONTENT --}}
-                    <div class="absolute bottom-0 left-0 p-6">
+                    <div class="absolute bottom-0 left-0 p-3 sm:p-5 lg:p-6">
 
-                        <h3 class="text-white font-bold text-xl">
+                        <h3 class="text-white font-bold text-sm sm:text-lg lg:text-xl line-clamp-1">
                             {{ $gallery->title }}
                         </h3>
 
-                        <p class="text-gray-300 text-sm mt-1">
+                        <p class="text-gray-300 text-[11px] sm:text-sm mt-1 line-clamp-2">
                             {{ $gallery->description ?? 'Momen hangat bersama pelanggan' }}
                         </p>
 
@@ -83,9 +95,13 @@
 
                     {{-- ICON --}}
                     <div
-                        class="absolute top-5 right-5 h-10 w-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/10 opacity-0 group-hover:opacity-100 transition duration-500">
+                        class="absolute top-3 right-3 sm:top-5 sm:right-5
+                        h-8 w-8 sm:h-10 sm:w-10
+                        rounded-full bg-black/40 backdrop-blur-md
+                        flex items-center justify-center border border-white/10
+                        opacity-0 group-hover:opacity-100 transition duration-500">
 
-                        <i class="fas fa-expand text-white text-sm"></i>
+                        <i class="fas fa-expand text-white text-xs sm:text-sm"></i>
 
                     </div>
 
@@ -93,12 +109,21 @@
 
             @empty
 
-                <div class="col-span-full text-center py-20">
-                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-800 mb-6">
-                        <i class="fas fa-image text-3xl text-gray-600"></i>
+                <div class="col-span-full text-center py-14 sm:py-20">
+
+                    <div
+                        class="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-800 mb-4 sm:mb-6">
+                        <i class="fas fa-image text-2xl sm:text-3xl text-gray-600"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-400 mb-1">Belum Ada Galeri</h3>
-                    <p class="text-gray-500">Galeri akan segera tersedia</p>
+
+                    <h3 class="text-xl sm:text-2xl font-bold text-gray-400 mb-1">
+                        Belum Ada Galeri
+                    </h3>
+
+                    <p class="text-sm sm:text-base text-gray-500">
+                        Galeri akan segera tersedia
+                    </p>
+
                 </div>
             @endforelse
 
@@ -107,48 +132,18 @@
 
 
         {{-- VIDEO SECTION --}}
-        <div class="mt-28">
-
-            {{-- TITLE --}}
-            {{-- <div class="text-center mb-12">
-
-                <span
-                    class="inline-flex items-center gap-2 bg-orange-500/10 text-orange-400 px-5 py-2 rounded-full text-sm font-semibold border border-orange-500/20">
-
-                    <i class="fas fa-video"></i>
-
-                    Restaurant Experience
-
-                </span>
-
-
-                <h3 class="text-5xl font-black text-white mt-6">
-
-                    Video
-                    <span class="text-orange-500">
-                        Gallery
-                    </span>
-
-                </h3>
-
-
-                <p class="text-gray-400 mt-4 text-lg">
-                    Rasakan suasana restoran kami secara langsung
-                </p>
-
-            </div> --}}
-
-
+        <div class="mt-14 sm:mt-20 lg:mt-28">
 
             {{-- VIDEO GRID --}}
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 reveal">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-8 reveal">
 
                 @forelse($videos as $video)
 
-                    <div class="overflow-hidden rounded-[2rem] border border-white/10 shadow-2xl shadow-orange-500/10">
+                    <div
+                        class="overflow-hidden rounded-2xl lg:rounded-[2rem] border border-white/10 shadow-xl lg:shadow-2xl shadow-orange-500/10">
 
                         @if ($video->video_file)
-                            <video autoplay muted loop controls class="w-full h-[350px] object-cover">
+                            <video autoplay muted loop controls class="w-full h-52 sm:h-72 lg:h-[350px] object-cover">
                                 <source src="{{ asset('storage/' . $video->video_file) }}" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
@@ -168,7 +163,8 @@
                                         $ytId = substr(parse_url($video->video_url, PHP_URL_PATH), 1);
                                     }
                                 @endphp
-                                <div class="relative w-full h-[350px]">
+
+                                <div class="relative w-full h-52 sm:h-72 lg:h-[350px]">
                                     <iframe
                                         src="https://www.youtube.com/embed/{{ $ytId }}?autoplay=1&mute=1&loop=1&playlist={{ $ytId }}"
                                         class="w-full h-full object-cover" allow="autoplay; encrypted-media"
@@ -178,25 +174,35 @@
                                 @php
                                     $vimeoId = substr(parse_url($video->video_url, PHP_URL_PATH), 1);
                                 @endphp
-                                <div class="relative w-full h-[350px]">
+
+                                <div class="relative w-full h-52 sm:h-72 lg:h-[350px]">
                                     <iframe
                                         src="https://player.vimeo.com/video/{{ $vimeoId }}?autoplay=1&muted=1&loop=1"
                                         class="w-full h-full object-cover" allow="autoplay" allowfullscreen
                                         loading="lazy"></iframe>
                                 </div>
                             @else
-                                <video autoplay muted loop controls class="w-full h-[350px] object-cover">
+                                <video autoplay muted loop controls
+                                    class="w-full h-52 sm:h-72 lg:h-[350px] object-cover">
                                     <source src="{{ $video->video_url }}" type="video/mp4">
                                 </video>
                             @endif
                         @endif
 
                         @if ($video->title || $video->description)
-                            <div class="p-5 bg-gradient-to-t from-black/80 to-transparent -mt-20 relative z-10">
-                                <h4 class="text-white font-bold text-lg">{{ $video->title }}</h4>
+                            <div
+                                class="p-4 sm:p-5 bg-gradient-to-t from-black/80 to-transparent -mt-16 sm:-mt-20 relative z-10">
+
+                                <h4 class="text-white font-bold text-base sm:text-lg">
+                                    {{ $video->title }}
+                                </h4>
+
                                 @if ($video->description)
-                                    <p class="text-gray-300 text-sm mt-1">{{ $video->description }}</p>
+                                    <p class="text-gray-300 text-xs sm:text-sm mt-1">
+                                        {{ $video->description }}
+                                    </p>
                                 @endif
+
                             </div>
                         @endif
 
@@ -204,12 +210,21 @@
 
                 @empty
 
-                    <div class="col-span-full text-center py-16">
-                        <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-800 mb-6">
-                            <i class="fas fa-video text-3xl text-gray-600"></i>
+                    <div class="col-span-full text-center py-14 sm:py-16">
+
+                        <div
+                            class="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-800 mb-4 sm:mb-6">
+                            <i class="fas fa-video text-2xl sm:text-3xl text-gray-600"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-gray-400 mb-1">Belum Ada Video</h3>
-                        <p class="text-gray-500">Video akan segera tersedia</p>
+
+                        <h3 class="text-xl sm:text-2xl font-bold text-gray-400 mb-1">
+                            Belum Ada Video
+                        </h3>
+
+                        <p class="text-sm sm:text-base text-gray-500">
+                            Video akan segera tersedia
+                        </p>
+
                     </div>
 
                 @endforelse
@@ -217,9 +232,6 @@
             </div>
 
         </div>
-    </div>
-
-    </div>
 
     </div>
 

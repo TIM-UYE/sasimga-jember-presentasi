@@ -1,4 +1,4 @@
-<section id="reservasi" class="relative bg-zinc-950 py-24 overflow-hidden">
+<section id="reservasi" class="relative bg-zinc-950 py-14 sm:py-16 md:py-20 lg:py-24 overflow-hidden">
 
     {{-- SUCCESS POPUP --}}
     @if (session('success'))
@@ -7,7 +7,7 @@
             <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeSuccessPopup()"></div>
             {{-- Modal --}}
             <div
-                class="relative bg-zinc-900 border border-zinc-800 rounded-3xl shadow-2xl shadow-black/50 max-w-md w-full p-8 text-center animate-fade-in-up">
+                class="relative bg-zinc-900 border border-zinc-800 rounded-2xl sm:rounded-3xl shadow-2xl shadow-black/50 max-w-md w-full p-5 sm:p-8 text-center animate-fade-in-up">
                 {{-- Close button --}}
                 <button onclick="closeSuccessPopup()"
                     class="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors duration-200">
@@ -19,14 +19,15 @@
 
                 {{-- Success icon --}}
                 <div
-                    class="mx-auto mb-6 h-20 w-20 rounded-full bg-linear-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
-                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="mx-auto mb-4 sm:mb-6 h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-linear-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                    <svg class="w-7 h-7 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
                     </svg>
                 </div>
 
                 {{-- Text --}}
-                <h3 class="text-2xl font-bold text-white mb-2">Reservasi Berhasil! 🎉</h3>
+                <h3 class="text-xl sm:text-2xl font-bold text-white mb-2">Reservasi Berhasil! 🎉</h3>
                 <p class="text-zinc-400 text-sm leading-relaxed mb-2">
                     {{ session('success') }}
                 </p>
@@ -66,47 +67,52 @@
 
     {{-- Background Effects --}}
     <div class="absolute inset-0">
-        <div class="absolute top-0 left-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-[128px]"></div>
-        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-orange-600/5 rounded-full blur-[128px]"></div>
+        <div
+            class="absolute top-0 left-0 sm:left-1/4 w-56 h-56 sm:w-80 sm:h-80 lg:w-96 lg:h-96 bg-orange-500/10 rounded-full blur-[96px] lg:blur-[128px]">
+        </div>
+        <div
+            class="absolute bottom-0 right-0 sm:right-1/4 w-56 h-56 sm:w-80 sm:h-80 lg:w-96 lg:h-96 bg-orange-600/5 rounded-full blur-[96px] lg:blur-[128px]">
+        </div>
     </div>
 
-    <div class="max-w-6xl mx-auto px-6 relative z-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
 
         {{-- Header --}}
-        <div class="max-w-2xl mx-auto text-center mb-16 reveal">
+        <div class="max-w-2xl mx-auto text-center mb-10 sm:mb-12 lg:mb-16 reveal">
             <span
-                class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 text-orange-400 text-xs font-medium tracking-wider uppercase mb-5 ring-1 ring-orange-500/20">
+                class="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-orange-500/10 text-orange-400 text-[10px] sm:text-xs font-medium tracking-wider uppercase mb-4 sm:mb-5 ring-1 ring-orange-500/20">
                 <span class="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse"></span>
                 {{ __('frontend.reservation.pre-title') }}
             </span>
-            <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 tracking-tight">
+            <h2
+                class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 tracking-tight leading-tight">
                 <span class="text-white">{{ __('frontend.reservation.white-title') }}</span>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-500">
                     {{ __('frontend.reservation.orange-title') }}
                 </span>
             </h2>
-            <p class="text-zinc-400 text-base leading-relaxed">
+            <p class="text-zinc-400 text-sm sm:text-base leading-relaxed">
                 {{ __('frontend.reservation.description') }}
             </p>
         </div>
 
         {{-- Main Card --}}
         <div
-            class="bg-zinc-900/50 rounded-3xl overflow-hidden border border-zinc-800 shadow-2xl shadow-black/50 reveal">
+            class="bg-zinc-900/50 rounded-2xl md:rounded-3xl overflow-hidden border border-zinc-800 shadow-xl md:shadow-2xl shadow-black/50 reveal">
 
             <div class="grid lg:grid-cols-3 gap-0">
 
                 {{-- Left Panel - Restaurant Info --}}
-                <div class="lg:col-span-1 p-6 border-b lg:border-b-0 lg:border-r border-zinc-800">
-                    <div class="relative h-48 rounded-2xl overflow-hidden mb-6">
+                <div class="lg:col-span-1 p-4 sm:p-5 lg:p-6 border-b lg:border-b-0 lg:border-r border-zinc-800">
+                    <div class="relative h-36 sm:h-44 lg:h-48 rounded-xl sm:rounded-2xl overflow-hidden mb-4 sm:mb-6">
                         <div class="absolute inset-0 bg-black/40"></div>
                         <img src="{{ asset('images/reservasi/sate.jpg') }}" alt="Sate Simpang Tiga"
                             class="w-full h-full object-cover transition-all duration-700 hover:scale-110">
                     </div>
 
-                    <div class="space-y-4">
+                    <div class="space-y-3 sm:space-y-4">
                         <div>
-                            <h3 class="text-white font-medium text-lg">Sate Simpang Tiga</h3>
+                            <h3 class="text-white font-medium text-base sm:text-lg">Sate Simpang Tiga</h3>
                             <p class="text-zinc-400 text-sm">{{ __('frontend.reservation.location') }}</p>
                         </div>
 
@@ -119,17 +125,6 @@
                                 </svg>
                                 11:00 - 23:00
                             </span>
-
-                            {{-- <span class="flex items-center gap-1.5">
-                                <svg class="w-3.5 h-3.5 text-orange-400" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                                Cozy
-                            </span> --}}
                         </div>
 
                         {{-- Legend --}}
@@ -138,7 +133,8 @@
                             <div class="space-y-2 text-xs">
                                 <div class="flex items-center gap-2">
                                     <div class="w-6 h-6 rounded-lg bg-zinc-700 border border-zinc-600"></div>
-                                    <span class="text-zinc-400">{{ __('frontend.reservation.available') }} (4) {{ __('frontend.reservation.table') }}</span>
+                                    <span class="text-zinc-400">{{ __('frontend.reservation.available') }} (4)
+                                        {{ __('frontend.reservation.table') }}</span>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <div class="w-6 h-6 rounded-lg bg-orange-500 border border-orange-400"></div>
@@ -160,7 +156,9 @@
                                         d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 <p class="text-xs text-orange-300">
-                                    {{ __('frontend.reservation.attention1') }} <strong>{{ __('frontend.reservation.attention_strong') }}</strong> {{ __('frontend.reservation.attention2') }}
+                                    {{ __('frontend.reservation.attention1') }}
+                                    <strong>{{ __('frontend.reservation.attention_strong') }}</strong>
+                                    {{ __('frontend.reservation.attention2') }}
                                 </p>
                             </div>
                         </div>
@@ -168,12 +166,12 @@
                 </div>
 
                 {{-- Right Panel - Form & Seat Selection --}}
-                <div class="lg:col-span-2 p-6">
-                    <form action="{{ route('reservasi.store') }}" method="POST" class="space-y-6">
+                <div class="lg:col-span-2 p-4 sm:p-5 lg:p-6">
+                    <form action="{{ route('reservasi.store') }}" method="POST" class="space-y-4 sm:space-y-6">
                         @csrf
 
                         {{-- Personal Info --}}
-                        <div class="grid md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                             <div>
                                 <label class="flex items-center gap-2 text-zinc-300 text-sm font-medium mb-1.5">
                                     <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor"
@@ -185,7 +183,7 @@
                                 </label>
                                 <input type="text" name="nama" value="{{ old('nama') }}"
                                     placeholder="{{ __('frontend.reservation.placeholder.name') }}"
-                                    class="w-full px-4 py-3 bg-zinc-800/80 border border-zinc-700 rounded-xl text-white text-sm placeholder-zinc-500 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 transition-all duration-300 @error('nama') border-red-500 @enderror"
+                                    class="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/80 border border-zinc-700 rounded-xl text-white text-sm placeholder-zinc-500 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 transition-all duration-300 @error('nama') border-red-500 @enderror"
                                     required>
                                 @error('nama')
                                     <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
@@ -203,7 +201,7 @@
                                 </label>
                                 <input type="tel" name="nomor_wa" value="{{ old('nomor_wa') }}"
                                     placeholder="{{ __('frontend.reservation.placeholder.no') }}"
-                                    class="w-full px-4 py-3 bg-zinc-800/80 border border-zinc-700 rounded-xl text-white text-sm placeholder-zinc-500 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 transition-all duration-300 @error('nomor_wa') border-red-500 @enderror"
+                                    class="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/80 border border-zinc-700 rounded-xl text-white text-sm placeholder-zinc-500 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 transition-all duration-300 @error('nomor_wa') border-red-500 @enderror"
                                     required>
                                 @error('nomor_wa')
                                     <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
@@ -212,7 +210,7 @@
                         </div>
 
                         {{-- Date, Time & Guests --}}
-                        <div class="grid md:grid-cols-3 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                             <div>
                                 <label class="flex items-center gap-2 text-zinc-300 text-sm font-medium mb-1.5">
                                     <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor"
@@ -224,7 +222,7 @@
                                 </label>
                                 <input type="date" name="tanggal_reservasi" id="tanggal_reservasi"
                                     value="{{ old('tanggal_reservasi') }}" min="{{ date('Y-m-d') }}"
-                                    class="w-full px-4 py-3 bg-zinc-800/80 border border-zinc-700 rounded-xl text-white text-sm focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 transition-all duration-300 [color-scheme:dark] @error('tanggal_reservasi') border-red-500 @enderror"
+                                    class="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/80 border border-zinc-700 rounded-xl text-white text-sm focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 transition-all duration-300 [color-scheme:dark] @error('tanggal_reservasi') border-red-500 @enderror"
                                     required>
                                 @error('tanggal_reservasi')
                                     <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
@@ -241,9 +239,8 @@
                                     {{ __('frontend.reservation.time') }} <span class="text-red-400">*</span>
                                 </label>
                                 <input type="time" name="waktu_reservasi" id="waktu_reservasi"
-                                    value="{{ old('waktu_reservasi') }}"
-                                    min="11:00" max="23:00"
-                                    class="w-full px-4 py-3 bg-zinc-800/80 border border-zinc-700 rounded-xl text-white text-sm focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 transition-all duration-300 [color-scheme:dark] @error('waktu_reservasi') border-red-500 @enderror"
+                                    value="{{ old('waktu_reservasi') }}" min="11:00" max="23:00"
+                                    class="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/80 border border-zinc-700 rounded-xl text-white text-sm focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 transition-all duration-300 [color-scheme:dark] @error('waktu_reservasi') border-red-500 @enderror"
                                     required>
                                 <p id="waktuError" class="text-red-400 text-xs mt-1 hidden"></p>
                                 @error('waktu_reservasi')
@@ -260,9 +257,9 @@
                                     </svg>
                                     {{ __('frontend.reservation.qty') }} <span class="text-red-400">*</span>
                                 </label>
-                                <input type="number" name="jumlah_orang" value="{{ old('jumlah_orang') }}" min="1"
-                                    placeholder="{{ __('frontend.reservation.placeholder.qty') }}"
-                                    class="w-full px-4 py-3 bg-zinc-800/80 border border-zinc-700 rounded-xl text-white text-sm placeholder-zinc-500 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 transition-all duration-300 @error('jumlah_orang') border-red-500 @enderror"
+                                <input type="number" name="jumlah_orang" value="{{ old('jumlah_orang') }}"
+                                    min="1" placeholder="{{ __('frontend.reservation.placeholder.qty') }}"
+                                    class="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/80 border border-zinc-700 rounded-xl text-white text-sm placeholder-zinc-500 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 transition-all duration-300 @error('jumlah_orang') border-red-500 @enderror"
                                     required>
                                 @error('jumlah_orang')
                                     <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
@@ -271,8 +268,9 @@
                         </div>
 
                         {{-- Seat Selection Area --}}
-                        <div class="pt-4 border-t border-zinc-800">
-                            <div class="flex items-center justify-between mb-4">
+                        <div class="pt-3 sm:pt-4 border-t border-zinc-800">
+                            <div
+                                class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mb-4">
                                 <label class="flex items-center gap-2 text-zinc-300 text-sm font-medium">
                                     <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
@@ -282,32 +280,41 @@
                                     {{ __('frontend.reservation.select_table') }} <span class="text-red-400">*</span>
                                 </label>
                                 <div class="text-right">
-                                    <span id="selectedCount" class="text-xs text-orange-400">0 {{ __('frontend.reservation.chosen_table') }}</span>
+                                    <span id="selectedCount" class="text-xs text-orange-400">0
+                                        {{ __('frontend.reservation.chosen_table') }}</span>
                                     <p id="capacityMessage" class="text-xs text-zinc-400 mt-1 hidden"></p>
                                 </div>
                             </div>
 
                             {{-- Screen/Stage indicator --}}
                             <div class="mb-6">
-                                <div class="bg-gradient-to-t from-zinc-800/50 to-transparent rounded-t-lg py-2 text-center">
-                                    <p class="text-xs text-zinc-500 uppercase tracking-widest">📍 {{ __('frontend.reservation.area') }}</p>
+                                <div
+                                    class="bg-gradient-to-t from-zinc-800/50 to-transparent rounded-t-lg py-2 text-center">
+                                    <p class="text-xs text-zinc-500 uppercase tracking-widest">📍
+                                        {{ __('frontend.reservation.area') }}</p>
                                 </div>
                             </div>
 
                             {{-- Tables Grid --}}
-                            <div id="tablesContainer" class="relative min-h-[300px] p-4 bg-zinc-800/30 rounded-2xl border border-zinc-800">
-                                <p id="fullMessage" class="hidden text-sm text-red-300 mb-4">{{ __('frontend.reservation.full') }}</p>
-                                <div id="tablesGrid" class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 justify-items-center">
+                            <div id="tablesContainer"
+                                class="relative min-h-[220px] sm:min-h-[260px] md:min-h-[300px] p-3 sm:p-4 bg-zinc-800/30 rounded-xl sm:rounded-2xl border border-zinc-800">
+                                <p id="fullMessage" class="hidden text-sm text-red-300 mb-4">
+                                    {{ __('frontend.reservation.full') }}</p>
+                                <div id="tablesGrid"
+                                    class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2 sm:gap-3 justify-items-center">
                                     <!-- Tables will be loaded here -->
                                 </div>
-                                <div id="loadingTables" class="hidden absolute inset-0 flex items-center justify-center bg-zinc-900/80 rounded-2xl">
+                                <div id="loadingTables"
+                                    class="hidden absolute inset-0 flex items-center justify-center bg-zinc-900/80 rounded-2xl">
                                     <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
                                 </div>
                             </div>
 
                             {{-- Selected Tables Info --}}
-                            <div id="selectedTablesInfo" class="hidden mt-4 p-4 bg-zinc-800/50 rounded-xl border border-zinc-700">
-                                <p class="text-sm text-zinc-300 mb-2">{{ __('frontend.reservation.reserve_table') }}:</p>
+                            <div id="selectedTablesInfo"
+                                class="hidden mt-3 sm:mt-4 p-3 sm:p-4 bg-zinc-800/50 rounded-xl border border-zinc-700">
+                                <p class="text-sm text-zinc-300 mb-2">{{ __('frontend.reservation.reserve_table') }}:
+                                </p>
                                 <div id="selectedTablesList" class="flex flex-wrap gap-2"></div>
                             </div>
 
@@ -322,7 +329,7 @@
                         {{-- Submit Button --}}
                         <div class="pt-2">
                             <button type="submit" id="submitBtn"
-                                class="group relative w-full overflow-hidden rounded-xl bg-linear-to-r from-orange-500 to-amber-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-orange-500/25 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/40 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                                class="group relative w-full overflow-hidden rounded-xl bg-linear-to-r from-orange-500 to-amber-600 px-5 sm:px-6 py-3 sm:py-3.5 text-sm font-bold text-white shadow-lg shadow-orange-500/25 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/40 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                                 disabled>
                                 <span class="relative z-10 flex items-center justify-center gap-2">
                                     {{ __('frontend.reservation.serve_btn') }}
@@ -355,370 +362,389 @@
 </section>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const tanggalInput = document.getElementById('tanggal_reservasi');
-    const waktuInput = document.getElementById('waktu_reservasi');
-    const jumlahOrangInput = document.querySelector('input[name="jumlah_orang"]');
-    const waktuError = document.getElementById('waktuError');
-    const fullMessage = document.getElementById('fullMessage');
-    const capacityMessage = document.getElementById('capacityMessage');
-    const tablesGrid = document.getElementById('tablesGrid');
-    const loadingTables = document.getElementById('loadingTables');
-    const selectedCount = document.getElementById('selectedCount');
-    const selectedTablesInfo = document.getElementById('selectedTablesInfo');
-    const selectedTablesList = document.getElementById('selectedTablesList');
-    const mejaIdsInput = document.getElementById('meja_ids_input');
-    const submitBtn = document.getElementById('submitBtn');
-    const reservationForm = document.querySelector('form[action="{{ route('reservasi.store') }}"]');
+    document.addEventListener('DOMContentLoaded', function() {
+        const tanggalInput = document.getElementById('tanggal_reservasi');
+        const waktuInput = document.getElementById('waktu_reservasi');
+        const jumlahOrangInput = document.querySelector('input[name="jumlah_orang"]');
+        const waktuError = document.getElementById('waktuError');
+        const fullMessage = document.getElementById('fullMessage');
+        const capacityMessage = document.getElementById('capacityMessage');
+        const tablesGrid = document.getElementById('tablesGrid');
+        const loadingTables = document.getElementById('loadingTables');
+        const selectedCount = document.getElementById('selectedCount');
+        const selectedTablesInfo = document.getElementById('selectedTablesInfo');
+        const selectedTablesList = document.getElementById('selectedTablesList');
+        const mejaIdsInput = document.getElementById('meja_ids_input');
+        const submitBtn = document.getElementById('submitBtn');
+        const reservationForm = document.querySelector('form[action="{{ route('reservasi.store') }}"]');
 
-    let selectedTables = new Set();
+        let selectedTables = new Set();
 
-    // Set minimum date to today
-    const today = new Date().toISOString().split('T')[0];
-    tanggalInput.setAttribute('min', today);
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        tanggalInput.setAttribute('min', today);
 
-    // Load tables when date and time are selected
-    function loadTables() {
-        const tanggal = tanggalInput.value;
-        const waktu = waktuInput.value;
+        // Load tables when date and time are selected
+        function loadTables() {
+            const tanggal = tanggalInput.value;
+            const waktu = waktuInput.value;
 
-        if (!tanggal || !waktu) return;
+            if (!tanggal || !waktu) return;
 
-        loadingTables.classList.remove('hidden');
-        tablesGrid.classList.add('opacity-50');
+            loadingTables.classList.remove('hidden');
+            tablesGrid.classList.add('opacity-50');
 
-        fetch(`{{ route('reservasi.tables') }}?tanggal=${tanggal}&waktu=${waktu}`)
-            .then(response => response.json().then(data => ({ status: response.status, body: data })))
-            .then(({ status, body }) => {
-                if (status === 422 && body.error) {
-                    // Handle operating hours error from server
-                    displayFullMessage(false);
-                    renderTables([]);
-                    tablesGrid.innerHTML = `<p class="text-red-300 text-sm col-span-full text-center py-8">${body.error}</p>`;
+            fetch(`{{ route('reservasi.tables') }}?tanggal=${tanggal}&waktu=${waktu}`)
+                .then(response => response.json().then(data => ({
+                    status: response.status,
+                    body: data
+                })))
+                .then(({
+                    status,
+                    body
+                }) => {
+                    if (status === 422 && body.error) {
+                        // Handle operating hours error from server
+                        displayFullMessage(false);
+                        renderTables([]);
+                        tablesGrid.innerHTML =
+                            `<p class="text-red-300 text-sm col-span-full text-center py-8">${body.error}</p>`;
+                        loadingTables.classList.add('hidden');
+                        tablesGrid.classList.remove('opacity-50');
+                        return;
+                    }
+                    const allFull = body.all_full || (body.tables.length > 0 && body.tables.every(table => !
+                        table.is_available));
+                    displayFullMessage(allFull);
+                    renderTables(body.tables);
                     loadingTables.classList.add('hidden');
                     tablesGrid.classList.remove('opacity-50');
-                    return;
-                }
-                const allFull = body.all_full || (body.tables.length > 0 && body.tables.every(table => !table.is_available));
-                displayFullMessage(allFull);
-                renderTables(body.tables);
-                loadingTables.classList.add('hidden');
-                tablesGrid.classList.remove('opacity-50');
-            })
-            .catch(error => {
-                console.error('Error loading tables:', error);
-                loadingTables.classList.add('hidden');
-                tablesGrid.classList.remove('opacity-50');
-            });
-    }
-
-    // Render tables grid
-    function renderTables(tables) {
-        tablesGrid.innerHTML = '';
-
-        const availableTableIds = tables.filter(table => table.is_available).map(table => table.id.toString());
-        selectedTables = new Set([...selectedTables].filter(id => availableTableIds.includes(id)));
-        updateSelectedInfo();
-
-        if (tables.length === 0) {
-            tablesGrid.innerHTML = '<p class="text-zinc-500 text-sm col-span-full text-center py-8">Belum ada meja tersedia.</p>';
-            return;
+                })
+                .catch(error => {
+                    console.error('Error loading tables:', error);
+                    loadingTables.classList.add('hidden');
+                    tablesGrid.classList.remove('opacity-50');
+                });
         }
 
-        tables.forEach(table => {
-            const isAvailable = table.is_available;
-            const isSelected = selectedTables.has(table.id.toString());
+        // Render tables grid
+        function renderTables(tables) {
+            tablesGrid.innerHTML = '';
 
-            const tableEl = document.createElement('div');
-            tableEl.className = `
-                relative w-16 h-16 rounded-xl border-2 cursor-pointer transition-all duration-200
+            const availableTableIds = tables.filter(table => table.is_available).map(table => table.id
+            .toString());
+            selectedTables = new Set([...selectedTables].filter(id => availableTableIds.includes(id)));
+            updateSelectedInfo();
+
+            if (tables.length === 0) {
+                tablesGrid.innerHTML =
+                    '<p class="text-zinc-500 text-sm col-span-full text-center py-8">Belum ada meja tersedia.</p>';
+                return;
+            }
+
+            tables.forEach(table => {
+                const isAvailable = table.is_available;
+                const isSelected = selectedTables.has(table.id.toString());
+
+                const tableEl = document.createElement('div');
+                tableEl.className = `
+    relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg sm:rounded-xl border-2 cursor-pointer transition-all duration-200
                 flex flex-col items-center justify-center gap-1
                 ${!isAvailable ? 'bg-zinc-800/50 border-zinc-700 opacity-50 cursor-not-allowed' : ''}
                 ${isSelected ? 'bg-orange-500 border-orange-400 shadow-lg shadow-orange-500/30 scale-105' : ''}
                 ${isAvailable && !isSelected ? 'bg-zinc-700 border-zinc-600 hover:border-orange-400 hover:bg-zinc-600' : ''}
             `;
-            tableEl.dataset.tableId = table.id;
-            tableEl.dataset.tableName = table.nama_meja;
-            tableEl.title = isAvailable ? table.nama_meja : 'Terpesan';
+                tableEl.dataset.tableId = table.id;
+                tableEl.dataset.tableName = table.nama_meja;
+                tableEl.title = isAvailable ? table.nama_meja : 'Terpesan';
 
-            // Table label
-            const label = document.createElement('span');
-            label.className = `text-xs font-bold ${isSelected ? 'text-white' : 'text-zinc-300'}`;
-            label.textContent = table.posisi_row + table.posisi_col;
+                // Table label
+                const label = document.createElement('span');
+                label.className =
+                    `text-[10px] sm:text-xs font-bold ${isSelected ? 'text-white' : 'text-zinc-300'}`;
+                label.textContent = table.posisi_row + table.posisi_col;
 
-            // Capacity indicator
-            const capacity = document.createElement('span');
-            capacity.className = 'text-[10px] text-zinc-500';
-            capacity.textContent = table.kapasitas + ' org';
+                // Capacity indicator
+                const capacity = document.createElement('span');
+                capacity.className = 'text-[9px] sm:text-[10px] text-zinc-500';
+                capacity.textContent = table.kapasitas + ' org';
 
-            tableEl.appendChild(label);
-            tableEl.appendChild(capacity);
+                tableEl.appendChild(label);
+                tableEl.appendChild(capacity);
 
-            // Click handler
-            if (isAvailable) {
-                tableEl.addEventListener('click', () => toggleTable(table.id, table.nama_meja, tableEl));
+                // Click handler
+                if (isAvailable) {
+                    tableEl.addEventListener('click', () => toggleTable(table.id, table.nama_meja,
+                        tableEl));
+                }
+
+                tablesGrid.appendChild(tableEl);
+            });
+
+            autoSelectTables();
+        }
+
+        // Toggle table selection
+        function toggleTable(tableId, tableName, element) {
+            const tableIdStr = tableId.toString();
+            const requiredTables = getRequiredTableCount();
+
+            if (selectedTables.has(tableIdStr)) {
+                selectedTables.delete(tableIdStr);
+                element.classList.remove('bg-orange-500', 'border-orange-400', 'shadow-lg',
+                    'shadow-orange-500/30', 'scale-105');
+                element.classList.add('bg-zinc-700', 'border-zinc-600');
+                element.querySelector('span:first-child').classList.remove('text-white');
+                element.querySelector('span:first-child').classList.add('text-zinc-300');
+            } else {
+                if (selectedTables.size >= requiredTables) {
+                    return;
+                }
+                selectedTables.add(tableIdStr);
+                element.classList.remove('bg-zinc-700', 'border-zinc-600');
+                element.classList.add('bg-orange-500', 'border-orange-400', 'shadow-lg', 'shadow-orange-500/30',
+                    'scale-105');
+                element.querySelector('span:first-child').classList.remove('text-zinc-300');
+                element.querySelector('span:first-child').classList.add('text-white');
             }
 
-            tablesGrid.appendChild(tableEl);
-        });
+            updateSelectedInfo();
+        }
 
-        autoSelectTables();
-    }
+        function getRequiredTableCount() {
+            const jumlah = parseInt(jumlahOrangInput.value, 10);
+            if (!jumlah || jumlah <= 0) {
+                return 1;
+            }
 
-    // Toggle table selection
-    function toggleTable(tableId, tableName, element) {
-        const tableIdStr = tableId.toString();
-        const requiredTables = getRequiredTableCount();
+            const seatsPerTable = 4;
+            return Math.ceil(jumlah / seatsPerTable);
+        }
 
-        if (selectedTables.has(tableIdStr)) {
-            selectedTables.delete(tableIdStr);
-            element.classList.remove('bg-orange-500', 'border-orange-400', 'shadow-lg', 'shadow-orange-500/30', 'scale-105');
-            element.classList.add('bg-zinc-700', 'border-zinc-600');
-            element.querySelector('span:first-child').classList.remove('text-white');
-            element.querySelector('span:first-child').classList.add('text-zinc-300');
-        } else {
-            if (selectedTables.size >= requiredTables) {
+        function updateCapacityMessage() {
+            const jumlah = parseInt(jumlahOrangInput.value, 10);
+            if (!jumlah || jumlah <= 0) {
+                capacityMessage.classList.add('hidden');
                 return;
             }
-            selectedTables.add(tableIdStr);
-            element.classList.remove('bg-zinc-700', 'border-zinc-600');
-            element.classList.add('bg-orange-500', 'border-orange-400', 'shadow-lg', 'shadow-orange-500/30', 'scale-105');
-            element.querySelector('span:first-child').classList.remove('text-zinc-300');
-            element.querySelector('span:first-child').classList.add('text-white');
-        }
 
-        updateSelectedInfo();
-    }
-
-    function getRequiredTableCount() {
-        const jumlah = parseInt(jumlahOrangInput.value, 10);
-        if (!jumlah || jumlah <= 0) {
-            return 1;
-        }
-
-        const seatsPerTable = 4;
-        return Math.ceil(jumlah / seatsPerTable);
-    }
-
-    function updateCapacityMessage() {
-        const jumlah = parseInt(jumlahOrangInput.value, 10);
-        if (!jumlah || jumlah <= 0) {
-            capacityMessage.classList.add('hidden');
-            return;
-        }
-
-        const requiredTables = getRequiredTableCount();
-        capacityMessage.textContent = `Untuk ${jumlah} orang, diperlukan ${requiredTables} meja.`;
-        capacityMessage.classList.remove('hidden');
-        capacityMessage.classList.remove('text-red-400');
-        capacityMessage.classList.add('text-zinc-400');
-    }
-
-    function validateTableSelection() {
-        const jumlah = parseInt(jumlahOrangInput.value, 10);
-        const requiredTables = getRequiredTableCount();
-        const selectedCountValue = selectedTables.size;
-
-        if (!jumlah || selectedCountValue === 0) {
-            submitBtn.disabled = true;
-            return;
-        }
-
-        if (selectedCountValue < requiredTables) {
-            capacityMessage.textContent = `Pilih ${requiredTables} meja untuk ${jumlah} orang.`;
-            capacityMessage.classList.remove('hidden');
-            capacityMessage.classList.remove('text-zinc-400');
-            capacityMessage.classList.add('text-red-400');
-            submitBtn.disabled = true;
-        } else {
-            capacityMessage.textContent = `Untuk ${jumlah} orang, ${requiredTables} meja sudah dipilih.`;
+            const requiredTables = getRequiredTableCount();
+            capacityMessage.textContent = `Untuk ${jumlah} orang, diperlukan ${requiredTables} meja.`;
             capacityMessage.classList.remove('hidden');
             capacityMessage.classList.remove('text-red-400');
             capacityMessage.classList.add('text-zinc-400');
-            submitBtn.disabled = false;
         }
-    }
 
-    // Update selected tables info
-    function normalizeSelectionToRequired() {
-        const requiredTables = getRequiredTableCount();
+        function validateTableSelection() {
+            const jumlah = parseInt(jumlahOrangInput.value, 10);
+            const requiredTables = getRequiredTableCount();
+            const selectedCountValue = selectedTables.size;
 
-        if (selectedTables.size > requiredTables) {
-            const selectedArray = Array.from(selectedTables);
-            const resized = new Set(selectedArray.slice(0, requiredTables));
-            const removed = selectedArray.slice(requiredTables);
+            if (!jumlah || selectedCountValue === 0) {
+                submitBtn.disabled = true;
+                return;
+            }
 
-            removed.forEach(id => {
-                const row = document.querySelector(`[data-table-id="${id}"]`);
-                if (row) {
-                    row.classList.remove('bg-orange-500', 'border-orange-400', 'shadow-lg', 'shadow-orange-500/30', 'scale-105');
-                    row.classList.add('bg-zinc-700', 'border-zinc-600');
-                    const label = row.querySelector('span:first-child');
-                    if (label) {
-                        label.classList.remove('text-white');
-                        label.classList.add('text-zinc-300');
+            if (selectedCountValue < requiredTables) {
+                capacityMessage.textContent = `Pilih ${requiredTables} meja untuk ${jumlah} orang.`;
+                capacityMessage.classList.remove('hidden');
+                capacityMessage.classList.remove('text-zinc-400');
+                capacityMessage.classList.add('text-red-400');
+                submitBtn.disabled = true;
+            } else {
+                capacityMessage.textContent = `Untuk ${jumlah} orang, ${requiredTables} meja sudah dipilih.`;
+                capacityMessage.classList.remove('hidden');
+                capacityMessage.classList.remove('text-red-400');
+                capacityMessage.classList.add('text-zinc-400');
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Update selected tables info
+        function normalizeSelectionToRequired() {
+            const requiredTables = getRequiredTableCount();
+
+            if (selectedTables.size > requiredTables) {
+                const selectedArray = Array.from(selectedTables);
+                const resized = new Set(selectedArray.slice(0, requiredTables));
+                const removed = selectedArray.slice(requiredTables);
+
+                removed.forEach(id => {
+                    const row = document.querySelector(`[data-table-id="${id}"]`);
+                    if (row) {
+                        row.classList.remove('bg-orange-500', 'border-orange-400', 'shadow-lg',
+                            'shadow-orange-500/30', 'scale-105');
+                        row.classList.add('bg-zinc-700', 'border-zinc-600');
+                        const label = row.querySelector('span:first-child');
+                        if (label) {
+                            label.classList.remove('text-white');
+                            label.classList.add('text-zinc-300');
+                        }
                     }
-                }
-            });
+                });
 
-            selectedTables = resized;
+                selectedTables = resized;
+            }
         }
-    }
 
-    function updateSelectedInfo() {
-        normalizeSelectionToRequired();
+        function updateSelectedInfo() {
+            normalizeSelectionToRequired();
 
-        const count = selectedTables.size;
-        selectedCount.textContent = count + ' meja dipilih';
+            const count = selectedTables.size;
+            selectedCount.textContent = count + ' meja dipilih';
 
-        if (count > 0) {
-            selectedTablesInfo.classList.remove('hidden');
+            if (count > 0) {
+                selectedTablesInfo.classList.remove('hidden');
 
-            // Build list of selected table names
-            selectedTablesList.innerHTML = '';
+                // Build list of selected table names
+                selectedTablesList.innerHTML = '';
+                selectedTables.forEach(id => {
+                    const tableEl = document.querySelector(`[data-table-id="${id}"]`);
+                    if (tableEl) {
+                        const badge = document.createElement('span');
+                        badge.className =
+                            'px-2 py-1 bg-orange-500/20 border border-orange-500/30 rounded-lg text-xs text-orange-300';
+                        badge.textContent = tableEl.dataset.tableName;
+                        selectedTablesList.appendChild(badge);
+                    }
+                });
+            } else {
+                selectedTablesInfo.classList.add('hidden');
+            }
+
+            // Update hidden inputs as a real Laravel array: meja_ids[]
+            mejaIdsInput.innerHTML = '';
             selectedTables.forEach(id => {
-                const tableEl = document.querySelector(`[data-table-id="${id}"]`);
-                if (tableEl) {
-                    const badge = document.createElement('span');
-                    badge.className = 'px-2 py-1 bg-orange-500/20 border border-orange-500/30 rounded-lg text-xs text-orange-300';
-                    badge.textContent = tableEl.dataset.tableName;
-                    selectedTablesList.appendChild(badge);
-                }
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'meja_ids[]';
+                input.value = id;
+                mejaIdsInput.appendChild(input);
             });
-        } else {
-            selectedTablesInfo.classList.add('hidden');
+
+            validateTableSelection();
         }
 
-        // Update hidden inputs as a real Laravel array: meja_ids[]
-        mejaIdsInput.innerHTML = '';
-        selectedTables.forEach(id => {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'meja_ids[]';
-            input.value = id;
-            mejaIdsInput.appendChild(input);
-        });
-
-        validateTableSelection();
-    }
-
-    function autoSelectTables() {
-        const requiredTables = getRequiredTableCount();
-        if (selectedTables.size >= requiredTables) {
-            return;
-        }
-
-        const availableTableEls = Array.from(tablesGrid.querySelectorAll('[data-table-id]')).filter(el => {
-            return !el.classList.contains('cursor-not-allowed') && !selectedTables.has(el.dataset.tableId);
-        });
-
-        for (const el of availableTableEls) {
+        function autoSelectTables() {
+            const requiredTables = getRequiredTableCount();
             if (selectedTables.size >= requiredTables) {
-                break;
+                return;
             }
 
-            const tableId = el.dataset.tableId;
-            const label = el.querySelector('span:first-child');
+            const availableTableEls = Array.from(tablesGrid.querySelectorAll('[data-table-id]')).filter(el => {
+                return !el.classList.contains('cursor-not-allowed') && !selectedTables.has(el.dataset
+                    .tableId);
+            });
 
-            selectedTables.add(tableId);
-            el.classList.remove('bg-zinc-700', 'border-zinc-600');
-            el.classList.add('bg-orange-500', 'border-orange-400', 'shadow-lg', 'shadow-orange-500/30', 'scale-105');
-            if (label) {
-                label.classList.remove('text-zinc-300');
-                label.classList.add('text-white');
+            for (const el of availableTableEls) {
+                if (selectedTables.size >= requiredTables) {
+                    break;
+                }
+
+                const tableId = el.dataset.tableId;
+                const label = el.querySelector('span:first-child');
+
+                selectedTables.add(tableId);
+                el.classList.remove('bg-zinc-700', 'border-zinc-600');
+                el.classList.add('bg-orange-500', 'border-orange-400', 'shadow-lg', 'shadow-orange-500/30',
+                    'scale-105');
+                if (label) {
+                    label.classList.remove('text-zinc-300');
+                    label.classList.add('text-white');
+                }
+            }
+
+            updateSelectedInfo();
+        }
+
+        function displayFullMessage(show) {
+            if (show) {
+                fullMessage.classList.remove('hidden');
+            } else {
+                fullMessage.classList.add('hidden');
             }
         }
 
-        updateSelectedInfo();
-    }
+        function isTimeInOperatingHours(timeStr) {
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            const totalMinutes = hours * 60 + minutes;
+            const openMinutes = 11 * 60; // 11:00
+            const closeMinutes = 23 * 60; // 23:00
 
-    function displayFullMessage(show) {
-        if (show) {
-            fullMessage.classList.remove('hidden');
-        } else {
-            fullMessage.classList.add('hidden');
+            return totalMinutes >= openMinutes && totalMinutes <= closeMinutes;
         }
-    }
 
-    function isTimeInOperatingHours(timeStr) {
-        const [hours, minutes] = timeStr.split(':').map(Number);
-        const totalMinutes = hours * 60 + minutes;
-        const openMinutes = 11 * 60;      // 11:00
-        const closeMinutes = 23 * 60;     // 23:00
+        function isLeadTimeValid() {
+            if (!tanggalInput.value || !waktuInput.value) {
+                waktuError.textContent = '';
+                waktuError.classList.add('hidden');
+                return true;
+            }
 
-        return totalMinutes >= openMinutes && totalMinutes <= closeMinutes;
-    }
+            // Validasi jam operasional 11:00 - 23:00
+            if (!isTimeInOperatingHours(waktuInput.value)) {
+                waktuError.textContent = 'Reservasi hanya dapat dilakukan pada jam 11:00 - 23:00.';
+                waktuError.classList.remove('hidden');
+                submitBtn.disabled = true;
+                return false;
+            }
 
-    function isLeadTimeValid() {
-        if (!tanggalInput.value || !waktuInput.value) {
+            const selectedDateTime = new Date(`${tanggalInput.value}T${waktuInput.value}`);
+            const minimumDate = new Date(Date.now() + 12 * 60 * 60 * 1000);
+
+            if (selectedDateTime < minimumDate) {
+                waktuError.textContent = 'Reservasi harus dibuat minimal 12 jam sebelum waktu acara.';
+                waktuError.classList.remove('hidden');
+                submitBtn.disabled = true;
+                return false;
+            }
+
             waktuError.textContent = '';
             waktuError.classList.add('hidden');
             return true;
         }
 
-        // Validasi jam operasional 11:00 - 23:00
-        if (!isTimeInOperatingHours(waktuInput.value)) {
-            waktuError.textContent = 'Reservasi hanya dapat dilakukan pada jam 11:00 - 23:00.';
-            waktuError.classList.remove('hidden');
-            submitBtn.disabled = true;
-            return false;
-        }
+        // Event listeners
+        tanggalInput.addEventListener('change', () => {
+            isLeadTimeValid();
+            updateCapacityMessage();
+            loadTables();
+        });
+        waktuInput.addEventListener('change', () => {
+            isLeadTimeValid();
+            loadTables();
+        });
+        jumlahOrangInput.addEventListener('input', () => {
+            updateCapacityMessage();
+            updateSelectedInfo();
+            autoSelectTables();
+        });
 
-        const selectedDateTime = new Date(`${tanggalInput.value}T${waktuInput.value}`);
-        const minimumDate = new Date(Date.now() + 12 * 60 * 60 * 1000);
+        reservationForm.addEventListener('submit', function(event) {
+            if (!isLeadTimeValid()) {
+                event.preventDefault();
+                return;
+            }
 
-        if (selectedDateTime < minimumDate) {
-            waktuError.textContent = 'Reservasi harus dibuat minimal 12 jam sebelum waktu acara.';
-            waktuError.classList.remove('hidden');
-            submitBtn.disabled = true;
-            return false;
-        }
+            const requiredTables = getRequiredTableCount();
+            if (selectedTables.size < requiredTables) {
+                event.preventDefault();
+                capacityMessage.textContent =
+                    `Pilih ${requiredTables} meja untuk ${jumlahOrangInput.value || 1} orang.`;
+                capacityMessage.classList.remove('hidden');
+                capacityMessage.classList.remove('text-zinc-400');
+                capacityMessage.classList.add('text-red-400');
+                return;
+            }
+        });
 
-        waktuError.textContent = '';
-        waktuError.classList.add('hidden');
-        return true;
-    }
-
-    // Event listeners
-    tanggalInput.addEventListener('change', () => {
-        isLeadTimeValid();
-        updateCapacityMessage();
-        loadTables();
-    });
-    waktuInput.addEventListener('change', () => {
-        isLeadTimeValid();
-        loadTables();
-    });
-    jumlahOrangInput.addEventListener('input', () => {
-        updateCapacityMessage();
-        updateSelectedInfo();
-        autoSelectTables();
-    });
-
-    reservationForm.addEventListener('submit', function (event) {
-        if (!isLeadTimeValid()) {
-            event.preventDefault();
-            return;
-        }
-
-        const requiredTables = getRequiredTableCount();
-        if (selectedTables.size < requiredTables) {
-            event.preventDefault();
-            capacityMessage.textContent = `Pilih ${requiredTables} meja untuk ${jumlahOrangInput.value || 1} orang.`;
-            capacityMessage.classList.remove('hidden');
-            capacityMessage.classList.remove('text-zinc-400');
-            capacityMessage.classList.add('text-red-400');
-            return;
+        // Load tables on page load if date and time are pre-filled
+        if (tanggalInput.value && waktuInput.value) {
+            isLeadTimeValid();
+            updateCapacityMessage();
+            loadTables();
+        } else {
+            updateCapacityMessage();
         }
     });
-
-    // Load tables on page load if date and time are pre-filled
-    if (tanggalInput.value && waktuInput.value) {
-        isLeadTimeValid();
-        updateCapacityMessage();
-        loadTables();
-    } else {
-        updateCapacityMessage();
-    }
-});
 </script>
