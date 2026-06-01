@@ -17,8 +17,8 @@ services:
       QUEUE_CONNECTION: sync
       SESSION_DRIVER: file
 
-      AI_PREDICTION_URL: ${AI_PREDICTION_URL:-}
-      AI_HEALTH_URL: ${AI_HEALTH_URL:-}
+      AI_PREDICTION_URL: "http://103.157.27.218:8001/predict"
+      AI_HEALTH_URL: "http://103.157.27.218:8001/"
 
     volumes:
       - app_storage:/var/www/storage
