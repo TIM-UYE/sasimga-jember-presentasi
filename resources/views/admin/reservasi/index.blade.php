@@ -137,6 +137,8 @@
                         <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Tanggal</th>
                         <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Jam</th>
                         <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Orang</th>
+                        <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Meja</th>
+                        <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Lantai</th>
                         <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Status</th>
                         <th class="px-6 py-4 text-right text-[11px] font-semibold uppercase tracking-wider text-slate-500">Aksi</th>
                     </tr>

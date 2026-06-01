@@ -2,7 +2,5 @@
 
 @section('content')
 <br>
-
 @include('frontend.sections.reservasi')
-
 @endsection

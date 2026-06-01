@@ -131,6 +131,10 @@
                     class="flex items-center pl-12 pr-4 py-2.5 rounded-lg text-white font-semibold hover:bg-white/10 transition {{ request()->routeIs('admin.meja.*') ? 'bg-white/20' : '' }}">
                     <i class="fas fa-chair mr-3 text-sm"></i> Meja
                 </a>
+                <a href="{{ route('admin.layout.index') }}"
+                    class="flex items-center pl-12 pr-4 py-2.5 rounded-lg text-white font-semibold hover:bg-white/10 transition {{ request()->routeIs('admin.layout.*') ? 'bg-white/20' : '' }}">
+                    <i class="fas fa-layer-group mr-3 text-sm"></i> Layout Restoran
+                </a>
             </div>
         </li>
 
@@ -138,15 +142,15 @@
     <li>
         <button type="button" onclick="toggleSection(this)"
             class="w-full group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
-            
+
             <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
                 <i class="fas fa-chart-pie text-sm"></i>
             </div>
-            
+
             <span class="flex-1 text-left">Laporan</span>
             <i class="fas fa-chevron-down text-xs transition-transform duration-300 mr-1"></i>
         </button>
-        
+
         <div class="ml-4 mt-1 space-y-1 overflow-hidden transition-all duration-300 hidden">
             <a href="{{ route('admin.laporan.pesanan') }}"
                 class="flex items-center pl-12 pr-4 py-2.5 rounded-lg text-white font-semibold hover:bg-white/10 transition {{ request()->routeIs('admin.laporan.pesanan') ? 'bg-white/20' : '' }}">

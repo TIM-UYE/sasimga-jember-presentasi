@@ -19,6 +19,8 @@ class Reservasi extends Model
         'tanggal_reservasi',
         'waktu_reservasi',
         'jumlah_orang',
+        'lantai_id',
+        'jumlah_meja',
         'status',
         'meja_ids', // Store selected table IDs as JSON
     ];
@@ -27,8 +29,26 @@ class Reservasi extends Model
         'tanggal_reservasi' => 'date',
         'waktu_reservasi' => 'string',
         'jumlah_orang' => 'integer',
+        'jumlah_meja' => 'integer',
+        'lantai_id' => 'integer',
         'meja_ids' => 'array',
     ];
+
+    /**
+     * Get the floor for this reservation.
+     */
+    public function lantai()
+    {
+        return $this->belongsTo(Lantai::class);
+    }
+
+    /**
+     * Get the tables for this reservation.
+     */
+    public function mejas()
+    {
+        return Meja::whereIn('id', $this->meja_ids ?? [])->get();
+    }
 
     /**
      * Get label for status.

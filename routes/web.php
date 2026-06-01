@@ -131,6 +131,15 @@ Route::post('/reservasi', [ReservasiController::class, 'store'])
 Route::get('/reservasi/tables', [ReservasiController::class, 'getAvailableTables'])
     ->name('reservasi.tables');
 
+Route::get('/reservasi/floors', [ReservasiController::class, 'getFloors'])
+    ->name('reservasi.floors');
+
+Route::get('/reservasi/tables-by-floor', [ReservasiController::class, 'getTablesByFloor'])
+    ->name('reservasi.tables.byfloor');
+
+Route::get('/reservasi/table/{id}/detail', [ReservasiController::class, 'getTableDetail'])
+    ->name('reservasi.table.detail');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -334,6 +343,9 @@ Route::middleware(['auth', 'role:admin,manager'])
         Route::get('/reservasi', [ReservasiController::class, 'index'])
             ->name('reservasi.index');
 
+        Route::get('/reservasi/{id}', [ReservasiController::class, 'show'])
+            ->name('reservasi.show');
+
         Route::get('/reservasi/export', [ReservasiController::class, 'export'])
             ->name('reservasi.export');
 
@@ -345,6 +357,42 @@ Route::middleware(['auth', 'role:admin,manager'])
 
         Route::resource('meja', MejaController::class)
             ->only(['index', 'store', 'destroy']);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | LAYOUT RESTORAN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::prefix('layout')
+            ->name('layout.')
+            ->group(function () {
+
+                Route::get('/{slug?}', [\App\Http\Controllers\Admin\LayoutController::class, 'index'])
+                    ->name('index');
+
+                Route::post('/preview/{id}', [\App\Http\Controllers\Admin\LayoutController::class, 'updatePreview'])
+                    ->name('preview.update');
+
+                Route::post('/table', [\App\Http\Controllers\Admin\LayoutController::class, 'storeTable'])
+                    ->name('table.store');
+
+                Route::get('/table/{id}', [\App\Http\Controllers\Admin\LayoutController::class, 'getTable'])
+                    ->name('table.get');
+
+                Route::put('/table/{id}/position', [\App\Http\Controllers\Admin\LayoutController::class, 'updateTablePosition'])
+                    ->name('table.position');
+
+                Route::post('/table/{id}', [\App\Http\Controllers\Admin\LayoutController::class, 'updateTable'])
+                    ->name('table.update');
+
+                Route::delete('/table/{id}', [\App\Http\Controllers\Admin\LayoutController::class, 'destroyTable'])
+                    ->name('table.destroy');
+
+                Route::post('/bulk-positions', [\App\Http\Controllers\Admin\LayoutController::class, 'bulkUpdatePositions'])
+                    ->name('bulk-positions');
+            });
 
 
         /*
