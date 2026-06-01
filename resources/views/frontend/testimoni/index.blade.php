@@ -61,12 +61,23 @@
                 <div class="group relative bg-zinc-900/70 backdrop-blur-sm border border-white/5 rounded-3xl overflow-hidden hover:border-orange-500/30 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-orange-500/10 reveal"
                     style="animation-delay: {{ $index * 0.1 }}s">
 
-                    {{-- BANNER GRADIENT --}}
+                    {{-- BANNER GRADIENT & REVIEW PHOTO --}}
                     <div class="relative h-52 overflow-hidden flex items-center justify-center bg-gradient-to-br from-orange-500/30 via-orange-600/20 to-amber-500/10">
                         <div class="absolute inset-0 opacity-10" style="background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.03) 20px, rgba(255,255,255,0.03) 40px)"></div>
 
+                        {{-- REVIEW PHOTO --}}
+                        @php
+                            $reviewPhotoItem = data_get($testimoni, 'review_photo', '');
+                        @endphp
+                        @if ($reviewPhotoItem)
+                            <img src="{{ $reviewPhotoItem }}"
+                                onerror="this.style.display='none'"
+                                class="w-full h-full object-cover absolute inset-0"
+                                alt="Foto review">
+                        @endif
+
                         {{-- OVERLAY --}}
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
 
                         {{-- SOURCE & SENTIMENT --}}
                         <div class="absolute top-4 right-4 flex gap-2">

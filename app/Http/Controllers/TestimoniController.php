@@ -54,6 +54,7 @@ class TestimoniController extends Controller
                 'text' => $review->review_text,
                 'rating' => (int) $review->rating,
                 'profile_photo_url' => $review->profile_photo,
+                'review_photo' => $review->review_photo,
                 'source' => 'Google',
                 'review_date' => $review->review_date,
                 'relative_time_description' => $review->review_date

@@ -33,6 +33,7 @@ class HomeController extends Controller
                     'text' => $review->review_text ?? '',
                     'rating' => (int) $review->rating,
                     'profile_photo_url' => $review->profile_photo,
+                    'review_photo' => $review->review_photo,
                     'relative_time_description' => $review->review_date
                         ? $review->review_date->diffForHumans()
                         : 'Baru saja',

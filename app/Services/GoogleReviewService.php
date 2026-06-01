@@ -333,9 +333,12 @@ class GoogleReviewService
                     'scraped_at' => now(),
                 ];
 
-                // Update foto profil jika ada yang baru
+                // Update foto profil dan foto review jika ada yang baru
                 if (!empty($parsed['profile_photo'])) {
                     $updateData['profile_photo'] = $parsed['profile_photo'];
+                }
+                if (!empty($parsed['review_photo'])) {
+                    $updateData['review_photo'] = $parsed['review_photo'];
                 }
                 if (!empty($parsed['author_url'])) {
                     $updateData['author_url'] = $parsed['author_url'];
@@ -892,12 +895,12 @@ class GoogleReviewService
     {
         $input = [
             'maxReviews' => $this->maxReviews,
-            'maxImages' => 1,
+            'maxImages' => 10,
             'language' => 'id',
             'includeReviews' => true,
             'scrapeReviewerInfo' => true,
-            'includeImages' => false,
-            'maxImagesPerReview' => 1,
+            'includeImages' => true,
+            'maxImagesPerReview' => 5,
         ];
 
         // Prioritaskan placeIds jika ada
@@ -985,7 +988,13 @@ class GoogleReviewService
         $profilePhoto = $item['authorPhotoUrl'] ?? $item['profilePhotoUrl'] ?? $item['profile_photo_url'] ?? $item['profile_photo'] ?? $item['authorPhoto'] ?? $item['userPhoto'] ?? $item['photoUrl'] ?? $item['avatarUrl'] ?? $item['avatar'] ?? $item['photo'] ?? $item['picture'] ?? $item['authorImageUrl'] ?? $item['reviewerPhotoUrl'] ?? $item['userImage'] ?? $item['profilePhoto'] ?? '';
 
         // Coba semua kemungkinan field foto review
-        $reviewPhoto = $item['reviewPhotoUrl'] ?? $item['reviewPhoto'] ?? $item['review_photo'] ?? $item['reviewImageUrl'] ?? $item['photo'] ?? '';
+        // reviewImageUrls bisa berupa array URL atau string URL
+        $reviewImageUrls = $item['reviewImageUrls'] ?? $item['reviewImages'] ?? [];
+        if (is_array($reviewImageUrls) && !empty($reviewImageUrls)) {
+            $reviewPhoto = $reviewImageUrls[0] ?? '';
+        } else {
+            $reviewPhoto = $item['reviewPhotoUrl'] ?? $item['reviewPhoto'] ?? $item['review_photo'] ?? $item['reviewImageUrl'] ?? $item['photo'] ?? '';
+        }
 
         // Coba semua kemungkinan field URL author
         $authorUrl = $item['authorUrl'] ?? $item['author_url'] ?? $item['authorLink'] ?? $item['profileUrl'] ?? $item['userUrl'] ?? '';
