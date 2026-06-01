@@ -6,12 +6,20 @@ use App\Models\Menu;
 use App\Models\MenuSpecialItem;
 use App\Models\Order;
 use App\Models\StokLog;
+use App\Services\UnitConversionService;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class StokService
 {
+    protected UnitConversionService $unitConversionService;
+
+    public function __construct(UnitConversionService $unitConversionService)
+    {
+        $this->unitConversionService = $unitConversionService;
+    }
+
     public function kurangiStokUntukOrder(Order $order): void
     {
         DB::transaction(function () use ($order) {
@@ -93,15 +101,28 @@ class StokService
                         continue;
                     }
 
+                    $stockUnit = $stok->satuan ?? 'gram';
+                    $neededUnit = $komposisi->satuan ?? $stockUnit;
                     $jumlahKeluar = (float) $komposisi->jumlah_dibutuhkan * (int) $item->qty;
+
+                    try {
+                        $jumlahKeluar = $this->unitConversionService->convert(
+                            $jumlahKeluar,
+                            $neededUnit,
+                            $stockUnit
+                        );
+                    } catch (\InvalidArgumentException $e) {
+                        // Fallback to raw quantity if units cannot be converted.
+                    }
+
                     $stokSebelum = (float) $stok->jumlah_stok;
                     $stokSesudah = $stokSebelum - $jumlahKeluar;
 
                     if ($stokSesudah < 0) {
                         throw new Exception(
                             'Stok bahan "' . $stok->nama_bahan . '" tidak mencukupi. ' .
-                            'Stok tersedia: ' . $stokSebelum . ' ' . $stok->satuan . ', ' .
-                            'dibutuhkan: ' . $jumlahKeluar . ' ' . $stok->satuan . '.'
+                            'Stok tersedia: ' . $stokSebelum . ' ' . $stockUnit . ', ' .
+                            'dibutuhkan: ' . $jumlahKeluar . ' ' . $stockUnit . '.'
                         );
                     }
 

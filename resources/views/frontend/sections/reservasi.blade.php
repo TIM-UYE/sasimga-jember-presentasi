@@ -59,7 +59,7 @@
                             </div>
                         </div>
                         <div class="bg-orange-500/10 border border-orange-500/20 rounded-xl p-3">
-                            <p class="text-xs text-orange-300">Reservasi minimal 2 jam sebelumnya. Maksimal reservasi pukul 19:00.</p>
+                            <p class="text-xs text-orange-300">Reservasi hari ini minimal 2 jam sebelumnya. Waktu reservasi tersedia antara 11:00 - 21:00.</p>
                         </div>
                     </div>
                 </div>
@@ -104,7 +104,7 @@
                                     <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                     Jam <span class="text-red-400">*</span>
                                 </label>
-                                <input type="time" name="waktu_reservasi" id="waktu_reservasi" value="{{ old('waktu_reservasi') }}" min="11:00" max="19:00" class="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/80 border border-zinc-700 rounded-xl text-white text-sm focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 [color-scheme:dark] @error('waktu_reservasi') border-red-500 @enderror" required>
+                                <input type="time" name="waktu_reservasi" id="waktu_reservasi" value="{{ old('waktu_reservasi') }}" min="11:00" max="21:00" class="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 bg-zinc-800/80 border border-zinc-700 rounded-xl text-white text-sm focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 [color-scheme:dark] @error('waktu_reservasi') border-red-500 @enderror" required>
                                 <p id="waktuError" class="text-red-400 text-xs mt-1 hidden"></p>
                                 @error('waktu_reservasi')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
                             </div>
@@ -203,7 +203,7 @@ function isTimeInOp(timeStr) {
     if (!timeStr) return false;
     const [h, m] = timeStr.split(':').map(Number);
     const mins = h * 60 + m;
-    return mins >= 660 && mins <= 1140; // 11:00-19:00
+    return mins >= 660 && mins <= 1260; // 11:00-21:00
 }
 
 function getRequiredTables() {
@@ -218,16 +218,20 @@ function validateTime() {
     const err = getEl('waktuError');
     if (!t || !w) { err.classList.add('hidden'); return false; }
     if (!isTimeInOp(w)) {
-        err.textContent = 'Reservasi hanya 11:00 - 19:00.';
+        err.textContent = 'Reservasi hanya 11:00 - 21:00.';
         err.classList.remove('hidden');
         return false;
     }
     const sel = new Date(t + 'T' + w);
-    const min = new Date(Date.now() + 2*60*60*1000);
-    if (sel < min) {
-        err.textContent = 'Minimal 2 jam sebelum waktu dipilih.';
-        err.classList.remove('hidden');
-        return false;
+    const selectedDate = new Date(t);
+    const today = new Date();
+    if (selectedDate.getFullYear() === today.getFullYear() && selectedDate.getMonth() === today.getMonth() && selectedDate.getDate() === today.getDate()) {
+        const min = new Date(Date.now() + 2*60*60*1000);
+        if (sel < min) {
+            err.textContent = 'Reservasi hari ini harus dibuat minimal 2 jam sebelumnya.';
+            err.classList.remove('hidden');
+            return false;
+        }
     }
     err.classList.add('hidden');
     return true;

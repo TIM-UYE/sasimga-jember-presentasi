@@ -72,11 +72,10 @@ class ReservasiController extends Controller
             $waktu = $request->waktu;
         }
 
-        // Validasi jam operasional 11:00 - 19:00 untuk reservasi
+        // Validasi jam operasional 11:00 - 21:00 untuk reservasi
         $waktuCarbon = Carbon::createFromFormat('H:i', $waktu);
         $buka = Carbon::createFromTime(11, 0);
-        $maksimalReservasi = Carbon::createFromTime(19, 0);
-        $tutup = Carbon::createFromTime(21, 0);
+        $maksimalReservasi = Carbon::createFromTime(21, 0);
 
         if ($waktuCarbon->lt($buka)) {
             return response()->json([
@@ -88,24 +87,26 @@ class ReservasiController extends Controller
 
         if ($waktuCarbon->gt($maksimalReservasi)) {
             return response()->json([
-                'error' => 'Reservasi maksimal pada pukul 19:00 (restoran tutup pukul 21:00).',
+                'error' => 'Reservasi maksimal pada pukul 21:00.',
                 'tables' => [],
                 'grouped_tables' => [],
             ], 422);
         }
 
-        // Validasi minimal 2 jam sebelum waktu reservasi
+        // Validasi minimal 2 jam sebelumnya hanya untuk reservasi hari ini
         $selectedDateTime = Carbon::parse($tanggal . ' ' . $waktu);
+        $today = Carbon::today();
         $now = Carbon::now();
-        $minDateTime = $now->copy()->addHours(2);
-
-        if ($selectedDateTime->lt($minDateTime)) {
-            $earliestTime = $minDateTime->format('H:i');
-            return response()->json([
-                'error' => 'Reservasi harus dibuat minimal 2 jam sebelumnya. Waktu terdekat: ' . $minDateTime->format('d M Y H:i'),
-                'tables' => [],
-                'grouped_tables' => [],
-            ], 422);
+        $selectedDate = Carbon::parse($tanggal);
+        if ($selectedDate->isSameDay($today)) {
+            $minDateTime = $now->copy()->addHours(2);
+            if ($selectedDateTime->lt($minDateTime)) {
+                return response()->json([
+                    'error' => 'Reservasi hari ini harus dibuat minimal 2 jam sebelumnya. Waktu terdekat: ' . $minDateTime->format('d M Y H:i'),
+                    'tables' => [],
+                    'grouped_tables' => [],
+                ], 422);
+            }
         }
 
         // Hitung jumlah meja yang dibutuhkan
@@ -308,17 +309,28 @@ class ReservasiController extends Controller
             $waktu = $request->waktu;
         }
 
-        // Validasi jam operasional 11:00 - 19:00 (bukan 23:00)
+        // Validasi jam operasional 11:00 - 21:00
         $waktuCarbon = Carbon::createFromFormat('H:i', $waktu);
         $buka = Carbon::createFromTime(11, 0);
-        $maksimalReservasi = Carbon::createFromTime(19, 0);
+        $maksimalReservasi = Carbon::createFromTime(21, 0);
 
         if ($waktuCarbon->lt($buka) || $waktuCarbon->gt($maksimalReservasi)) {
             return response()->json([
                 'tables' => [],
                 'available_count' => 0,
                 'all_full' => true,
-                'error' => 'Reservasi hanya dapat dilakukan pada jam 11:00 - 19:00.'
+                'error' => 'Reservasi hanya dapat dilakukan pada jam 11:00 - 21:00.'
+            ], 422);
+        }
+
+        $reservationDateTime = Carbon::parse($tanggal . ' ' . $waktu);
+        $now = Carbon::now();
+        if ($reservationDateTime->isSameDay($now) && $reservationDateTime->lt($now->copy()->addHours(2))) {
+            return response()->json([
+                'tables' => [],
+                'available_count' => 0,
+                'all_full' => true,
+                'error' => 'Reservasi hari ini harus dibuat minimal 2 jam sebelumnya.'
             ], 422);
         }
 
@@ -389,9 +401,9 @@ class ReservasiController extends Controller
 
         $waktuCarbon = Carbon::createFromFormat('H:i', $normalizedWaktu);
         $buka = Carbon::createFromTime(11, 0);
-        $maksimalReservasi = Carbon::createFromTime(19, 0);
+        $maksimalReservasi = Carbon::createFromTime(21, 0);
 
-        // Validasi jam operasional 11:00 - 19:00
+        // Validasi jam operasional 11:00 - 21:00
         if ($waktuCarbon->lt($buka)) {
             return redirect()->back()
                 ->withErrors(['waktu_reservasi' => 'Reservasi hanya dapat dilakukan mulai pukul 11:00.'])
@@ -400,25 +412,27 @@ class ReservasiController extends Controller
 
         if ($waktuCarbon->gt($maksimalReservasi)) {
             return redirect()->back()
-                ->withErrors(['waktu_reservasi' => 'Reservasi maksimal pada pukul 19:00 (restoran tutup pukul 21:00).'])
+                ->withErrors(['waktu_reservasi' => 'Reservasi maksimal pada pukul 21:00.'])
                 ->withInput();
         }
 
-        // Validasi minimal 2 jam sebelum waktu reservasi
+        // Validasi minimal 2 jam sebelumnya hanya untuk reservasi hari ini
         $now = Carbon::now();
-        $minReservationTime = $now->copy()->addHours(2);
+        $today = Carbon::today();
+        $reservationDate = Carbon::parse($request->tanggal_reservasi);
+        if ($reservationDate->isSameDay($today)) {
+            $minReservationTime = $now->copy()->addHours(2);
 
-        if ($reservationDateTime->lt($minReservationTime)) {
-            return redirect()->back()
-                ->withErrors([
-                    'waktu_reservasi' => 'Reservasi harus dibuat minimal 2 jam sebelum waktu reservasi. Waktu terdekat yang tersedia: ' . $minReservationTime->format('d M Y H:i'),
-                ])
-                ->withInput();
+            if ($reservationDateTime->lt($minReservationTime)) {
+                return redirect()->back()
+                    ->withErrors([
+                        'waktu_reservasi' => 'Reservasi hari ini harus dibuat minimal 2 jam sebelumnya. Waktu terdekat yang tersedia: ' . $minReservationTime->format('d M Y H:i'),
+                    ])
+                    ->withInput();
+            }
         }
 
         // Validasi tanggal tidak di masa lalu
-        $today = Carbon::today();
-        $reservationDate = Carbon::parse($request->tanggal_reservasi);
         if ($reservationDate->lt($today)) {
             return redirect()->back()
                 ->withErrors(['tanggal_reservasi' => 'Tanggal reservasi tidak boleh di masa lalu.'])
