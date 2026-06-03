@@ -14,7 +14,7 @@ RUN apk add --no-cache \
     unzip \
     git \
     curl \
-    nodejs-current \
+    nodejs \
     npm
 
 # Build deps
@@ -30,7 +30,7 @@ RUN apk add --no-cache --virtual .build-deps \
     g++ \
     make
 
-# Install PHP extensions
+# PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install \
     gd \
@@ -42,25 +42,33 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     bcmath \
     intl
 
-# Install Composer
+# Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copy project
-COPY . .
+# Cache composer layer
+COPY composer.json composer.lock ./
 
-# Composer install
 RUN composer install \
     --no-dev \
-    --optimize-autoloader \
-    --no-interaction
+    --no-interaction \
+    --no-scripts \
+    --prefer-dist
 
-# Install node modules
-RUN npm install
+# Cache npm layer
+COPY package*.json ./
 
-# Build vite assets
+RUN npm ci
+
+# Copy source code
+COPY . .
+
+# Generate optimized autoload
+RUN composer dump-autoload --optimize
+
+# Build frontend
 RUN npm run build
 
-# Permissions
+# Permission
 RUN chmod -R 775 storage bootstrap/cache
 
 EXPOSE 9000
