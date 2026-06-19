@@ -32,7 +32,6 @@ class CheckoutController extends Controller
 
         $total = $this->calculateTotal($cart);
 
-        // Validate stock availability before showing checkout
         $stockErrors = $this->validateCartStock($cart);
         if (!empty($stockErrors)) {
             return redirect()->route('frontend.menu')
@@ -49,13 +48,14 @@ class CheckoutController extends Controller
             'nomor_hp' => 'required|string|max:20',
             'catatan' => 'nullable|string|max:1000',
             'metode_pengiriman' => 'required|in:pickup,delivery',
-            'metode_pembayaran' => 'required|in:cash,qris',
-            'alamat' => 'nullable|string|max:500',
+
+            // QRIS ONLY
+            'metode_pembayaran' => 'required|in:qris',
+
+            // Address for QRIS delivery
             'alamat_method' => 'nullable|in:location,manual',
             'alamat_qris_location' => 'nullable|string|max:500',
             'alamat_qris_manual' => 'nullable|string|max:500',
-            'latitude_cash' => 'nullable|numeric',
-            'longitude_cash' => 'nullable|numeric',
             'latitude_qris' => 'nullable|numeric',
             'longitude_qris' => 'nullable|numeric',
         ], [
@@ -68,40 +68,28 @@ class CheckoutController extends Controller
         $alamatFinal = null;
 
         if ($validated['metode_pengiriman'] === 'delivery') {
-            if ($validated['metode_pembayaran'] === 'cash') {
-                if (empty($validated['alamat'])) {
+            $addressMethod = $validated['alamat_method'] ?? null;
+
+            if ($addressMethod === 'location') {
+                if (empty($validated['alamat_qris_location'])) {
                     return redirect()->back()
-                        ->withErrors(['alamat' => 'Alamat wajib diambil menggunakan lokasi terkini untuk pembayaran CASH.'])
+                        ->withErrors(['alamat_qris_location' => 'Silakan ambil lokasi terkini Anda.'])
                         ->withInput();
                 }
 
-                $alamatFinal = $validated['alamat'];
-            }
-
-            if ($validated['metode_pembayaran'] === 'qris') {
-                $addressMethod = $validated['alamat_method'] ?? null;
-
-                if ($addressMethod === 'location') {
-                    if (empty($validated['alamat_qris_location'])) {
-                        return redirect()->back()
-                            ->withErrors(['alamat_qris_location' => 'Silakan ambil lokasi terkini Anda.'])
-                            ->withInput();
-                    }
-
-                    $alamatFinal = $validated['alamat_qris_location'];
-                } elseif ($addressMethod === 'manual') {
-                    if (empty($validated['alamat_qris_manual'])) {
-                        return redirect()->back()
-                            ->withErrors(['alamat_qris_manual' => 'Silakan isi alamat pengiriman Anda.'])
-                            ->withInput();
-                    }
-
-                    $alamatFinal = $validated['alamat_qris_manual'];
-                } else {
+                $alamatFinal = $validated['alamat_qris_location'];
+            } elseif ($addressMethod === 'manual') {
+                if (empty($validated['alamat_qris_manual'])) {
                     return redirect()->back()
-                        ->withErrors(['alamat' => 'Silakan pilih metode alamat (lokasi terkini atau manual).'])
+                        ->withErrors(['alamat_qris_manual' => 'Silakan isi alamat pengiriman Anda.'])
                         ->withInput();
                 }
+
+                $alamatFinal = $validated['alamat_qris_manual'];
+            } else {
+                return redirect()->back()
+                    ->withErrors(['alamat' => 'Silakan pilih metode alamat lokasi terkini atau manual.'])
+                    ->withInput();
             }
         }
 
@@ -115,10 +103,10 @@ class CheckoutController extends Controller
         DB::beginTransaction();
 
         try {
-            // Validate stock before creating order
             $stockErrors = $this->validateCartStock($cart);
             if (!empty($stockErrors)) {
                 DB::rollBack();
+
                 return redirect()->back()
                     ->with('error', 'Stok tidak mencukupi: ' . implode(', ', $stockErrors))
                     ->withInput();
@@ -134,7 +122,10 @@ class CheckoutController extends Controller
                 'alamat' => $alamatFinal,
                 'catatan' => $validated['catatan'] ?? null,
                 'metode_pengiriman' => $validated['metode_pengiriman'],
-                'metode_pembayaran' => $validated['metode_pembayaran'],
+
+                // QRIS ONLY
+                'metode_pembayaran' => 'qris',
+
                 'subtotal' => $subtotal,
                 'total_bayar' => $totalBayar,
                 'status' => Order::STATUS_PENDING,
@@ -159,9 +150,9 @@ class CheckoutController extends Controller
                     'subtotal' => $item['harga'] * $item['qty'],
                 ]);
 
-                // Deduct ingredients from stock for regular menu items
                 if ($type === 'menu') {
                     $menu = Menu::with('komposisiBahan.stok')->find($item['id']);
+
                     if ($menu && $menu->komposisiBahan()->exists()) {
                         $deductionResult = $this->stockService->deductIngredientsForOrder(
                             $menu,
@@ -194,12 +185,7 @@ class CheckoutController extends Controller
 
             session()->forget('cart');
 
-            if ($order->isQRISPayment()) {
-                return redirect()->route('payment.snap', $order->kode_order);
-            }
-
-            return redirect()->route('checkout.success', $order->kode_order)
-                ->with('success', 'Pesanan berhasil dibuat!');
+            return redirect()->route('payment.snap', $order->kode_order);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -228,31 +214,24 @@ class CheckoutController extends Controller
         return $total;
     }
 
-    /**
-     * Validate that all items in cart have sufficient stock.
-     *
-     * @param array $cart
-     * @return array List of error messages (empty if all valid)
-     */
     protected function validateCartStock(array $cart): array
     {
         $errors = [];
 
-        foreach ($cart as $key => $item) {
+        foreach ($cart as $item) {
             $type = $item['type'] ?? 'menu';
 
-            // Only validate regular menu items with ingredients
             if ($type !== 'menu') {
                 continue;
             }
 
             $menu = Menu::with('komposisiBahan.stok')->find($item['id']);
+
             if (!$menu) {
                 $errors[] = "{$item['nama']} tidak ditemukan";
                 continue;
             }
 
-            // If menu has no ingredients, skip stock validation
             if (!$menu->komposisiBahan()->exists()) {
                 continue;
             }

@@ -253,43 +253,6 @@
                             Alamat Pengiriman
                         </h2>
 
-                        {{-- ADDRESS METHOD FOR CASH PAYMENT --}}
-                        <div id="address-method-cash" class="hidden space-y-4">
-                            <div class="bg-blue-500/10 border border-blue-500/30 rounded-2xl p-4 mb-4">
-                                <div class="flex items-start gap-3">
-                                    <i class="fas fa-lock-alt text-blue-400 text-lg mt-1"></i>
-                                    <div>
-                                        <p class="text-sm text-blue-300 font-semibold">Mode Pembayaran CASH</p>
-                                        <p class="text-xs text-gray-300 mt-1">
-                                            Alamat akan diambil secara otomatis dari lokasi terkini Anda untuk menghindari pesanan scam.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button type="button" onclick="getLocationForCash()"
-                                class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span id="location-btn-cash-text">Ambil Lokasi Terkini</span>
-                            </button>
-
-                            <textarea
-                                name="alamat"
-                                id="alamat_field_cash"
-                                rows="3"
-                                class="w-full bg-zinc-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                                placeholder="Alamat akan otomatis terisi dari lokasi terkini Anda"
-                                disabled
-                            >{{ old('alamat') }}</textarea>
-
-                            <input type="hidden" name="latitude_cash" id="latitude_cash">
-                            <input type="hidden" name="longitude_cash" id="longitude_cash">
-
-                            @error('alamat')
-                                <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
                         {{-- ADDRESS METHOD FOR QRIS PAYMENT --}}
                         <div id="address-method-qris" class="hidden space-y-4">
                             <div class="space-y-3">
@@ -374,37 +337,7 @@
                             Metode Pembayaran
                         </h2>
 
-                        <div class="grid grid-cols-2 gap-4">
-
-                            <label class="cursor-pointer">
-
-                                <input
-                                    type="radio"
-                                    name="metode_pembayaran"
-                                    value="cash"
-                                    {{ old('metode_pembayaran', 'cash') === 'cash' ? 'checked' : '' }}
-                                    class="peer sr-only"
-                                >
-
-                                <div class="border-2 border-gray-700 rounded-xl p-4 peer-checked:border-orange-500 peer-checked:bg-orange-500/10 transition">
-
-                                    <div class="flex items-center gap-3">
-
-                                        <i class="fas fa-money-bill text-2xl text-gray-400 peer-checked:text-orange-500"></i>
-
-                                        <div>
-
-                                            <p class="font-semibold">CASH</p>
-
-                                            <p class="text-sm text-gray-400">Bayar tunai</p>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </label>
+                        <div class="grid grid-cols-1 gap-4">
 
                             <label class="cursor-pointer">
 
@@ -412,7 +345,7 @@
                                     type="radio"
                                     name="metode_pembayaran"
                                     value="qris"
-                                    {{ old('metode_pembayaran') === 'qris' ? 'checked' : '' }}
+                                    checked
                                     class="peer sr-only"
                                 >
 
@@ -445,25 +378,6 @@
                     </div>
 
                     {{-- PAYMENT INFO --}}
-                    <div id="payment-info-cash" class="bg-blue-500/10 border border-blue-500/30 rounded-3xl p-6 hidden">
-                        <div class="flex items-start gap-4">
-                            <i class="fas fa-info-circle text-blue-400 text-2xl mt-1"></i>
-                            <div>
-                                <h4 class="font-bold text-blue-400 mb-2">
-                                    <i class="fas fa-money-bill mr-2"></i>Informasi Pembayaran CASH
-                                </h4>
-                                <p class="text-sm text-gray-300">
-                                    Dengan pembayaran <strong class="text-white">CASH</strong>:
-                                </p>
-                                <ul class="text-sm text-gray-300 list-disc list-inside space-y-1 mt-2">
-                                    <li>Anda membayar <strong class="text-orange-400">harga pesanan + ongkos kirim</strong> secara tunai kepada driver</li>
-                                    <li>Pembayaran dilakukan saat pesanan tiba di lokasi Anda</li>
-                                    <li>Pastikan menyiapkan uang pas untuk memudahkan transaksi</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
                     <div id="payment-info-qris" class="bg-purple-500/10 border border-purple-500/30 rounded-3xl p-6 hidden">
                         <div class="flex items-start gap-4">
                             <i class="fas fa-qrcode text-purple-400 text-2xl mt-1"></i>
@@ -651,7 +565,7 @@
         const ongkirNote = document.getElementById('ongkirNote');
 
         if (pengiriman && pengiriman.value === 'delivery') {
-            ongkirStatus.textContent = 'seusuai harga dari driver*';
+            ongkirStatus.textContent = 'Sesuai harga dari driver*';
             ongkirStatus.className = 'font-semibold text-blue-400';
             ongkirNote.textContent = '*Ongkos kirim ditentukan driver, bayar saat pesanan tiba di lokasi';
             ongkirNote.className = 'text-xs text-blue-400/70 mb-4';
@@ -691,13 +605,15 @@
         const hp = document.querySelector('input[name="nomor_hp"]').value || '-';
         const pengiriman = document.querySelector('input[name="metode_pengiriman"]:checked');
         const pembayaran = document.querySelector('input[name="metode_pembayaran"]:checked');
-        const alamat = document.querySelector('textarea[name="alamat"]').value || '-';
+        const alamatManual = document.getElementById('alamat_field_manual')?.value || '';
+        const alamatQris = document.getElementById('alamat_field_qris')?.value || '';
+        const alamat = alamatManual || alamatQris || '-';
 
         // Set values
         document.getElementById('summaryNama').textContent = nama;
         document.getElementById('summaryHp').textContent = hp;
         document.getElementById('summaryPengiriman').textContent = pengiriman ? (pengiriman.value === 'delivery' ? 'Delivery' : 'Pickup') : '-';
-        document.getElementById('summaryPembayaran').textContent = pembayaran ? (pembayaran.value === 'cash' ? 'CASH' : 'QRIS') : '-';
+        document.getElementById('summaryPembayaran').textContent = pembayaran ? 'QRIS' : '-';
 
         // Show/hide address
         const alamatRow = document.getElementById('summaryAlamatRow');
@@ -721,50 +637,29 @@
 
     // Update payment info based on payment method
     function updatePaymentInfo() {
-        const pembayaran = document.querySelector('input[name="metode_pembayaran"]:checked');
-        const infoCash = document.getElementById('payment-info-cash');
         const infoQris = document.getElementById('payment-info-qris');
-
-        // Hide both first
-        infoCash.classList.add('hidden');
-        infoQris.classList.add('hidden');
-
-        if (pembayaran) {
-            if (pembayaran.value === 'cash') {
-                infoCash.classList.remove('hidden');
-            } else if (pembayaran.value === 'qris') {
-                infoQris.classList.remove('hidden');
-            }
-        }
+        infoQris.classList.remove('hidden');
 
         // Update address methods based on payment method
         updateAddressMethods();
     }
 
-    // Update address methods based on payment method
+    // Update address methods based on delivery method
     function updateAddressMethods() {
         const pengiriman = document.querySelector('input[name="metode_pengiriman"]:checked');
-        const pembayaran = document.querySelector('input[name="metode_pembayaran"]:checked');
-        const addressMethodCash = document.getElementById('address-method-cash');
         const addressMethodQris = document.getElementById('address-method-qris');
 
-        // Hide both methods first
-        addressMethodCash.classList.add('hidden');
+        // Hide QRIS address method first
         addressMethodQris.classList.add('hidden');
 
-        // Show appropriate method if delivery is selected
+        // Show QRIS address method if delivery is selected
         if (pengiriman && pengiriman.value === 'delivery') {
-            if (pembayaran) {
-                if (pembayaran.value === 'cash') {
-                    addressMethodCash.classList.remove('hidden');
-                } else if (pembayaran.value === 'qris') {
-                    addressMethodQris.classList.remove('hidden');
-                    // Set default for QRIS if not set
-                    if (!document.querySelector('input[name="alamat_method"]:checked')) {
-                        document.querySelector('input[name="alamat_method"][value="location"]').checked = true;
-                        toggleQrisAddressMethod('location');
-                    }
-                }
+            addressMethodQris.classList.remove('hidden');
+
+            // Set default address method for QRIS if not set
+            if (!document.querySelector('input[name="alamat_method"]:checked')) {
+                document.querySelector('input[name="alamat_method"][value="location"]').checked = true;
+                toggleQrisAddressMethod('location');
             }
         }
     }
@@ -780,47 +675,6 @@
         } else {
             locationSection.classList.add('hidden');
             manualSection.classList.remove('hidden');
-        }
-    }
-
-    // Get location for CASH payment
-    function getLocationForCash() {
-        const btn = event.target.closest('button');
-        const originalText = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span id="location-btn-cash-text">Mengambil lokasi...</span>';
-
-        if ('geolocation' in navigator) {
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
-
-                    document.getElementById('latitude_cash').value = lat;
-                    document.getElementById('longitude_cash').value = lon;
-
-                    // Reverse geocoding to get address
-                    reverseGeocode(lat, lon, function(address) {
-                        document.getElementById('alamat_field_cash').value = address || `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
-                        btn.disabled = false;
-                        btn.innerHTML = originalText;
-                    });
-                },
-                function(error) {
-                    alert('Error mendapatkan lokasi: ' + error.message);
-                    btn.disabled = false;
-                    btn.innerHTML = originalText;
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 5000,
-                    maximumAge: 0
-                }
-            );
-        } else {
-            alert('Geolocation tidak didukung oleh browser Anda');
-            btn.disabled = false;
-            btn.innerHTML = originalText;
         }
     }
 

@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <title>SaSimGa Dashboard</title>
 
-    {{-- VITE --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @include('admin.layout.style')
@@ -38,6 +37,66 @@
 
     @include('admin.layout.script')
     @stack('script')
+
+    <audio id="orderNotification" preload="auto">
+        <source src="{{ asset('sounds/alarm.mp3') }}" type="audio/mpeg">
+    </audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let lastPendingCount = null;
+            const audio = document.getElementById('orderNotification');
+
+            function stopAlarm() {
+                if (!audio) return;
+                audio.pause();
+                audio.currentTime = 0;
+                audio.loop = false;
+            }
+
+            setInterval(() => {
+                fetch('/admin/orders/poll/data', {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success || !data.stats) return;
+
+                    if (lastPendingCount !== null && data.stats.pending > lastPendingCount) {
+                        if (audio) {
+                            stopAlarm();
+                            audio.loop = true;
+                            audio.volume = 1;
+
+                            audio.play().catch(error => {
+                                console.log('Audio error:', error);
+                            });
+                        }
+
+                        Swal.fire({
+                            title: '🔔 Pesanan Baru!',
+                            text: 'Ada pesanan baru masuk.',
+                            icon: 'info',
+                            confirmButtonText: 'OK, Saya Cek',
+                            allowOutsideClick: false
+                        }).then(() => {
+                            stopAlarm();
+                        });
+                    }
+
+                    lastPendingCount = data.stats.pending;
+                })
+                .catch(error => {
+                    console.log('Polling error:', error);
+                });
+            }, 5000);
+        });
+    </script>
 </body>
 
 </html>
+
+
