@@ -5,12 +5,12 @@
     @endpush
 @endonce
 
-<section class="relative overflow-hidden bg-black min-h-[620px] sm:min-h-[680px] lg:min-h-screen">
+<section class="relative overflow-hidden bg-black min-h-[720px] sm:min-h-[780px] lg:min-h-[100vh] xl:min-h-[110vh]">
 
     {{-- BACKGROUND --}}
     <div class="absolute inset-0">
 
-        <img src="{{ asset('images/hero/backgroundsate.png') }}" alt="Background Sate Simpang Tiga" loading="eager"
+        <img src="{{ asset('images/hero/bgsate.png') }}" alt="Background Sate Simpang Tiga" loading="eager"
             fetchpriority="high" decoding="async" data-critical-asset
             class="w-full h-full object-cover opacity-25 md:opacity-100">
 
@@ -33,9 +33,9 @@
         src="{{ asset('images/logo/logo.png') }}"
         alt="Logo Simpang Tiga"
         class="
-            w-[220px]
-            md:w-[200px]
-            xl:w-[320px]
+            w-[120px]
+            md:w-[100px]
+            xl:w-[220px]
             object-contain
         ">
 </div>
@@ -49,10 +49,10 @@
 
 {{-- CONTENT --}}
 <div
-    class="relative z-20 container-main min-h-[540px] sm:min-h-[600px] lg:min-h-screen
+    class="relative z-20 container-main min-h-[640px] sm:min-h-[700px] lg:min-h-[90vh]
     grid lg:grid-cols-2 items-center gap-5 lg:gap-10
-    pt-44 sm:pt-48 lg:pt-64 pb-10 sm:pb-12 lg:pb-20
-    translate-y-12">
+    pt-48 sm:pt-56 lg:pt-72 xl:pt-80 pb-14 sm:pb-16 lg:pb-24
+    translate-y-0">
 
 
     {{-- LEFT --}}
@@ -65,7 +65,7 @@
 
         {{-- TITLE --}}
         <h1
-            class="mt-2 text-[2rem] sm:text-[2.65rem] md:text-5xl xl:text-6xl
+            class="mt-2 text-[2rem] sm:text-[2.65rem] md:text-6xl xl:text-7xl
             font-bold leading-[1.02] md:leading-[0.95]
             tracking-tight reveal delay-200 notranslate
             md:whitespace-nowrap">
@@ -126,7 +126,7 @@
             fetchpriority="high"
             decoding="async"
             data-critical-asset
-            class="w-[420px] xl:w-[520px]
+            class="w-[460px] xl:w-[600px] max-w-[90vw]
             drop-shadow-[0_30px_60px_rgba(0,0,0,0.6)]
             reveal-scale animate-float">
 
