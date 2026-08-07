@@ -5,6 +5,7 @@ return [
         'home' => 'Beranda',
         'about' => 'Tentang',
         'menu' => 'Menu',
+        'gallery' => 'Galeri',
         'reservation' => 'Reservasi',
         'dashboard' => 'Dashboard',
         'login' => 'Login',
@@ -111,6 +112,7 @@ return [
         'white-title' => 'Kenangan',
         'orange-title' => 'Pecinta Rajanya Sate',
         'description' => 'Ribuan pelanggan telah menikmati pengalaman kuliner terbaik bersama keluarga, sahabat, dan orang tercinta di Sate Simpangtiga.',
+        'gallery_button' => 'Lihat Semua Galeri',
     ],
 
     'testimoni' => [

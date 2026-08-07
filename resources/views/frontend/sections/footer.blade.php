@@ -160,7 +160,11 @@
 
                             <p class="text-black/80 leading-relaxed">
 
-                                {{ __('frontend.footer.contact.address') }}
+                                <a href="https://www.google.com/maps?ll=-8.190405,113.65234&z=15&t=m&hl=id&gl=ID&mapclient=embed&cid=7484963441891082766" target="_blank" rel="noopener noreferrer" class="text-black/80 hover:text-white underline">
+
+                                    {{ __('frontend.footer.contact.address') }}
+
+                                </a>
 
                             </p>
 

@@ -5,6 +5,7 @@ return [
         'home' => 'Home',
         'about' => 'About',
         'menu' => 'Menu',
+        'gallery' => 'Gallery',
         'reservation' => 'Reservation',
         'dashboard' => 'Dashboard',
         'login' => 'Login',
@@ -111,6 +112,7 @@ return [
         'white-title' => 'Memories of',
         'orange-title' => 'Pecinta Rajanya Sate',
         'description' => 'Thousands of customers have enjoyed the best culinary experience with family, friends, and loved ones at Sate SimpangTiga.',
+        'gallery_button' => 'View All Gallery',
     ],
 
     'testimoni' => [

@@ -47,6 +47,9 @@ Route::get('/', [HomeController::class, 'index'])
 Route::get('/menu', [MenuController::class, 'frontend'])
     ->name('frontend.menu');
 
+Route::get('/gallery', [HomeController::class, 'gallery'])
+    ->name('frontend.gallery');
+
 Route::get('/testimoni', [TestimoniController::class, 'frontendIndex'])
     ->name('frontend.testimoni.index');
 

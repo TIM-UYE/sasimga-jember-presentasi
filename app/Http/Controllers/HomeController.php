@@ -10,6 +10,19 @@ use App\Models\Video;
 
 class HomeController extends Controller
 {
+    public function gallery()
+    {
+        $galeris = Galeri::where('is_active', true)
+            ->orderByDesc('created_at')
+            ->get();
+
+        $videos = Video::where('is_active', true)
+            ->orderByDesc('created_at')
+            ->get();
+
+        return view('frontend.pages.gallery', compact('galeris', 'videos'));
+    }
+
     public function index()
     {
         $menus = Menu::where('is_available', true)

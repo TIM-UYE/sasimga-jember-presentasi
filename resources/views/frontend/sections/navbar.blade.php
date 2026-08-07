@@ -39,6 +39,10 @@
                     {{ __('frontend.nav.menu') }}
                 </x-frontend.navbar.link>
 
+                <x-frontend.navbar.link href="{{ route('frontend.gallery') }}">
+                    {{ __('frontend.nav.gallery') }}
+                </x-frontend.navbar.link>
+
                 <x-frontend.navbar.link href="{{ route('frontend.reservasi') }}">
                     {{ __('frontend.nav.reservation') }}
                 </x-frontend.navbar.link>

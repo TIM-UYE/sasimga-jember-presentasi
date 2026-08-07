@@ -50,7 +50,8 @@
 
                             <div class="orbit-face">
 
-                                <img src="{{ asset('storage/' . $g->image) }}" loading="lazy" alt="{{ $g->title }}">
+                                <img src="{{ $g->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($g->image) ? \Illuminate\Support\Facades\Storage::url($g->image) : asset('images/gallery/gallery1.jpg') }}"
+                                    loading="lazy" alt="{{ $g->title }}">
 
                             </div>
 

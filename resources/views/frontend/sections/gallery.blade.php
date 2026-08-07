@@ -50,6 +50,15 @@
 
             </p>
 
+            @if (!request()->routeIs('frontend.gallery'))
+                <a href="{{ route('frontend.gallery') }}"
+                    class="inline-flex items-center bg-orange-500 hover:bg-orange-600 text-white px-5 sm:px-8 py-2.5 sm:py-3 rounded-full text-sm sm:text-base font-semibold transition-all hover:scale-105">
+                    <i class="fas fa-images mr-2"></i>
+                    {{ __('frontend.gallery.gallery_button') }}
+                </a>
+            @endif
+
+
         </div>
 
 
@@ -65,7 +74,8 @@
                     hover:shadow-orange-500/20 transition duration-500 reveal">
 
                     {{-- IMAGE --}}
-                    <img src="{{ asset('storage/' . $gallery->image) }}" alt="{{ $gallery->title }}" loading="lazy"
+                    <img src="{{ $gallery->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($gallery->image) ? \Illuminate\Support\Facades\Storage::url($gallery->image) : asset('images/gallery/gallery1.jpg') }}"
+                        alt="{{ $gallery->title }}" loading="lazy"
                         decoding="async"
                         class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
 

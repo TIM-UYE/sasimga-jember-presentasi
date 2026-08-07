@@ -40,6 +40,18 @@
         ">
 </div>
 
+{{-- OPENING HOURS BADGE (DESKTOP & MOBILE) --}}
+<div class="absolute top-20 right-4 z-[200]">
+    <div class="hidden sm:flex items-center gap-3 bg-black/60 text-white rounded-full px-4 py-2 shadow-lg border border-white/10">
+        <i class="fas fa-clock text-sm"></i>
+        <span class="text-xs sm:text-sm">Buka 11:00 — Tutup 23:00</span>
+    </div>
+    <div class="flex sm:hidden items-center gap-2 bg-black/60 text-white rounded-full px-3 py-1.5 shadow-lg border border-white/10">
+        <i class="fas fa-clock text-xs"></i>
+        <span class="text-[11px]">11:00–23:00</span>
+    </div>
+</div>
+
     {{-- MOBILE DECORATIVE IMAGE --}}
     <div class="pointer-events-none absolute right-[-48px] top-[105px] z-10 opacity-25 blur-[0.2px] lg:hidden">
         <img src="{{ asset('images/hero/sate.png') }}" alt="" aria-hidden="true"
