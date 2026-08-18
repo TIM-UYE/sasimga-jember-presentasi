@@ -5,19 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\PaymentTransaction;
 use App\Services\MidtransSnapService;
-use App\Services\StokService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class MidtransWebhookController extends Controller
 {
     protected $snapService;
-    protected $stokService;
 
-    public function __construct(MidtransSnapService $snapService, StokService $stokService)
+    public function __construct(MidtransSnapService $snapService)
     {
         $this->snapService = $snapService;
-        $this->stokService = $stokService;
     }
 
     /**
@@ -56,20 +53,6 @@ class MidtransWebhookController extends Controller
             ]);
 
             $result = $this->snapService->processWebhookNotification($notification);
-
-            if (
-                isset($result['order']) &&
-                $result['order'] &&
-                $result['order']->payment_status === Order::PAYMENT_PAID
-            ) {
-                $this->stokService->kurangiStokUntukOrder($result['order']->fresh());
-
-                Log::info('[STOK MIDTRANS] Stok diproses setelah webhook paid', [
-                    'order_id' => $result['order']->id,
-                    'kode_order' => $result['order']->kode_order,
-                    'payment_status' => $result['order']->payment_status,
-                ]);
-            }
 
             Log::info('✓ Webhook processed successfully', [
                 'order_id' => $result['order']->id ?? null,
@@ -127,19 +110,6 @@ class MidtransWebhookController extends Controller
                     $notification = json_decode(json_encode($status), true);
                     $result = $this->snapService->processWebhookNotification($notification);
 
-                    if (
-                        isset($result['order']) &&
-                        $result['order'] &&
-                        $result['order']->payment_status === Order::PAYMENT_PAID
-                    ) {
-                        $this->stokService->kurangiStokUntukOrder($result['order']->fresh());
-
-                        Log::info('[STOK MIDTRANS FINISH] Stok diproses setelah finish callback paid', [
-                            'order_id' => $result['order']->id,
-                            'kode_order' => $result['order']->kode_order,
-                            'payment_status' => $result['order']->payment_status,
-                        ]);
-                    }
                 }
             } catch (\Exception $e) {
                 Log::warning('Finish status check failed', [

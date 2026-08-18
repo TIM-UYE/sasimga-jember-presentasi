@@ -3,28 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Exports\StokLogExport;
 use App\Exports\ReservasiExport;
 use App\Models\Order;
 use App\Models\Reservasi;
-use App\Models\StokLog;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Http\Request;
 
 class LaporanController extends Controller
 {
-    public function stok(Request $request)
-    {
-        $dari   = $request->get('dari');
-        $sampai = $request->get('sampai');
-        $query  = StokLog::with('stok')->orderByDesc('created_at');
-        if ($dari)   $query->whereDate('created_at', '>=', $dari);
-        if ($sampai) $query->whereDate('created_at', '<=', $sampai);
-        $stokLogs = $query->limit(200)->get();
-        return view('admin.laporan.stok', compact('stokLogs', 'dari', 'sampai'));
-    }
-
     public function pesanan(Request $request)
     {
         $dari   = $request->get('dari');
@@ -45,16 +32,6 @@ class LaporanController extends Controller
         if ($sampai) $query->whereDate('created_at', '<=', $sampai);
         $reservasis = $query->limit(200)->get();
         return view('admin.laporan.reservasi', compact('reservasis', 'dari', 'sampai'));
-    }
-
-    public function exportStokCsv()
-    {
-        return Excel::download(new StokLogExport, 'laporan_stok.csv');
-    }
-
-    public function exportStokXlsx()
-    {
-        return Excel::download(new StokLogExport, 'laporan_stok.xlsx');
     }
 
     public function exportReservasiCsv()

@@ -238,21 +238,6 @@
                 </div>
             </div>
 
-            <div class="rounded-2xl border border-slate-700 bg-slate-900 p-4">
-                <div class="mb-3 flex items-center justify-between gap-3">
-                    <div>
-                        <h4 class="text-sm font-semibold text-white">Komposisi Stok Bahan</h4>
-                        <p class="text-xs text-slate-400">Isi bahan yang dipakai untuk 1 porsi/1 paket varian ini.</p>
-                    </div>
-
-                    <button type="button" onclick="addBahanRow()" class="rounded-xl bg-orange-500 px-3 py-2 text-xs font-semibold text-white hover:bg-orange-600">
-                        + Tambah Bahan
-                    </button>
-                </div>
-
-                <div id="bahan-wrapper" class="space-y-3"></div>
-            </div>
-
             <div id="item-image-preview" class="hidden">
                 <p class="mb-2 text-sm font-semibold text-slate-200">Preview Gambar</p>
                 <img id="item-preview-img" src="" alt="Preview" class="h-56 w-full rounded-3xl object-cover ring-1 ring-slate-700">
@@ -271,21 +256,9 @@
     </div>
 </div>
 
-@php
-    $stokOptions = ($stoks ?? collect())->map(function ($stok) {
-        return [
-            'id' => $stok->id,
-            'nama_bahan' => $stok->nama_bahan,
-            'satuan' => $stok->satuan,
-            'jumlah_stok' => $stok->jumlah_stok,
-        ];
-    })->values();
-@endphp
-
 <script>
 const specialItems = [];
 let editingVariantIndex = null;
-const STOK_OPTIONS = @json($stokOptions);
 
 function openItemModal(index = null) {
     editingVariantIndex = index;
@@ -298,8 +271,6 @@ function openItemModal(index = null) {
     document.getElementById('item_description').value = item ? item.description : '';
     document.getElementById('item_is_available').checked = item ? item.is_available : true;
     document.getElementById('item_image').value = '';
-
-    fillBahanRows(item ? (item.komposisi || []) : []);
 
     const preview = document.getElementById('item-image-preview');
     const previewImg = document.getElementById('item-preview-img');
@@ -331,72 +302,6 @@ function closeItemModal() {
     document.body.style.overflow = 'auto';
 }
 
-function addBahanRow(stokId = '', jumlah = '') {
-    const wrapper = document.getElementById('bahan-wrapper');
-
-    const row = document.createElement('div');
-    row.className = 'grid gap-3 md:grid-cols-[1fr_160px_40px] bahan-row';
-
-    let options = '<option value="">Pilih bahan</option>';
-
-    STOK_OPTIONS.forEach(function(stok) {
-        const selected = String(stok.id) === String(stokId) ? 'selected' : '';
-        options += `<option value="${stok.id}" ${selected}>${stok.nama_bahan} (${stok.satuan})</option>`;
-    });
-
-    row.innerHTML = `
-        <select name="stok_id[]" class="rounded-2xl border-2 border-slate-600 bg-slate-950 px-4 py-3 text-sm text-white focus:border-orange-500 focus:ring-2 focus:ring-orange-400">
-            ${options}
-        </select>
-
-        <input type="number" step="0.01" min="0.01" name="jumlah_dibutuhkan[]" value="${jumlah}" placeholder="Jumlah"
-            class="rounded-2xl border-2 border-slate-600 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-400 focus:border-orange-500 focus:ring-2 focus:ring-orange-400">
-
-        <button type="button" onclick="this.closest('.bahan-row').remove()" class="rounded-xl bg-red-500 text-white hover:bg-red-600">
-            ×
-        </button>
-    `;
-
-    wrapper.appendChild(row);
-}
-
-function resetBahanRows() {
-    document.getElementById('bahan-wrapper').innerHTML = '';
-}
-
-function fillBahanRows(komposisi = []) {
-    resetBahanRows();
-
-    if (!komposisi || komposisi.length === 0) {
-        addBahanRow();
-        return;
-    }
-
-    komposisi.forEach(function(row) {
-        addBahanRow(row.stok_id, row.jumlah_dibutuhkan);
-    });
-}
-
-function collectBahanRows() {
-    const komposisi = [];
-
-    document.querySelectorAll('#bahan-wrapper .bahan-row').forEach(function(row) {
-        const stokSelect = row.querySelector('select[name="stok_id[]"]');
-        const jumlahInput = row.querySelector('input[name="jumlah_dibutuhkan[]"]');
-
-        if (stokSelect && jumlahInput && stokSelect.value && jumlahInput.value) {
-            const selectedOption = stokSelect.options[stokSelect.selectedIndex];
-
-            komposisi.push({
-                stok_id: stokSelect.value,
-                jumlah_dibutuhkan: jumlahInput.value,
-                label: selectedOption ? selectedOption.textContent : ''
-            });
-        }
-    });
-
-    return komposisi;
-}
 
 function saveVariant() {
     const name = document.getElementById('item_name').value.trim();
@@ -406,7 +311,6 @@ function saveVariant() {
     const imageInput = document.getElementById('item_image');
     const imageFile = imageInput.files[0];
     const imageUrl = imageFile ? URL.createObjectURL(imageFile) : null;
-    const komposisi = collectBahanRows();
 
     if (!name || Number.isNaN(price)) {
         alert('Nama dan harga wajib diisi');
@@ -423,7 +327,6 @@ function saveVariant() {
             is_available: isAvailable,
             image: imageFile || current?.image || null,
             imageUrl: imageUrl || current?.imageUrl || null,
-            komposisi,
         };
     } else {
         specialItems.push({
@@ -433,7 +336,6 @@ function saveVariant() {
             is_available: isAvailable,
             image: imageFile || null,
             imageUrl,
-            komposisi,
         });
     }
 
@@ -454,7 +356,7 @@ function renderVariantList() {
     if (specialItems.length === 0) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="6" class="py-10 text-center text-slate-500">
+                <td colspan="5" class="py-10 text-center text-slate-500">
                     Belum ada varian menu
                 </td>
             </tr>
@@ -466,14 +368,6 @@ function renderVariantList() {
     specialItems.forEach(function(item, index) {
         const row = document.createElement('tr');
         row.className = 'border-b border-slate-200';
-
-        let komposisiHtml = '-';
-
-        if (item.komposisi && item.komposisi.length > 0) {
-            komposisiHtml = item.komposisi.map(function(bahan) {
-                return `<div class="text-xs">${bahan.label}: ${bahan.jumlah_dibutuhkan}</div>`;
-            }).join('');
-        }
 
         row.innerHTML = `
             <td class="px-4 py-4 font-semibold text-slate-800">${item.name}</td>
@@ -488,8 +382,6 @@ function renderVariantList() {
             </td>
 
             <td class="px-4 py-4 text-slate-600">${item.description || '-'}</td>
-
-            <td class="px-4 py-4 text-slate-600">${komposisiHtml}</td>
 
             <td class="px-4 py-4">
                 <div class="flex justify-end gap-2">

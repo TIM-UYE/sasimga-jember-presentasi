@@ -20,8 +20,6 @@ use App\Http\Controllers\Admin\MejaController;
 use App\Http\Controllers\Owner\AnalyticsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MidtransWebhookController;
-use App\Http\Controllers\Admin\StokController;
-use App\Http\Controllers\Admin\StokLogController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\Admin\LaporanController;
 
@@ -432,30 +430,15 @@ Route::middleware(['auth', 'role:admin,manager'])
 
             /*
             |--------------------------------------------------------------------------
-            | STOK BAHAN CRUD
-            |--------------------------------------------------------------------------
-            */
-
-            Route::resource('stok', StokController::class)
-                ->except(['show']);
-
-            Route::get('stok-log', [StokLogController::class, 'index'])
-                ->name('stok-log.index');
-
-            /*
-            |--------------------------------------------------------------------------
             | LAPORAN — HALAMAN & EXPORT
             |--------------------------------------------------------------------------
             */
 
             // Halaman laporan
-            Route::get('/laporan/stok',      [LaporanController::class, 'stok'])      ->name('laporan.stok');
             Route::get('/laporan/pesanan',   [LaporanController::class, 'pesanan'])   ->name('laporan.pesanan');
             Route::get('/laporan/reservasi', [LaporanController::class, 'reservasi']) ->name('laporan.reservasi');
 
             // Export
-            Route::get('/laporan/stok/csv',       [LaporanController::class, 'exportStokCsv'])       ->name('laporan.stok.csv');
-            Route::get('/laporan/stok/xlsx',      [LaporanController::class, 'exportStokXlsx'])      ->name('laporan.stok.xlsx');
             Route::get('/laporan/reservasi/csv',  [LaporanController::class, 'exportReservasiCsv'])  ->name('laporan.reservasi.csv');
             Route::get('/laporan/reservasi/xlsx', [LaporanController::class, 'exportReservasiXlsx']) ->name('laporan.reservasi.xlsx');
             Route::get('/laporan/orders/xlsx',    [LaporanController::class, 'exportOrdersXlsx'])    ->name('laporan.orders.xlsx');
@@ -489,23 +472,6 @@ Route::middleware(['auth', 'role:admin,manager'])
 
             Route::resource('user', UserController::class);
         });
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | AI PREDIKSI PENJUALAN
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get('/prediksi', [\App\Http\Controllers\Admin\PredictionController::class, 'index'])
-            ->name('prediksi.index');
-
-        Route::post('/prediksi/run', [\App\Http\Controllers\Admin\PredictionController::class, 'runPrediction'])
-            ->name('prediksi.run');
-
-        Route::get('/prediksi/ai-status', [\App\Http\Controllers\Admin\PredictionController::class, 'checkAiStatus'])
-            ->name('prediksi.ai-status');
-
 
         /*
         |--------------------------------------------------------------------------

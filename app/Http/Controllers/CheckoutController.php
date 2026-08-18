@@ -6,21 +6,14 @@ use App\Models\Menu;
 use App\Models\MenuSpecialItem;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Services\StockCalculationService;
 use App\Services\WhatsAppNotificationService;
 use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CheckoutController extends Controller
 {
-    protected StockCalculationService $stockService;
-
-    public function __construct(StockCalculationService $stockService)
-    {
-        $this->stockService = $stockService;
-    }
-
     public function index()
     {
         $cart = session()->get('cart', []);
@@ -31,12 +24,6 @@ class CheckoutController extends Controller
         }
 
         $total = $this->calculateTotal($cart);
-
-        $stockErrors = $this->validateCartStock($cart);
-        if (!empty($stockErrors)) {
-            return redirect()->route('frontend.menu')
-                ->with('error', 'Beberapa menu tidak dapat dipesan: ' . implode(', ', $stockErrors));
-        }
 
         return view('frontend.checkout.index', compact('cart', 'total'));
     }
@@ -103,15 +90,6 @@ class CheckoutController extends Controller
         DB::beginTransaction();
 
         try {
-            $stockErrors = $this->validateCartStock($cart);
-            if (!empty($stockErrors)) {
-                DB::rollBack();
-
-                return redirect()->back()
-                    ->with('error', 'Stok tidak mencukupi: ' . implode(', ', $stockErrors))
-                    ->withInput();
-            }
-
             $subtotal = $this->calculateTotal($cart);
             $totalBayar = $subtotal;
 
@@ -149,35 +127,33 @@ class CheckoutController extends Controller
                     'harga' => $item['harga'],
                     'subtotal' => $item['harga'] * $item['qty'],
                 ]);
-
-                if ($type === 'menu') {
-                    $menu = Menu::with('komposisiBahan.stok')->find($item['id']);
-
-                    if ($menu && $menu->komposisiBahan()->exists()) {
-                        $deductionResult = $this->stockService->deductIngredientsForOrder(
-                            $menu,
-                            (int) $item['qty'],
-                            Order::class,
-                            $order->id
-                        );
-
-                        if (!$deductionResult['success']) {
-                            throw new \Exception($deductionResult['message']);
-                        }
-                    }
-                }
             }
 
             DB::commit();
 
+            // Load items agar daftar menu terbaca lengkap oleh WhatsApp Service
+            $order->load('items');
+
+            // 1. Kirim Pesanan Baru ke WA Admin / Pemilik
+            try {
+                $whatsappService->sendNewOrderToAdmin($order);
+            } catch (\Exception $e) {
+                Log::error('Failed to send new order WA to Admin', [
+                    'order_id' => $order->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
+            // 2. Kirim Notifikasi Delivery ke Group (jika delivery)
             if ($order->isDelivery()) {
                 $whatsappService->sendNewDeliveryOrderNotification($order);
             }
 
+            // 3. Kirim Pesanan ke WA Pelanggan
             try {
                 $whatsappNotificationService->sendOrderCreated($order);
             } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error('Failed to send order created WA notification', [
+                Log::error('Failed to send order created WA notification', [
                     'order_id' => $order->id,
                     'error' => $e->getMessage(),
                 ]);
@@ -212,39 +188,5 @@ class CheckoutController extends Controller
         }
 
         return $total;
-    }
-
-    protected function validateCartStock(array $cart): array
-    {
-        $errors = [];
-
-        foreach ($cart as $item) {
-            $type = $item['type'] ?? 'menu';
-
-            if ($type !== 'menu') {
-                continue;
-            }
-
-            $menu = Menu::with('komposisiBahan.stok')->find($item['id']);
-
-            if (!$menu) {
-                $errors[] = "{$item['nama']} tidak ditemukan";
-                continue;
-            }
-
-            if (!$menu->komposisiBahan()->exists()) {
-                continue;
-            }
-
-            $stockCalc = $menu->getStockCalculationDetails();
-            $availableStock = $stockCalc['stock'];
-            $requestedQty = (int) $item['qty'];
-
-            if ($availableStock < $requestedQty) {
-                $errors[] = "{$item['nama']}: stok tersedia {$availableStock} porsi, dipesan {$requestedQty} porsi";
-            }
-        }
-
-        return $errors;
     }
 }

@@ -34,9 +34,4 @@ class MenuSpecialItem extends Model
     {
         return $this->belongsTo(MenuSpecial::class, 'menu_special_id');
     }
-
-    public function komposisiBahan()
-    {
-        return $this->morphMany(MenuBahan::class, 'menuable');
-    }
 }
