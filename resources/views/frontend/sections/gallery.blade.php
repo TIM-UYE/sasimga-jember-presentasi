@@ -1,30 +1,53 @@
-<section class="relative bg-black py-14 sm:py-20 lg:py-28 px-4 sm:px-6 overflow-hidden">
+<section
+    id="galeri"
+    class="relative overflow-hidden bg-black
+    px-4 py-14 scroll-mt-24
+    sm:px-6 sm:py-20
+    lg:py-28">
 
-    {{-- BACKGROUND --}}
-    <div class="absolute inset-0 pointer-events-none">
+    {{-- =========================================================
+        BACKGROUND
+    ========================================================== --}}
+    <div class="pointer-events-none absolute inset-0">
 
+        {{-- Orange glow kiri --}}
         <div
-            class="absolute top-0 left-[-15%] sm:left-0
-            w-56 h-56 sm:w-80 sm:h-80 lg:w-96 lg:h-96
-            bg-orange-500/10 blur-3xl rounded-full">
+            class="absolute left-[-15%] top-0
+            h-56 w-56 rounded-full
+            bg-orange-500/10 blur-3xl
+            sm:left-0 sm:h-80 sm:w-80
+            lg:h-96 lg:w-96">
         </div>
 
+        {{-- Orange glow kanan --}}
         <div
-            class="absolute bottom-0 right-[-20%] sm:right-0
-            w-64 h-64 sm:w-96 sm:h-96 lg:w-[32rem] lg:h-[32rem]
-            bg-orange-600/10 blur-3xl rounded-full">
+            class="absolute bottom-0 right-[-20%]
+            h-64 w-64 rounded-full
+            bg-orange-600/10 blur-3xl
+            sm:right-0 sm:h-96 sm:w-96
+            lg:h-[32rem] lg:w-[32rem]">
         </div>
 
     </div>
 
 
-    <div class="relative max-w-7xl mx-auto">
+    <div class="relative mx-auto max-w-7xl">
 
-        {{-- HEADER --}}
-        <div class="text-center mb-10 sm:mb-12 lg:mb-16 reveal">
+        {{-- =====================================================
+            HEADER GALERI
+        ====================================================== --}}
+        <header
+            class="reveal mb-10 text-center
+            sm:mb-12 lg:mb-16">
 
+            {{-- Badge --}}
             <span
-                class="inline-flex items-center gap-2 bg-orange-500/10 text-orange-400 px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold border border-orange-500/20">
+                class="inline-flex items-center gap-2
+                rounded-full border border-orange-500/20
+                bg-orange-500/10
+                px-3 py-1.5
+                text-xs font-semibold text-orange-400
+                sm:px-5 sm:py-2 sm:text-sm">
 
                 <i class="fas fa-camera-retro text-xs sm:text-sm"></i>
 
@@ -33,7 +56,12 @@
             </span>
 
 
-            <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mt-4 sm:mt-6 leading-tight">
+            {{-- Judul --}}
+            <h2
+                class="mt-4 text-3xl font-black
+                leading-tight text-white
+                sm:mt-6 sm:text-4xl
+                md:text-5xl lg:text-6xl">
 
                 {{ __('frontend.gallery.white-title') }}
 
@@ -44,194 +72,424 @@
             </h2>
 
 
-            <p class="text-gray-400 mt-4 sm:mt-6 max-w-3xl mx-auto leading-relaxed text-sm sm:text-base lg:text-lg">
+            {{-- Deskripsi --}}
+            <p
+                class="mx-auto mt-4 max-w-3xl
+                text-sm leading-relaxed text-gray-400
+                sm:mt-6 sm:text-base
+                lg:text-lg">
 
                 {{ __('frontend.gallery.description') }}
 
             </p>
 
+
+            {{-- =================================================
+                TOMBOL LIHAT SEMUA GALERI
+                mt-8 dan sm:mt-10 membuat tombol lebih ke bawah
+            ================================================== --}}
             @if (!request()->routeIs('frontend.gallery'))
-                <a href="{{ route('frontend.gallery') }}"
-                    class="inline-flex items-center bg-orange-500 hover:bg-orange-600 text-white px-5 sm:px-8 py-2.5 sm:py-3 rounded-full text-sm sm:text-base font-semibold transition-all hover:scale-105">
-                    <i class="fas fa-images mr-2"></i>
-                    {{ __('frontend.gallery.gallery_button') }}
-                </a>
+
+                <div class="mt-8 sm:mt-10">
+
+                    <a
+                        href="{{ route('frontend.gallery') }}"
+                        class="group inline-flex items-center
+                        justify-center gap-2
+                        rounded-full
+                        border border-orange-400/20
+                        bg-gradient-to-r
+                        from-orange-500 to-orange-600
+                        px-6 py-3
+                        text-sm font-semibold text-white
+                        shadow-[0_12px_35px_rgba(249,115,22,0.22)]
+                        transition duration-300
+                        hover:-translate-y-1
+                        hover:from-orange-400
+                        hover:to-amber-500
+                        hover:shadow-[0_16px_45px_rgba(249,115,22,0.38)]
+                        focus:outline-none
+                        focus:ring-2
+                        focus:ring-orange-500
+                        focus:ring-offset-2
+                        focus:ring-offset-black
+                        sm:px-8 sm:py-3.5
+                        sm:text-base">
+
+                        <i class="fas fa-images"></i>
+
+                        <span>
+                            {{ __('frontend.gallery.gallery_button') }}
+                        </span>
+
+                        <i
+                            class="fas fa-arrow-right
+                            ml-1 text-[10px]
+                            transition-transform duration-300
+                            group-hover:translate-x-1">
+                        </i>
+
+                    </a>
+
+                </div>
+
             @endif
 
-
-        </div>
-
+        </header>
 
 
-        {{-- GALLERY --}}
-        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5 lg:gap-6">
+        {{-- =====================================================
+            GALLERY GRID
+        ====================================================== --}}
+        <div
+            class="grid grid-cols-2 gap-3
+            sm:gap-5
+            md:grid-cols-3
+            lg:gap-6
+            xl:grid-cols-4">
 
-            @forelse($galeris as $gallery)
-                <div
-                    class="group relative overflow-hidden rounded-2xl lg:rounded-[2rem]
-                    h-44 sm:h-64 lg:h-80
-                    border border-white/10 shadow-lg sm:shadow-xl
-                    hover:shadow-orange-500/20 transition duration-500 reveal">
+            @forelse ($galeris as $gallery)
 
-                    {{-- IMAGE --}}
-                    <img src="{{ $gallery->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($gallery->image) ? \Illuminate\Support\Facades\Storage::url($gallery->image) : asset('images/gallery/gallery1.jpg') }}"
-                        alt="{{ $gallery->title }}" loading="lazy"
+                <article
+                    class="group reveal relative
+                    h-44 overflow-hidden
+                    rounded-2xl border border-white/10
+                    shadow-lg
+                    transition duration-500
+                    hover:-translate-y-1
+                    hover:border-orange-500/30
+                    hover:shadow-orange-500/20
+                    sm:h-64 sm:shadow-xl
+                    lg:h-80 lg:rounded-[2rem]">
+
+                    {{-- Gambar --}}
+                    <img
+                        src="{{ $gallery->image &&
+                            \Illuminate\Support\Facades\Storage::disk('public')->exists($gallery->image)
+                                ? \Illuminate\Support\Facades\Storage::url($gallery->image)
+                                : asset('images/gallery/gallery1.jpg') }}"
+                        alt="{{ $gallery->title ?: 'Galeri Sate Simpang Tiga' }}"
+                        loading="lazy"
                         decoding="async"
-                        class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                        class="h-full w-full object-cover
+                        transition duration-700
+                        group-hover:scale-110">
 
 
-                    {{-- OVERLAY --}}
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-
-
-                    {{-- HOVER EFFECT --}}
-                    <div class="absolute inset-0 bg-orange-500/0 group-hover:bg-orange-500/10 transition duration-500">
+                    {{-- Overlay gradient --}}
+                    <div
+                        class="absolute inset-0
+                        bg-gradient-to-t
+                        from-black/90 via-black/20 to-transparent">
                     </div>
 
 
-                    {{-- CONTENT --}}
-                    <div class="absolute bottom-0 left-0 p-3 sm:p-5 lg:p-6">
+                    {{-- Efek hover --}}
+                    <div
+                        class="absolute inset-0
+                        bg-orange-500/0
+                        transition duration-500
+                        group-hover:bg-orange-500/10">
+                    </div>
 
-                        <h3 class="text-white font-bold text-sm sm:text-lg lg:text-xl line-clamp-1">
-                            {{ $gallery->title }}
+
+                    {{-- Informasi galeri --}}
+                    <div
+                        class="absolute bottom-0 left-0
+                        p-3 sm:p-5 lg:p-6">
+
+                        <h3
+                            class="line-clamp-1
+                            text-sm font-bold text-white
+                            sm:text-lg lg:text-xl">
+
+                            {{ $gallery->title ?: 'Sate Simpang Tiga' }}
+
                         </h3>
 
-                        <p class="text-gray-300 text-[11px] sm:text-sm mt-1 line-clamp-2">
+                        <p
+                            class="mt-1 line-clamp-2
+                            text-[11px] text-gray-300
+                            sm:text-sm">
+
                             {{ $gallery->description ?? 'Momen hangat bersama pelanggan' }}
+
                         </p>
 
                     </div>
 
 
-                    {{-- ICON --}}
+                    {{-- Ikon lihat gambar --}}
                     <div
-                        class="absolute top-3 right-3 sm:top-5 sm:right-5
-                        h-8 w-8 sm:h-10 sm:w-10
-                        rounded-full bg-black/40 backdrop-blur-md
-                        flex items-center justify-center border border-white/10
-                        opacity-0 group-hover:opacity-100 transition duration-500">
+                        class="absolute right-3 top-3
+                        flex h-8 w-8 items-center
+                        justify-center rounded-full
+                        border border-white/10
+                        bg-black/40
+                        opacity-0 backdrop-blur-md
+                        transition duration-500
+                        group-hover:opacity-100
+                        sm:right-5 sm:top-5
+                        sm:h-10 sm:w-10">
 
-                        <i class="fas fa-expand text-white text-xs sm:text-sm"></i>
+                        <i class="fas fa-expand text-xs text-white sm:text-sm"></i>
 
                     </div>
 
-                </div>
+                </article>
 
             @empty
 
-                <div class="col-span-full text-center py-14 sm:py-20">
+                {{-- Empty state galeri --}}
+                <div
+                    class="col-span-full py-14 text-center
+                    sm:py-20">
 
                     <div
-                        class="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-800 mb-4 sm:mb-6">
-                        <i class="fas fa-image text-2xl sm:text-3xl text-gray-600"></i>
+                        class="mb-4 inline-flex
+                        h-16 w-16 items-center
+                        justify-center rounded-full
+                        bg-gray-800
+                        sm:mb-6 sm:h-20 sm:w-20">
+
+                        <i
+                            class="fas fa-image
+                            text-2xl text-gray-600
+                            sm:text-3xl">
+                        </i>
+
                     </div>
 
-                    <h3 class="text-xl sm:text-2xl font-bold text-gray-400 mb-1">
+                    <h3
+                        class="mb-1 text-xl font-bold
+                        text-gray-400
+                        sm:text-2xl">
+
                         Belum Ada Galeri
+
                     </h3>
 
-                    <p class="text-sm sm:text-base text-gray-500">
+                    <p class="text-sm text-gray-500 sm:text-base">
                         Galeri akan segera tersedia
                     </p>
 
                 </div>
+
             @endforelse
 
         </div>
 
 
-
-        {{-- VIDEO SECTION --}}
+        {{-- =====================================================
+            VIDEO SECTION
+        ====================================================== --}}
         <div class="mt-14 sm:mt-20 lg:mt-28">
 
-            {{-- VIDEO GRID --}}
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-8 reveal">
+            <div
+                class="reveal grid grid-cols-1 gap-5
+                sm:gap-8 lg:grid-cols-2">
 
-                @forelse($videos as $video)
+                @forelse ($videos as $video)
 
-                    <div
-                        class="overflow-hidden rounded-2xl lg:rounded-[2rem] border border-white/10 shadow-xl lg:shadow-2xl shadow-orange-500/10">
+                    <article
+                        class="overflow-hidden rounded-2xl
+                        border border-white/10
+                        shadow-xl shadow-orange-500/10
+                        lg:rounded-[2rem]
+                        lg:shadow-2xl">
 
+                        {{-- Video dari storage --}}
                         @if ($video->video_file)
-                            <video autoplay muted loop controls class="w-full h-52 sm:h-72 lg:h-[350px] object-cover">
-                                <source src="{{ asset('storage/' . $video->video_file) }}" type="video/mp4">
-                                Your browser does not support the video tag.
+
+                            <video
+                                autoplay
+                                muted
+                                loop
+                                controls
+                                playsinline
+                                class="h-52 w-full object-cover
+                                sm:h-72 lg:h-[350px]">
+
+                                <source
+                                    src="{{ asset('storage/' . $video->video_file) }}"
+                                    type="video/mp4">
+
+                                Browser Anda tidak mendukung video.
+
                             </video>
-                        @elseif($video->video_url && $video->video_url !== '-')
+
+                        {{-- Video dari URL --}}
+                        @elseif ($video->video_url && $video->video_url !== '-')
+
                             @php
                                 $isYoutube =
                                     str_contains($video->video_url, 'youtube.com') ||
                                     str_contains($video->video_url, 'youtu.be');
-                                $isVimeo = str_contains($video->video_url, 'vimeo.com');
+
+                                $isVimeo =
+                                    str_contains($video->video_url, 'vimeo.com');
                             @endphp
 
+
+                            {{-- YouTube --}}
                             @if ($isYoutube)
+
                                 @php
-                                    parse_str(parse_url($video->video_url, PHP_URL_QUERY), $ytParams);
+                                    parse_str(
+                                        parse_url($video->video_url, PHP_URL_QUERY),
+                                        $ytParams
+                                    );
+
                                     $ytId = $ytParams['v'] ?? '';
+
                                     if (str_contains($video->video_url, 'youtu.be')) {
-                                        $ytId = substr(parse_url($video->video_url, PHP_URL_PATH), 1);
+                                        $ytId = ltrim(
+                                            parse_url($video->video_url, PHP_URL_PATH),
+                                            '/'
+                                        );
                                     }
                                 @endphp
 
-                                <div class="relative w-full h-52 sm:h-72 lg:h-[350px]">
+                                <div
+                                    class="relative h-52 w-full
+                                    sm:h-72 lg:h-[350px]">
+
                                     <iframe
                                         src="https://www.youtube.com/embed/{{ $ytId }}?autoplay=1&mute=1&loop=1&playlist={{ $ytId }}"
-                                        class="w-full h-full object-cover" allow="autoplay; encrypted-media"
-                                        allowfullscreen loading="lazy"></iframe>
+                                        title="{{ $video->title ?: 'Video Sate Simpang Tiga' }}"
+                                        class="h-full w-full"
+                                        allow="autoplay; encrypted-media"
+                                        allowfullscreen
+                                        loading="lazy">
+                                    </iframe>
+
                                 </div>
-                            @elseif($isVimeo)
+
+
+                            {{-- Vimeo --}}
+                            @elseif ($isVimeo)
+
                                 @php
-                                    $vimeoId = substr(parse_url($video->video_url, PHP_URL_PATH), 1);
+                                    $vimeoId = trim(
+                                        parse_url($video->video_url, PHP_URL_PATH),
+                                        '/'
+                                    );
                                 @endphp
 
-                                <div class="relative w-full h-52 sm:h-72 lg:h-[350px]">
+                                <div
+                                    class="relative h-52 w-full
+                                    sm:h-72 lg:h-[350px]">
+
                                     <iframe
                                         src="https://player.vimeo.com/video/{{ $vimeoId }}?autoplay=1&muted=1&loop=1"
-                                        class="w-full h-full object-cover" allow="autoplay" allowfullscreen
-                                        loading="lazy"></iframe>
+                                        title="{{ $video->title ?: 'Video Sate Simpang Tiga' }}"
+                                        class="h-full w-full"
+                                        allow="autoplay"
+                                        allowfullscreen
+                                        loading="lazy">
+                                    </iframe>
+
                                 </div>
+
+
+                            {{-- Video URL biasa --}}
                             @else
-                                <video autoplay muted loop controls
-                                    class="w-full h-52 sm:h-72 lg:h-[350px] object-cover">
-                                    <source src="{{ $video->video_url }}" type="video/mp4">
+
+                                <video
+                                    autoplay
+                                    muted
+                                    loop
+                                    controls
+                                    playsinline
+                                    class="h-52 w-full object-cover
+                                    sm:h-72 lg:h-[350px]">
+
+                                    <source
+                                        src="{{ $video->video_url }}"
+                                        type="video/mp4">
+
+                                    Browser Anda tidak mendukung video.
+
                                 </video>
+
                             @endif
+
                         @endif
 
-                        @if ($video->title || $video->description)
-                            <div
-                                class="p-4 sm:p-5 bg-gradient-to-t from-black/80 to-transparent -mt-16 sm:-mt-20 relative z-10">
 
-                                <h4 class="text-white font-bold text-base sm:text-lg">
-                                    {{ $video->title }}
-                                </h4>
+                        {{-- Informasi video --}}
+                        @if ($video->title || $video->description)
+
+                            <div
+                                class="relative z-10
+                                -mt-16 bg-gradient-to-t
+                                from-black/90 via-black/70 to-transparent
+                                p-4 pt-12
+                                sm:-mt-20 sm:p-5 sm:pt-16">
+
+                                @if ($video->title)
+
+                                    <h4
+                                        class="text-base font-bold
+                                        text-white sm:text-lg">
+
+                                        {{ $video->title }}
+
+                                    </h4>
+
+                                @endif
 
                                 @if ($video->description)
-                                    <p class="text-gray-300 text-xs sm:text-sm mt-1">
+
+                                    <p
+                                        class="mt-1 text-xs
+                                        leading-relaxed text-gray-300
+                                        sm:text-sm">
+
                                         {{ $video->description }}
+
                                     </p>
+
                                 @endif
 
                             </div>
+
                         @endif
 
-                    </div>
+                    </article>
 
                 @empty
 
-                    <div class="col-span-full text-center py-14 sm:py-16">
+                    {{-- Empty state video --}}
+                    <div
+                        class="col-span-full py-14 text-center
+                        sm:py-16">
 
                         <div
-                            class="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-800 mb-4 sm:mb-6">
-                            <i class="fas fa-video text-2xl sm:text-3xl text-gray-600"></i>
+                            class="mb-4 inline-flex
+                            h-16 w-16 items-center
+                            justify-center rounded-full
+                            bg-gray-800
+                            sm:mb-6 sm:h-20 sm:w-20">
+
+                            <i
+                                class="fas fa-video
+                                text-2xl text-gray-600
+                                sm:text-3xl">
+                            </i>
+
                         </div>
 
-                        <h3 class="text-xl sm:text-2xl font-bold text-gray-400 mb-1">
+                        <h3
+                            class="mb-1 text-xl font-bold
+                            text-gray-400
+                            sm:text-2xl">
+
                             Belum Ada Video
+
                         </h3>
 
-                        <p class="text-sm sm:text-base text-gray-500">
+                        <p class="text-sm text-gray-500 sm:text-base">
                             Video akan segera tersedia
                         </p>
 
