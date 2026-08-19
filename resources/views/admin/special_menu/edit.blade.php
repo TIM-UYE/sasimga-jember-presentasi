@@ -180,24 +180,6 @@
                                 {{ Str::limit($item->description, 80) }}
                             </td>
 
-                            <td class="px-6 py-4 align-middle">
-                                @if($item->komposisiBahan && $item->komposisiBahan->count())
-                                    <div class="space-y-1">
-                                        @foreach($item->komposisiBahan as $bahan)
-                                            <div class="text-xs text-slate-600">
-                                                <span class="font-semibold">{{ $bahan->stok->nama_bahan ?? '-' }}</span>
-                                                <span>
-                                                    {{ number_format($bahan->jumlah_dibutuhkan, 2, ',', '.') }}
-                                                    {{ $bahan->stok->satuan ?? '' }}
-                                                </span>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @else
-                                    <span class="text-xs text-slate-400">Belum diatur</span>
-                                @endif
-                            </td>
-
                             <td class="px-6 py-4 align-middle text-right">
                                 <div class="flex flex-wrap justify-end gap-2">
                                     <button type="button" class="btn-admin-secondary" onclick='openEditItemModal(@json($item))'>
@@ -306,20 +288,6 @@
                 </div>
             </div>
 
-            <div class="rounded-2xl border border-slate-700 bg-slate-900 p-4">
-                <div class="mb-3 flex items-center justify-between gap-3">
-                    <div>
-                        <h4 class="text-sm font-semibold text-white">Komposisi Stok Bahan</h4>
-                        <p class="text-xs text-slate-400">Isi bahan yang dipakai untuk 1 porsi/1 paket varian ini.</p>
-                    </div>
-                    <button type="button" onclick="addBahanRow()" class="rounded-xl bg-orange-500 px-3 py-2 text-xs font-semibold text-white hover:bg-orange-600">
-                        + Tambah Bahan
-                    </button>
-                </div>
-
-                <div id="bahan-wrapper" class="space-y-3"></div>
-            </div>
-
             <div id="item-image-preview" class="hidden">
                 <p class="mb-2 text-sm font-semibold text-slate-200">Preview Gambar</p>
                 <img id="item-preview-img" src="" alt="Preview" class="h-56 w-full rounded-3xl object-cover ring-1 ring-slate-700">
@@ -333,25 +301,12 @@
     </div>
 </div>
 
-@php
-    $stokOptions = ($stoks ?? collect())->map(function ($stok) {
-        return [
-            'id' => $stok->id,
-            'nama_bahan' => $stok->nama_bahan,
-            'satuan' => $stok->satuan,
-            'jumlah_stok' => $stok->jumlah_stok,
-        ];
-    })->values();
-@endphp
-
 <script>
 const ITEM_STORE_URL = '{{ route("admin.menu-specials.items.store", $special) }}';
 const ITEM_UPDATE_URL_BASE = '{{ route("admin.menu-specials.items.update", [$special, 0]) }}'.replace('/0', '');
-const STOK_OPTIONS = @json($stokOptions);
 
 function openItemModal() {
     setModalCreateMode();
-    fillBahanRows([]);
     document.getElementById('itemModal').classList.remove('hidden');
     document.getElementById('itemModal').classList.add('flex');
     document.getElementById('item_name').focus();
@@ -367,8 +322,6 @@ function openEditItemModal(item) {
     setFormValue('item_description', item.description ?? '');
     document.getElementById('item_is_available').checked = !!item.is_available;
     document.getElementById('item_image').value = '';
-
-    fillBahanRows(item.komposisi_bahan || []);
 
     const preview = document.getElementById('item-image-preview');
     const previewImg = document.getElementById('item-preview-img');

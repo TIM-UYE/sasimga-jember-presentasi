@@ -269,6 +269,49 @@ class WhatsAppService
     }
 
     /**
+     * Kirim notifikasi rincian pesanan baru langsung ke Admin / Penjual
+     */
+    public function sendNewOrderToAdmin(Order $order): bool
+    {
+        // Ambil nomor WA admin dari config/env (misal 628123456789)
+        $adminPhone = config('services.fonnte.admin_phone', env('FONNTE_ADMIN_PHONE', ''));
+
+        if (empty($adminPhone)) {
+            Log::warning('[WA SKIP] Nomor HP Admin belum diatur di ENV (FONNTE_ADMIN_PHONE)');
+            return false;
+        }
+
+        // Format rincian item pesanan
+        $itemsList = "";
+        foreach ($order->items as $item) {
+            $itemsList .= "• {$item->nama_menu} ({$item->qty}x) - Rp " . number_format($item->harga * $item->qty, 0, ',', '.') . "\n";
+        }
+
+        // Susun template pesan untuk admin
+        $message  = "🛒 *PESANAN BARU MASUK!*\n";
+        $message .= "===========================\n";
+        $message .= "Kode Order : *{$order->kode_order}*\n";
+        $message .= "Nama       : {$order->nama_pelanggan}\n";
+        $message .= "No. HP     : {$order->nomor_hp}\n";
+        $message .= "Metode     : " . strtoupper($order->metode_pengiriman) . " (" . strtoupper($order->metode_pembayaran) . ")\n";
+        $message .= "===========================\n\n";
+        $message .= "📋 *Rincian Pesanan:*\n";
+        $message .= "{$itemsList}\n";
+        $message .= "💰 *Total Pembayaran:* Rp " . number_format($order->total_harga ?? $order->subtotal, 0, ',', '.') . "\n\n";
+
+        // Sertakan Catatan jika ada
+        if (!empty($order->catatan)) {
+            $message .= "📝 *Catatan Pemesan:*\n";
+            $message .= "_{$order->catatan}_\n\n";
+        }
+
+        $message .= "Segera proses pesanan di sistem admin ya! 👨‍🍳";
+
+        // Kirim pesan ke nomor WhatsApp Admin
+        return $this->sendToCustomer($adminPhone, $message);
+    }
+
+    /**
      * Cek apakah service sudah dikonfigurasi
      */
     public function isConfigured(): bool

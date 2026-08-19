@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderStatusHistory;
-use App\Services\StokService;
 use App\Services\WhatsAppNotificationService;
 use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
@@ -109,7 +108,7 @@ class OrderController extends Controller
     /**
      * Update order status
      */
-    public function updateStatus(Request $request, Order $order, WhatsAppService $whatsappService, StokService $stokService)
+    public function updateStatus(Request $request, Order $order, WhatsAppService $whatsappService)
     {
         $validated = $request->validate([
             'status' => 'required|in:pending,diproses,dimasak,siap_diambil,diantar,selesai,dibatalkan',
@@ -206,19 +205,13 @@ class OrderController extends Controller
 
             DB::commit();
 
-            $freshOrder = $order->fresh();
-
-            if ($newStatus === Order::STATUS_SELESAI && $freshOrder->payment_status === Order::PAYMENT_PAID) {
-                $stokService->kurangiStokUntukOrder($freshOrder);
-            }
-
             Log::info('[ORDER SUCCESS] Status berhasil diubah', [
                 'order_id' => $order->id,
                 'kode_order' => $order->kode_order,
                 'old_status' => $oldStatus,
                 'new_status' => $newStatus,
-                'payment_status' => $freshOrder->payment_status,
-                'stok_dikurangi_at' => $freshOrder->stok_dikurangi_at,
+                'payment_status' => $order->payment_status,
+                'stok_dikurangi_at' => $order->stok_dikurangi_at,
                 'changed_by' => auth()->id(),
             ]);
 
@@ -345,7 +338,7 @@ class OrderController extends Controller
     /**
      * Update payment status
      */
-    public function updatePaymentStatus(Request $request, Order $order, WhatsAppNotificationService $whatsappNotificationService, StokService $stokService)
+    public function updatePaymentStatus(Request $request, Order $order, WhatsAppNotificationService $whatsappNotificationService)
     {
         $validated = $request->validate([
             'payment_status' => 'required|in:unpaid,paid',
@@ -368,12 +361,6 @@ class OrderController extends Controller
             }
 
             $order->save();
-
-            if ($oldPaymentStatus === Order::PAYMENT_UNPAID
-                && $validated['payment_status'] === Order::PAYMENT_PAID
-            ) {
-                $stokService->kurangiStokUntukOrder($order->fresh());
-            }
 
             Log::info('[ORDER PAYMENT] Status pembayaran diubah', [
                 'order_id' => $order->id,
