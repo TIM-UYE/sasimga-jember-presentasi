@@ -236,7 +236,7 @@
                 <div class="flex flex-wrap items-center gap-2">
 
                     {{-- Menu spesial --}}
-                    <a href="#menu-spesial" aria-label="Lihat menu spesial"
+                    <a href="#menu" aria-label="Lihat menu spesial"
                         class="group inline-flex items-center gap-2
                         rounded-full border border-white/15
                         bg-white/[0.06] px-3.5 py-2
@@ -254,7 +254,7 @@
                             group-hover:scale-110">
                         </i>
 
-                        <span>Menu Spesial</span>
+                        <span>Menu</span>
 
                         <i
                             class="fas fa-arrow-down text-[9px]
@@ -266,7 +266,7 @@
 
 
                     {{-- Review artis --}}
-                    <a href="#review-artis" aria-label="Lihat review artis"
+                    <a href="#orbitSection" aria-label="Lihat review artis"
                         class="group inline-flex items-center gap-2
                         rounded-full border border-white/15
                         bg-white/[0.06] px-3.5 py-2
@@ -326,7 +326,7 @@
 
 
                     {{-- Testimoni --}}
-                    <a href="#testimoni" aria-label="Lihat testimoni pelanggan"
+                    <a href="#testimonial" aria-label="Lihat testimoni pelanggan"
                         class="group inline-flex items-center gap-2
                         rounded-full border border-white/15
                         bg-white/[0.06] px-3.5 py-2

@@ -1,4 +1,4 @@
-<section class="relative bg-black pt-14 sm:pt-16 md:pt-20 lg:pt-24 pb-8 sm:pb-10 md:pb-14 overflow-hidden">
+<section id="menu-spesial" class="relative bg-black pt-14 sm:pt-16 md:pt-20 lg:pt-24 pb-8 sm:pb-10 md:pb-14 overflow-hidden scroll-mt-24">
 
     {{-- Background Pattern --}}
     <div class="absolute inset-0 opacity-10">

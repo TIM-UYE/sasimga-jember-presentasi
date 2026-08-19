@@ -1,4 +1,4 @@
-<section class="relative h-[190vh] sm:h-[220vh] md:h-[260vh] lg:h-[300vh] bg-black">
+<section id="review" class="relative h-[190vh] sm:h-[220vh] md:h-[260vh] lg:h-[300vh] bg-black scroll-mt-24">
 
     {{-- STICKY SHOWCASE --}}
     <div class="sticky top-0 h-[100svh] md:h-screen overflow-hidden">
