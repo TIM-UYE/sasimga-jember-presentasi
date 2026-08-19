@@ -40,11 +40,7 @@ class CheckoutController extends Controller
             'metode_pembayaran' => 'required|in:qris',
 
             // Address for QRIS delivery
-            'alamat_method' => 'nullable|in:location,manual',
-            'alamat_qris_location' => 'nullable|string|max:500',
             'alamat_qris_manual' => 'nullable|string|max:500',
-            'latitude_qris' => 'nullable|numeric',
-            'longitude_qris' => 'nullable|numeric',
         ], [
             'nama_pelanggan.required' => 'Nama pelanggan wajib diisi.',
             'nomor_hp.required' => 'Nomor HP wajib diisi.',
@@ -55,29 +51,13 @@ class CheckoutController extends Controller
         $alamatFinal = null;
 
         if ($validated['metode_pengiriman'] === 'delivery') {
-            $addressMethod = $validated['alamat_method'] ?? null;
-
-            if ($addressMethod === 'location') {
-                if (empty($validated['alamat_qris_location'])) {
-                    return redirect()->back()
-                        ->withErrors(['alamat_qris_location' => 'Silakan ambil lokasi terkini Anda.'])
-                        ->withInput();
-                }
-
-                $alamatFinal = $validated['alamat_qris_location'];
-            } elseif ($addressMethod === 'manual') {
-                if (empty($validated['alamat_qris_manual'])) {
-                    return redirect()->back()
-                        ->withErrors(['alamat_qris_manual' => 'Silakan isi alamat pengiriman Anda.'])
-                        ->withInput();
-                }
-
-                $alamatFinal = $validated['alamat_qris_manual'];
-            } else {
+            if (empty($validated['alamat_qris_manual'])) {
                 return redirect()->back()
-                    ->withErrors(['alamat' => 'Silakan pilih metode alamat lokasi terkini atau manual.'])
+                    ->withErrors(['alamat_qris_manual' => 'Silakan isi alamat pengiriman Anda.'])
                     ->withInput();
             }
+
+            $alamatFinal = $validated['alamat_qris_manual'];
         }
 
         $cart = session()->get('cart', []);
